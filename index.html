@@ -205,6 +205,39 @@ details.diag td:last-child{text-align:right;font-family:var(--f-num);font-size:1
 .hrow b{font-family:var(--f-display);font-size:24px}
 .spark{width:100%;height:90px;display:block}
 .exp{font-size:11px;border:1px solid var(--mid);color:var(--mid);border-radius:999px;padding:0 6px;margin-left:6px;font-weight:600}
+
+.pdot{position:absolute;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:#3fbf86;box-shadow:0 0 0 8px rgba(63,191,134,.3),0 0 18px rgba(0,0,0,.5);pointer-events:none}
+.mcard .t.words{font-size:clamp(28px,9vw,40px);letter-spacing:.04em}
+.mcard .h.read{font-family:var(--f-display);font-size:clamp(19px,5.6vw,24px);color:#fff;line-height:1.45}
+/* ---- touch tasks ---- */
+.task{display:grid;gap:12px}
+.task .ttl{font-family:var(--f-display);font-weight:800;font-size:22px;margin:0}
+.task .ins{margin:0;color:var(--muted);font-size:14px}
+.tapzone{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:8px 0}
+.tapzone button{aspect-ratio:1;border-radius:50%;border:3px solid var(--accent);background:var(--paper);font:inherit;font-size:28px;font-weight:700;color:var(--accent);touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.tapzone button.hit{background:var(--accent);color:var(--accent-ink)}
+.rtpad{height:260px;border-radius:18px;display:grid;place-items:center;font-family:var(--f-display);font-size:30px;font-weight:800;color:#fff;background:#6b7a74;touch-action:manipulation;-webkit-user-select:none;user-select:none;cursor:pointer}
+.rtpad.go{background:#16a36a}.rtpad.early{background:#c0573f}
+.stroopw{height:150px;display:grid;place-items:center;font-family:var(--f-display);font-size:64px;font-weight:800;background:var(--paper);border:1px solid var(--line);border-radius:16px}
+.stroopb{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stroopb button{font:inherit;font-size:18px;font-weight:700;padding:16px 8px;border-radius:12px;border:1px solid var(--line);background:var(--paper);color:var(--ink);display:flex;gap:8px;align-items:center;justify-content:center;touch-action:manipulation}
+.stroopb i{width:18px;height:18px;border-radius:50%;display:inline-block}
+.wgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.wgrid button{font:inherit;font-size:17px;font-weight:600;padding:16px 4px;border-radius:12px;border:1px solid var(--line);background:var(--paper);color:var(--ink)}
+.wgrid button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.tcount{font-family:var(--f-num);font-size:13px;color:var(--muted);text-align:center}
+.qgroup{display:grid;gap:6px}
+.qgroup label{display:flex;gap:8px;align-items:flex-start;font-size:14px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--paper)}
+.qgroup input{margin-top:3px}
+.alert{border:2px solid var(--urgent);background:color-mix(in srgb,var(--urgent) 10%,transparent);border-radius:14px;padding:14px;display:grid;gap:4px}
+.alert b{color:var(--urgent);font-size:17px}
+.ages3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.ages3 .agebox{padding:10px}
+.ages3 .agebox .big{font-size:clamp(38px,11vw,60px)}
+.befast{display:grid;gap:8px}
+.bf{display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:10px}
+.bf .L{font-family:var(--f-display);font-weight:800;font-size:28px;color:var(--accent);text-align:center}
+.bf p{margin:0;font-size:13.5px}.bf .raw{margin-top:2px}
 </style>
 </head>
 <body>
@@ -214,10 +247,10 @@ details.diag td:last-child{text-align:right;font-family:var(--f-num);font-size:1
   <main class="screens">
     <!-- HOME -->
     <section class="screen" data-s="home">
-      <div><p class="eyebrow" style="margin:0" id="today"></p><p class="hello">한 번의 촬영으로<br>얼굴 나이·눈 나이와 건강 신호를</p></div>
+      <div><p class="eyebrow" style="margin:0" id="today"></p><p class="hello">약 1분 촬영 + 터치 테스트로<br>얼굴·눈·두뇌 나이와 건강 신호를</p></div>
       <div class="card" id="lastBox"></div>
       <div class="card">
-        <p class="eyebrow">약 90초 동안 음성 안내를 따라 해 주세요</p>
+        <p class="eyebrow">촬영 약 75초 · 음성 안내를 따라 해 주세요</p>
         <ol class="plan" id="plan"></ol>
       </div>
       <div class="card">
@@ -227,10 +260,10 @@ details.diag td:last-child{text-align:right;font-family:var(--f-num);font-size:1
           <label class="f" for="sex">성별<select id="sex"><option value="">선택 안 함</option><option value="여성">여성</option><option value="남성">남성</option></select></label>
           <label class="f" for="glass">평소 안경·렌즈<select id="glass"><option value="">선택 안 함</option><option>안 씀</option><option>먼 거리용(근시)</option><option>돋보기·다초점</option></select></label>
         </div>
-        <label class="check" style="margin-top:10px"><input type="checkbox" id="agree">파일럿 참여에 동의합니다. 영상과 사진은 이 휴대폰 안에서만 분석되고 어디에도 전송·저장되지 않습니다. 측정 수치와 설문만 이 휴대폰에 기록되며, 파일로 내보내 담당자에게 제출할 수 있습니다.</label>
+        <label class="check" style="margin-top:10px"><input type="checkbox" id="agree">파일럿 참여에 동의합니다. 영상·사진·음성은 이 휴대폰 안에서만 분석되고 어디에도 전송·저장되지 않습니다(음성은 크기 변화만 계산). 측정 수치와 설문만 이 휴대폰에 기록되며, 파일로 내보내 담당자에게 제출할 수 있습니다.</label>
       </div>
       <button class="btn primary cta" id="start" disabled>원샷 체크 시작</button>
-      <p class="note2" id="startNote">소리를 켜 주세요. 휴대폰을 얼굴 정면, 팔을 편하게 굽힌 거리(30~40cm)에 들고 시작합니다. 결과는 건강관리 참고용이며 진단이 아닙니다.</p>
+      <p class="note2" id="startNote">소리를 켜고 조용한 곳에서 해 주세요. 카메라와 마이크 권한을 물으면 허용해 주세요. 휴대폰을 얼굴 정면, 팔을 편하게 굽힌 거리(30~40cm)에 들고 시작합니다. 결과는 건강관리 참고용이며 진단이 아닙니다.</p>
       <details class="diag card" id="diag"><summary>작동이 안 되나요? 환경 점검</summary><table id="diagT"></table><p class="note2" style="margin-top:8px">문제가 있으면 이 표를 캡처해서 보내 주세요.</p></details>
     </section>
 
@@ -239,6 +272,13 @@ details.diag td:last-child{text-align:right;font-family:var(--f-num);font-size:1
       <div class="card proc"><p class="eyebrow" style="margin:0">분석 중</p><p class="headline" style="margin:0" id="procT">촬영한 장면을 분석하고 있어요</p><div class="prog"><i id="procBar"></i></div><p class="note2" id="procN"></p></div>
     </section>
 
+
+    <!-- TOUCH TASKS -->
+    <section class="screen" data-s="tasks" hidden>
+      <div class="stepper" id="tstep" style="display:flex;gap:6px"></div>
+      <div class="card task" id="taskArea"></div>
+      <p class="note2" style="text-align:center">휴대폰을 편하게 들고, 화면을 보며 진행하세요.</p>
+    </section>
     <!-- NEAR POINT -->
     <section class="screen" data-s="near" hidden>
       <div class="card"><p class="eyebrow">보너스 · 눈 나이 (노안) 테스트 · 약 30초</p>
@@ -264,6 +304,27 @@ details.diag td:last-child{text-align:right;font-family:var(--f-num);font-size:1
         <label class="f" for="qLiver">검진 간 수치 이상<select id="qLiver"><option value="">응답 안 함</option><option>없음</option><option>있음</option><option>모름</option></select></label>
         <label class="f" for="qAnemia">빈혈 진단 경험<select id="qAnemia"><option value="">응답 안 함</option><option>없음</option><option>있음</option><option>모름</option></select></label>
       </div></div>
+
+      <div class="card"><p class="eyebrow">지금 또는 최근 24시간 안에 갑자기 생긴 증상 (뇌졸중 경고 신호)</p><div class="qgroup" id="qStroke">
+        <label><input type="checkbox" value="balance">갑자기 어지럽고 몸의 균형을 잡기 어렵다</label>
+        <label><input type="checkbox" value="eyes">갑자기 한쪽 눈이 안 보이거나 물체가 두 개로 보인다</label>
+        <label><input type="checkbox" value="face">갑자기 얼굴 한쪽이 처지거나 감각이 둔하다</label>
+        <label><input type="checkbox" value="arm">갑자기 한쪽 팔다리에 힘이 빠지거나 저리다</label>
+        <label><input type="checkbox" value="speech">갑자기 말이 어눌하거나 말을 이해하기 어렵다</label>
+        <label><input type="checkbox" value="headache">갑자기 지금까지 없던 심한 두통이 생겼다</label></div></div>
+      <div class="card"><p class="eyebrow">뇌혈관 위험 요인 (진단받았거나 해당되면 선택)</p><div class="qgroup" id="qRisk">
+        <label><input type="checkbox" value="htn">고혈압</label><label><input type="checkbox" value="dm">당뇨병</label>
+        <label><input type="checkbox" value="lipid">고지혈증(이상지질혈증)</label><label><input type="checkbox" value="smoke">현재 흡연</label>
+        <label><input type="checkbox" value="af">심방세동 등 부정맥</label><label><input type="checkbox" value="prior">뇌졸중·일과성 뇌허혈 경험</label>
+        <label><input type="checkbox" value="fam">부모·형제의 뇌졸중·치매</label><label><input type="checkbox" value="inactive">거의 운동하지 않음</label></div></div>
+      <div class="card"><p class="eyebrow">최근 1~2년 사이 기억력 변화 (예전보다 나빠졌다면 선택)</p><div class="qgroup" id="qMem">
+        <label><input type="checkbox" value="m1">약속이나 날짜를 잊는 일이 늘었다</label>
+        <label><input type="checkbox" value="m2">같은 질문이나 이야기를 반복한다는 말을 듣는다</label>
+        <label><input type="checkbox" value="m3">물건을 둔 곳을 자주 잊는다</label>
+        <label><input type="checkbox" value="m4">익숙한 길이나 장소가 헷갈린 적이 있다</label>
+        <label><input type="checkbox" value="m5">돈 계산이나 공과금 처리가 예전보다 어렵다</label>
+        <label><input type="checkbox" value="m6">하려던 말의 단어가 잘 떠오르지 않는다</label>
+        <label><input type="checkbox" value="m7">새로운 기기·앱 사용법을 익히기가 예전보다 어렵다</label></div></div>
       <button class="btn primary cta" id="toResult">결과 보기</button>
     </section>
 
@@ -293,6 +354,7 @@ details.diag td:last-child{text-align:right;font-family:var(--f-num);font-size:1
     <video id="live" playsinline muted></video>
     <canvas class="ov" id="ov"></canvas>
     <div class="dotc" id="dotc" hidden></div>
+    <div class="pdot" id="pdot" hidden></div>
     <div class="timer" id="timer" hidden></div>
     <div class="bigcheck" id="bigcheck" aria-hidden="true">✓</div>
     <div class="mcard" id="mcard"><span class="k" id="mk"></span><span class="t" id="mt"></span><span class="h" id="mh"></span></div>
@@ -556,7 +618,7 @@ function analyzeBasic(frames) {
   let hr = pk.f * 60;
   const peaks = DSP.findPeaks(p, FS, hr), v = DSP.hrv(peaks);
   let stress = NaN;
-  if (dur >= 25 && !isNaN(v.rmssd) && v.rmssd > 5 && v.rmssd < 150) stress = Math.max(0, Math.min(100, Math.round(100 * (4.5 - Math.log(v.rmssd)) / 2)));
+  if (dur >= 20 && !isNaN(v.rmssd) && v.rmssd > 5 && v.rmssd < 150) stress = Math.max(0, Math.min(100, Math.round(100 * (4.5 - Math.log(v.rmssd)) / 2)));
   const RFS = 10, rts = use.map(f => f.t);
   let rr = NaN, rrSnr = -99;
   if (dur >= 20) {
@@ -1110,32 +1172,60 @@ function speak(t) { return new Promise(res => { try { speechSynthesis.cancel(); 
 
 /* ---------- missions ---------- */
 // Each mission: what we say, what we check on the live landmarks (g = geometry now, b = baseline from the still phase), what we capture.
+const WORDSETS = [
+  { w: ['사과', '의자', '바다'], d: ['배', '포도', '책상', '소파', '강', '하늘'] },
+  { w: ['기차', '연필', '장미'], d: ['버스', '비행기', '지우개', '공책', '튤립', '국화'] },
+  { w: ['우산', '호랑이', '시계'], d: ['모자', '장갑', '사자', '곰', '달력', '안경'] },
+];
+const READ_TEXT = '오늘 아침에 공원에서 친구와 함께 산책을 했습니다', READ_SYL = 21;
+let WORDS = WORDSETS[0];
 const MISSIONS = [
   { id: 'ready', k: '준비', t: '얼굴을 원 안에', h: '밝은 곳에서 앞머리를 넘기고, 안경은 벗어 주세요', say: '얼굴을 화면의 원 안에 맞춰 주세요.', max: 25, need: 4, check: g => g.centered && g.sizeOK, cap: null },
-  { id: 'front', k: '1 · 정면 30초', t: '가만히 30초', h: '가운데 초록 점을 보세요 · 말하지 말고 편하게 숨 쉬기', say: '좋아요. 30초 동안 화면 가운데 초록 점을 보면서 가만히 있어 주세요. 말은 하지 마세요.', fixed: 30, vitals: true, cap: 'front', what: '심박·호흡·스트레스·피부·얼굴 나이' },
-  { id: 'up', k: '2 · 시선', t: '눈만 ↑ 위로', h: '고개는 그대로, 눈동자만 위로', say: '고개는 그대로 두고, 눈만 위를 보세요.', max: 5, check: (g, b) => g.gy != null && g.gy < b.gy - 0.07, cap: 'gaze', what: '눈 흰자 색 (간)' },
-  { id: 'left', k: '3 · 시선', t: '눈만 ← 옆으로', h: '고개는 그대로, 눈동자만 화면 왼쪽 끝으로', say: '이번엔 눈만 왼쪽 끝을 보세요.', max: 5, pre: (g, b) => g.gy != null && Math.abs(g.gy - b.gy) < 0.06, check: (g, b) => g.gx != null && Math.abs(g.gx - b.gx) > 0.11, cap: 'gaze', what: '눈 흰자 색·충혈' },
-  { id: 'right', k: '4 · 시선', t: '눈만 → 반대로', h: '고개는 그대로, 눈동자만 오른쪽 끝으로', say: '눈만 오른쪽 끝을 보세요.', max: 5, check: (g, b, m) => g.gx != null && Math.abs(g.gx - b.gx) > 0.11 && Math.sign(g.gx - b.gx) !== m.prevSign, cap: 'gaze', what: '눈 흰자 색·충혈' },
-  { id: 'close', k: '5 · 눈꺼풀', t: '눈을 감으세요', h: '편하게 2초간 감고 있기', say: '눈을 감아 주세요. 삐 소리가 나면 뜨세요.', max: 6, need: 2, check: (g, b) => g.ear < b.ear * 0.62, cap: 'closed', what: '눈꺼풀 노란 반점 (지질)', endBeep: true },
-  { id: 'smile', k: '6 · 표정', t: '이가 보이게 활짝', h: '크게 웃어 주세요', say: '눈을 뜨고, 이가 보이게 활짝 웃어 주세요.', max: 6, need: 2, check: (g, b) => g.mouthW > b.mouthW * 1.14, cap: 'smile', what: '미소 대칭 (신경)·치아 밝기' },
-  { id: 'ah', k: '7 · 입안', t: '입 크게 "아~"', h: '혀가 보이게 크게 벌리기', say: '입을 크게 벌리고 아 해 주세요.', max: 6, need: 2, check: g => g.mouthOpen > 0.32, cap: 'mouth', what: '혀 색 (혈액)' },
-  { id: 'conj', k: '8 · 눈 안쪽', t: '아래 눈꺼풀 당기기', h: '검지로 아래 눈꺼풀을 살짝 내려 안쪽 붉은 부분을 보여 주세요', say: '검지로 아래 눈꺼풀을 살짝 당겨서, 눈 안쪽 붉은 부분을 보여 주세요.', fixed: 6, from: 1.5, every: 0.6, cap: 'conj', what: '눈꺼풀 안쪽 혈색 (빈혈)' },
-  { id: 'chin', k: '9 · 목', t: '턱을 위로 ↑', h: '천장을 보듯 턱을 들어 목을 보여 주세요', say: '손을 내리고, 턱을 위로 들어 목이 보이게 해 주세요.', max: 6, need: 2, check: (g, b) => Math.abs(g.pitch - b.pitch) > 0.06 || g.cy < b.cy - 0.05, cap: 'neck', what: '목 피부색 (대사)·목주름' },
-  { id: 'turnL', k: '10 · 반응', t: '고개를 한쪽으로', h: '소리가 나면 바로 고개를 돌리세요', say: '고개를 한쪽으로 돌리세요.', max: 5, pre: (g, b) => Math.abs(g.yaw - b.yaw) < 0.07, check: (g, b) => Math.abs(g.yaw - b.yaw) > 0.13, react: true, cap: null, what: '반응 속도' },
-  { id: 'turnR', k: '11 · 반응', t: '반대쪽으로', h: '소리가 나면 반대쪽으로 고개를 돌리세요', say: '반대쪽으로 돌리세요.', max: 5, pre: (g, b) => Math.abs(g.yaw - b.yaw) < 0.07, check: (g, b, m) => Math.abs(g.yaw - b.yaw) > 0.13 && Math.sign(g.yaw - b.yaw) !== m.prevSign, react: true, cap: null, what: '반응 속도' },
-  { id: 'far', k: '12 · 목·어깨', t: '팔을 쭉 펴서 멀리', h: '목과 어깨까지 화면에 나오게', say: '정면을 보고, 팔을 쭉 펴서 휴대폰을 멀리 들어 주세요. 목과 어깨까지 보이게요.', max: 7, need: 2, check: (g, b) => g.size < b.size * 0.74, cap: 'neck', what: '목 피부·페이스라인' },
-  { id: 'crown', k: '13 · 정수리', t: '머리 위로 들어 정수리', h: '화면이 바닥을 보게 머리 위로 · 삐 소리 두 번이면 내리기', say: '마지막이에요. 휴대폰을 머리 위로 들어서, 화면이 바닥을 보게 하고 정수리를 비춰 주세요. 삐 소리가 두 번 나면 내리세요.', max: 16, crown: true, cap: 'crown', what: '모발 밀도·흰머리' },
+  { id: 'words', k: '기억', t: '', h: '세 단어를 기억해 두세요 · 얼굴은 가만히', sayFn: () => `지금부터 30초 동안 얼굴을 가만히 두세요. 세 단어를 기억해 주세요. ${WORDS.w.join(', ')}. 나중에 물어볼게요.`, fixed: 1.5, waitSpeech: true, vstart: true, still: true, cap: 'front', from: 1.5, every: 2, what: '기억력 (단어 3개)' },
+  { id: 'pursuit', k: '눈 운동', t: '초록 점을 눈으로만', h: '고개는 그대로, 점을 끝까지 따라가세요', say: '고개는 그대로 두고, 움직이는 초록 점을 눈으로만 따라가세요.', fixed: 14, pursuit: true, capAt: [1.3, 3.8, 6.3, 8.8, 11.8], cap: 'gaze', what: '눈 움직임·눈 흰자 색 (간)' },
+  { id: 'still', k: '정면', t: '가운데 점을 보며 가만히', h: '말하지 말고 편하게 숨 쉬기', say: '가운데 점을 보며 가만히 있어 주세요.', fixed: 9, vend: true, still: true, cap: 'front', from: 0.8, every: 2, what: '심박·호흡·스트레스·피부·얼굴 나이' },
+  { id: 'close', k: '눈꺼풀', t: '눈을 감으세요', h: '편하게 2초간 감고 있기', say: '눈을 감아 주세요. 삐 소리가 나면 뜨세요.', max: 6, need: 2, check: (g, b) => g.ear < b.ear * 0.62, cap: 'closed', what: '눈꺼풀 노란 반점 (지질)', endBeep: true },
+  { id: 'smile', k: '표정', t: '이가 보이게 활짝', h: '크게 웃어 주세요', say: '눈을 뜨고, 이가 보이게 활짝 웃어 주세요.', max: 6, need: 2, check: (g, b) => g.mouthW > b.mouthW * 1.14, cap: 'smile', what: '미소 대칭 (신경)·치아 밝기' },
+  { id: 'read', k: '말하기', t: '소리 내어 읽기', h: READ_TEXT, hClass: 'read', say: '화면의 문장을 또박또박 소리 내어 읽어 주세요.', fixed: 7, voice: true, cap: null, what: '말 속도·멈춤 (뇌졸중·인지)' },
+  { id: 'ah', k: '입안', t: '입 크게 "아~"', h: '혀가 보이게 크게 벌리기', say: '입을 크게 벌리고 아 해 주세요.', max: 6, need: 2, check: g => g.mouthOpen > 0.32, cap: 'mouth', what: '혀 색 (혈액)' },
+  { id: 'conj', k: '눈 안쪽', t: '아래 눈꺼풀 당기기', h: '검지로 아래 눈꺼풀을 살짝 내려 안쪽 붉은 부분을 보여 주세요', say: '검지로 아래 눈꺼풀을 살짝 당겨서, 눈 안쪽 붉은 부분을 보여 주세요.', fixed: 6, from: 1.5, every: 0.6, cap: 'conj', what: '눈꺼풀 안쪽 혈색 (빈혈)' },
+  { id: 'chin', k: '목', t: '턱을 위로 ↑', h: '천장을 보듯 턱을 들어 목을 보여 주세요', say: '손을 내리고, 턱을 위로 들어 목이 보이게 해 주세요.', max: 6, need: 2, check: (g, b) => Math.abs(g.pitch - b.pitch) > 0.06 || g.cy < b.cy - 0.05, cap: 'neck', what: '목 피부색 (대사)·목주름' },
+  { id: 'turnL', k: '반응', t: '고개를 한쪽으로', h: '소리가 나면 바로 고개를 돌리세요', say: '고개를 한쪽으로 돌리세요.', max: 5, pre: (g, b) => Math.abs(g.yaw - b.yaw) < 0.07, check: (g, b) => Math.abs(g.yaw - b.yaw) > 0.13, react: true, cap: null, what: '반응 속도' },
+  { id: 'turnR', k: '반응', t: '반대쪽으로', h: '소리가 나면 반대쪽으로 고개를 돌리세요', say: '반대쪽으로 돌리세요.', max: 5, pre: (g, b) => Math.abs(g.yaw - b.yaw) < 0.07, check: (g, b, m) => Math.abs(g.yaw - b.yaw) > 0.13 && Math.sign(g.yaw - b.yaw) !== m.prevSign, react: true, cap: null, what: '반응 속도' },
+  { id: 'far', k: '목·어깨', t: '팔을 쭉 펴서 멀리', h: '목과 어깨까지 화면에 나오게', say: '정면을 보고, 팔을 쭉 펴서 휴대폰을 멀리 들어 주세요. 목과 어깨까지 보이게요.', max: 7, need: 2, check: (g, b) => g.size < b.size * 0.74, cap: 'neck', what: '목 피부·페이스라인' },
+  { id: 'crown', k: '정수리', t: '머리 위로 들어 정수리', h: '화면이 바닥을 보게 머리 위로 · 삐 소리 두 번이면 내리기', say: '마지막이에요. 휴대폰을 머리 위로 들어서, 화면이 바닥을 보게 하고 정수리를 비춰 주세요. 삐 소리가 두 번 나면 내리세요.', max: 16, crown: true, cap: 'crown', what: '모발 밀도·흰머리' },
 ];
 
 /* ---------- camera ---------- */
 let stream = null;
-async function openCam(video) {
+async function openCam(video, withAudio = false) {
   closeCam();
   if (!navigator.mediaDevices?.getUserMedia) throw new Error('이 브라우저는 카메라를 지원하지 않아요. 크롬이나 삼성 인터넷으로 열어 주세요.');
-  stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 960 }, frameRate: { ideal: 30 } }, audio: false });
+  const vc = { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 960 }, frameRate: { ideal: 30 } };
+  if (withAudio) { try { stream = await navigator.mediaDevices.getUserMedia({ video: vc, audio: { echoCancellation: true, noiseSuppression: false, autoGainControl: false } }); DIAG.mic = '허용'; }
+    catch (e) { DIAG.mic = '사용 안 함 (' + (e.name || '') + ')'; stream = await navigator.mediaDevices.getUserMedia({ video: vc, audio: false }); } }
+  else stream = await navigator.mediaDevices.getUserMedia({ video: vc, audio: false });
   video.srcObject = stream; await video.play();
   for (let i = 0; i < 40 && !video.videoWidth; i++) await sleep(50);
   DIAG.cam = `성공 ${video.videoWidth}×${video.videoHeight}`;
+}
+/* microphone envelope while reading aloud (sound is never stored, only loudness every 20 ms) */
+let REC = null;
+function startRec() {
+  const tr = stream?.getAudioTracks?.()[0]; if (!tr) { REC = null; return; }
+  try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); actx.resume?.();
+    const src = actx.createMediaStreamSource(new MediaStream([tr])), an = actx.createAnalyser(); an.fftSize = 1024; src.connect(an); const buf = new Float32Array(an.fftSize);
+    REC = { env: [], src, iv: setInterval(() => { an.getFloatTimeDomainData(buf); let q = 0; for (let i = 0; i < buf.length; i++) q += buf[i] * buf[i]; REC.env.push(Math.sqrt(q / buf.length)); }, 20) };
+  } catch { REC = null; }
+}
+function stopRec() {
+  if (!REC) return { error: 'nomic' }; clearInterval(REC.iv); try { REC.src.disconnect(); } catch {}
+  const env = REC.env; REC = null; if (env.length < 50) return { error: 'short' };
+  const S = Voice.segments(env, 0.02);
+  if (!S.segs.length || S.snrDb < 10) return { error: 'novoice', snrDb: S.snrDb };
+  const sg = S.segs, span = sg[sg.length - 1][1] - sg[0][0]; let pauses = 0, pauseT = 0;
+  for (let k = 1; k < sg.length; k++) { const gap = sg[k][0] - sg[k - 1][1]; if (gap > 0.35) { pauses++; pauseT += gap; } }
+  return { onset: sg[0][0], span, pauses, pauseT, rate: span > 1 ? READ_SYL / span : NaN, artic: span - pauseT > 1 ? READ_SYL / (span - pauseT) : NaN, snrDb: S.snrDb, cutoff: sg[sg.length - 1][1] > env.length * 0.02 - 0.15 };
 }
 function closeCam() { if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; } }
 function grab(video, maxW = 1280) { const k = Math.min(1, maxW / video.videoWidth), c = document.createElement('canvas'); c.width = Math.round(video.videoWidth * k); c.height = Math.round(video.videoHeight * k); c.getContext('2d', { willReadFrequently: true }).drawImage(video, 0, 0, c.width, c.height); return c; }
@@ -1164,7 +1254,8 @@ async function runScan() {
   const video = $('live');
   $('scan').hidden = false; document.body.style.overflow = 'hidden';
   SES = { stop: false, skip: false, caps: [], vitFrames: [], detN: 0, detT0: now(), last: null, lastAt: 0, missions: {}, base: null, baseList: [], t0: now() };
-  try { await openCam(video); } catch (e) { endScan(); DIAG.cam = '실패: ' + (e.name || e.message); renderDiag(); return toast(camErr(e)); }
+  WORDS = WORDSETS[Math.floor(Math.random() * WORDSETS.length)];
+  try { await openCam(video, true); } catch (e) { endScan(); DIAG.cam = '실패: ' + (e.name || e.message); renderDiag(); return toast(camErr(e)); }
   const det = document.createElement('canvas'), dctx = det.getContext('2d', { willReadFrequently: true });
   const proc = document.createElement('canvas'), pctx = proc.getContext('2d', { willReadFrequently: true }), fst = {};
   // loop 1: landmark detection as fast as the phone allows
@@ -1187,7 +1278,7 @@ async function runScan() {
     if (SES.stop) return;
     if (SES.vitOn && video.videoWidth) {
       const PW = 180, PH = Math.round(180 * video.videoHeight / video.videoWidth); if (proc.width !== PW) { proc.width = PW; proc.height = PH; }
-      pctx.drawImage(video, 0, 0, PW, PH); const f = Face.frameFeatures(pctx.getImageData(0, 0, PW, PH).data, PW, PH, fst); f.t = (now() - SES.vitT0) / 1000; SES.vitFrames.push(f);
+      pctx.drawImage(video, 0, 0, PW, PH); const f = Face.frameFeatures(pctx.getImageData(0, 0, PW, PH).data, PW, PH, fst); f.t = (now() - SES.vitT0) / 1000; f.ph = SES.phase; SES.vitFrames.push(f);
     }
     video.requestVideoFrameCallback ? video.requestVideoFrameCallback(tick) : requestAnimationFrame(tick);
   };
@@ -1207,7 +1298,8 @@ function endScan() { $('scan').hidden = true; document.body.style.overflow = '';
 $('mStop').onclick = () => { SES && (SES.stop = true); };
 $('mSkip').onclick = () => { SES && (SES.skip = true); };
 
-function setCard(m, extra) { $('mk').textContent = m.k; $('mt').textContent = m.t; $('mh').textContent = extra || m.h; $('mcard').classList.remove('done'); }
+function setCard(m, extra) { const i = MISSIONS.indexOf(m); $('mk').textContent = i ? `${i} · ${m.k}` : m.k; $('mt').textContent = m.id === 'words' ? WORDS.w.join(' · ') : m.t; $('mt').className = 't' + (m.id === 'words' ? ' words' : '');
+  $('mh').textContent = extra || m.h; $('mh').className = 'h' + (m.hClass ? ' ' + m.hClass : ''); $('mcard').classList.remove('done'); }
 function flashDone() { $('mcard').classList.add('done'); $('bigcheck').classList.add('on'); setTimeout(() => $('bigcheck').classList.remove('on'), 500); }
 function ticker() { const n = MISSIONS.length; $('ticker').innerHTML = MISSIONS.map((m, i) => { const r = SES.missions[m.id]; return `<i class="${r ? (r.ok ? 'ok' : 'miss') : i === SES.idx ? 'now' : ''}"></i>`; }).join(''); }
 
@@ -1215,8 +1307,11 @@ let waiter = null;
 function onDetect(L) {
   const fps = SES.detN / Math.max(0.5, (now() - SES.detT0) / 1000);
   $('lbL').textContent = L ? (L.g.centered ? '얼굴 인식 중' : '얼굴을 가운데로') : '얼굴을 찾는 중'; $('lbR').textContent = SES.idx != null ? `남은 동작 ${MISSIONS.length - SES.idx - 1}개` : '';
+  if (L && SES.pursuit) SES.pursuit.samples.push({ t: (now() - SES.pursuit.t0) / 1000, dx: SES.pursuit.cur.x, dy: SES.pursuit.cur.y, gx: L.g.gx, gy: L.g.gy, yaw: L.g.yaw });
   if (waiter) waiter(L);
 }
+// pursuit target: two slow left-right sweeps, then up and back
+function dotPos(s) { if (s < 10) return { x: 0.5 + 0.36 * Math.sin(2 * Math.PI * s / 5), y: 0.46 }; if (s < 11) return { x: 0.5, y: 0.46 - 0.22 * (s - 10) }; if (s < 12.6) return { x: 0.5, y: 0.24 }; return { x: 0.5, y: 0.24 + 0.22 * Math.min(1, (s - 12.6)) }; }
 // wait until fn(L) is true for `need` consecutive detections or until `maxMs`
 function waitFor(fn, maxMs, need = 1) { return new Promise(res => { let hits = 0, first = null; const t0 = now();
   const done = (ok) => { waiter = null; clearInterval(iv); res({ ok, first }); };
@@ -1224,25 +1319,35 @@ function waitFor(fn, maxMs, need = 1) { return new Promise(res => { let hits = 0
   const iv = setInterval(() => { if (SES.stop || SES.skip || now() - t0 > maxMs) done(false); }, 100); }); }
 
 async function runMission(m) {
-  SES.skip = false; setCard(m); $('timer').hidden = true; $('dotc').hidden = !m.vitals;
+  SES.skip = false; setCard(m); $('timer').hidden = true; $('dotc').hidden = !m.still;
   const rec = { ok: false, ms: null };
   const B = SES.base;
   if (m.pre && B && SES.last) await waitFor(L => m.pre(L.g, B, m), 2000);
   if (m.id === 'right' || m.id === 'turnR') { const prev = SES.missions[m.id === 'right' ? 'left' : 'turnL']; m.prevSign = prev?.sign ?? 0; }
   const cue = now(); beep(m.react ? 1046 : 880, m.react ? 160 : 110);
-  const sp = speak(m.say);
+  const sp = speak(m.sayFn ? m.sayFn() : m.say); let spDone = false; sp.then(() => spDone = true);
   if (m.fixed) {
-    if (m.vitals) { await sp; SES.vitFrames = []; SES.vitT0 = now(); SES.vitOn = true; }
-    else await sleep(300);
-    const t0 = now(); let nextCap = (m.from || 2) * 1000, ages = [];
-    while (!SES.stop && !SES.skip && now() - t0 < m.fixed * 1000) {
-      const el = now() - t0, left = Math.ceil(m.fixed - el / 1000);
-      if (m.vitals) { $('timer').hidden = false; $('timer').textContent = left; if (SES.last && SES.lastAt > now() - 400) SES.baseList.push(SES.last.g); }
-      if (el >= nextCap) { SES.caps.push({ kind: m.cap, c: grab($('live')), P: SES.last && SES.lastAt > now() - 500 ? SES.last.P : null, t: el }); nextCap += (m.every || 4) * 1000; }
-      await sleep(80);
+    if (m.vstart) { SES.vitFrames = []; SES.vitT0 = now(); SES.vitOn = true; }
+    if (m.voice) { await sp; startRec(); }
+    SES.phase = m.id;
+    const t0 = now(); let nextCap = (m.from ?? 2) * 1000; const capAt = (m.capAt || []).slice();
+    if (m.pursuit) { SES.pursuit = { t0, samples: [], cur: dotPos(0) }; $('pdot').hidden = false; }
+    while (!SES.stop && !SES.skip && (now() - t0 < m.fixed * 1000 || (m.waitSpeech && !spDone))) {
+      const el = now() - t0;
+      if (SES.vitOn) { $('timer').hidden = !m.still; $('timer').textContent = Math.max(1, Math.ceil(30 - (now() - SES.vitT0) / 1000)); }
+      if (m.voice) { $('timer').hidden = false; $('timer').textContent = Math.ceil(m.fixed - el / 1000); }
+      if (m.pursuit) { const p = dotPos(el / 1000); SES.pursuit.cur = p; const pd = $('pdot'); pd.style.left = (p.x * 100) + '%'; pd.style.top = (p.y * 100) + '%'; }
+      if (m.still && SES.last && SES.lastAt > now() - 400) SES.baseList.push(SES.last.g);
+      const fresh = SES.last && SES.lastAt > now() - 500 ? SES.last.P : null;
+      if (m.every && el >= nextCap) { SES.caps.push({ kind: m.cap, c: grab($('live')), P: fresh, t: el }); nextCap += m.every * 1000; }
+      if (capAt.length && el / 1000 >= capAt[0]) { capAt.shift(); SES.caps.push({ kind: m.cap, c: grab($('live')), P: fresh, t: el }); }
+      await sleep(m.pursuit ? 30 : 80);
     }
-    if (m.vitals) { SES.vitOn = false; computeBase(); }
+    if (m.pursuit) { $('pdot').hidden = true; SES.pursuitData = SES.pursuit.samples; SES.pursuit = null; }
+    if (m.vend) { SES.vitOn = false; computeBase(); $('timer').hidden = true; }
+    if (m.voice) { SES.voice = stopRec(); beep(660, 80); $('timer').hidden = true; }
     rec.ok = !SES.skip && !SES.stop;
+    if (m.voice) rec.ok = rec.ok && !SES.voice?.error;
   } else if (m.crown) {
     await sp;
     let lostSince = null, got = 0; const t0 = now();
@@ -1278,7 +1383,7 @@ function drawOverlay(P, W, H) {
   // map detection coords -> displayed (object-fit: cover, mirrored)
   const s = Math.max(c.width / W, c.height / H), ox = (c.width - W * s) / 2, oy = (c.height - H * s) / 2, X = x => c.width - (ox + x * s), Y = y => oy + y * s;
   const m = MISSIONS[SES?.idx ?? 0];
-  if (m && (m.id === 'ready' || m.vitals)) { g.strokeStyle = 'rgba(255,255,255,.75)'; g.lineWidth = 3 * dpr; g.setLineDash([10 * dpr, 8 * dpr]); g.beginPath(); g.ellipse(c.width / 2, c.height * 0.47, c.width * 0.3, c.height * 0.26, 0, 0, 7); g.stroke(); g.setLineDash([]); }
+  if (m && (m.id === 'ready' || m.still)) { g.strokeStyle = 'rgba(255,255,255,.75)'; g.lineWidth = 3 * dpr; g.setLineDash([10 * dpr, 8 * dpr]); g.beginPath(); g.ellipse(c.width / 2, c.height * 0.47, c.width * 0.3, c.height * 0.26, 0, 0, 7); g.stroke(); g.setLineDash([]); }
   if (!P || m?.crown) return;
   g.fillStyle = 'rgba(63,191,134,.9)'; P.forEach(([x, y], i) => { if (i < 17 && i % 2) return; g.beginPath(); g.arc(X(x), Y(y), 1.8 * dpr, 0, 7); g.fill(); });
 }
@@ -1292,6 +1397,9 @@ async function postProcess() {
   bar(0, caps.length + 2, '심박·호흡 신호 계산 중');
   await sleep(30);
   const vit = SES.vitFrames.length ? analyzeBasic(SES.vitFrames) : { error: '정면 측정이 진행되지 않았어요.' };
+  // blink rate only from the phases where the eyes were still (not while following the dot)
+  const stillF = SES.vitFrames.filter(f => f.ok && f.ph !== 'pursuit');
+  if (!vit.error && stillF.length > 60) { const dur = stillF.length / (SES.vitFrames.filter(f => f.ok).length / Math.max(1, vit.dur)); const cb = cleanFrames(stillF); vit.blinkRate = cb.blinks / Math.max(5, dur) * 60; vit.blinkDur = dur; }
   const order = ['front', 'gaze', 'closed', 'smile', 'mouth', 'conj', 'neck', 'crown'];
   const sorted = [...caps].sort((a, b) => order.indexOf(a.kind) - order.indexOf(b.kind));
   for (let i = 0; i < sorted.length; i++) {
@@ -1320,10 +1428,21 @@ async function postProcess() {
   F = pickFront(out.front);
   if (SES.missions.conj) SES.missions.conj.ok = out.conj.some(c => c.exposed);
   bar(1, 1, '정리 중');
-  SES.result = { F: F?.f || null, frontN: out.front.length, vit, out, missions: SES.missions, detFps: SES.detFps };
+  SES.result = { F: F?.f || null, frontN: out.front.length, vit, out, missions: SES.missions, detFps: SES.detFps, pursuit: pursuitStats(SES.pursuitData || []), voice: SES.voice || null, words: WORDS };
   if (!F) { toast('정면 얼굴을 분석하지 못했어요. 밝은 곳에서 얼굴이 화면 가운데에 오게 다시 해 주세요.'); show('home'); renderHome(); return; }
-  openNear();
+  openTasks();
 }
+function pursuitStats(S) {
+  const v = S.filter(p => p.gx != null && isFinite(p.gx)); if (v.length < 12) return { n: v.length };
+  const corr = (a, b) => { const ma = a.reduce((x, y) => x + y, 0) / a.length, mb = b.reduce((x, y) => x + y, 0) / b.length; let sab = 0, saa = 0, sbb = 0; a.forEach((x, i) => { sab += (x - ma) * (b[i] - mb); saa += (x - ma) ** 2; sbb += (b[i] - mb) ** 2; }); return saa && sbb ? sab / Math.sqrt(saa * sbb) : 0; };
+  const sweep = v.filter(p => p.t < 10), dx = sweep.map(p => p.dx);
+  const cG = sweep.length >= 10 ? corr(dx, sweep.map(p => p.gx)) : NaN, cY = sweep.length >= 10 ? corr(dx, sweep.map(p => p.yaw)) : NaN;
+  const ctr = mean2(sweep.filter(p => Math.abs(p.dx - 0.5) < 0.12).map(p => p.gx)), A = mean2(sweep.filter(p => p.dx > 0.75).map(p => p.gx)) - ctr, B = mean2(sweep.filter(p => p.dx < 0.25).map(p => p.gx)) - ctr;
+  const up = v.filter(p => p.t >= 10.6 && p.t < 12.6), base = v.filter(p => p.t < 10);
+  return { n: v.length, follow: Math.max(Math.abs(cG || 0), Math.abs(cY || 0)), corrGaze: cG, corrHead: cY, asym: isFinite(A) && isFinite(B) && Math.max(Math.abs(A), Math.abs(B)) > 0.02 ? Math.abs(Math.abs(A) - Math.abs(B)) / Math.max(Math.abs(A), Math.abs(B)) : NaN,
+    upShift: up.length >= 2 ? mean2(base.map(p => p.gy)) - mean2(up.map(p => p.gy)) : NaN, headMove: Math.sqrt(mean2(sweep.map(p => (p.yaw - mean2(sweep.map(q => q.yaw))) ** 2))) };
+}
+const mean2 = a => { const v = a.filter(x => x != null && isFinite(x)); return v.length ? v.reduce((s, x) => s + x, 0) / v.length : NaN; };
 const KIND = { front: '정면', gaze: '시선', closed: '눈 감기', smile: '미소', mouth: '입안', conj: '눈꺼풀 안쪽', neck: '목', crown: '정수리' };
 function shrink(c, w) { if (c.width <= w) return c; const k = w / c.width, o = document.createElement('canvas'); o.width = w; o.height = Math.round(c.height * k); o.getContext('2d').drawImage(c, 0, 0, o.width, o.height); return o; }
 function pickFront(list) { if (!list.length) return null; const ok = list.filter(x => x.frontal < 0.12 && x.ear > 0.18); const pool = ok.length ? ok : list; return pool.reduce((a, b) => (b.sharp > a.sharp ? b : a)); }
@@ -1362,6 +1481,94 @@ function finishNear(skipped) {
   show('survey', '오늘의 컨디션');
 }
 
+/* ================= touch tasks (about 40 s): finger tapping, reaction, Stroop, delayed word recall ================= */
+const TASKS = ['tapR', 'tapL', 'rt', 'stroop', 'recall'];
+let TK = null;
+function tstep(i) { $('tstep').innerHTML = TASKS.map((_, k) => `<i style="flex:1;height:4px;border-radius:2px;background:${k <= i ? 'var(--accent)' : 'var(--line)'}"></i>`).join(''); }
+const TA = () => $('taskArea');
+async function openTasks() {
+  show('tasks', '두뇌·손 반응 테스트'); TK = {};
+  try {
+    tstep(0); TK.tapR = await tapTask('오른손');
+    tstep(1); TK.tapL = await tapTask('왼손');
+    tstep(2); TK.rt = await rtTask();
+    tstep(3); TK.stroop = await stroopTask();
+    tstep(4); TK.recall = await recallTask();
+  } catch (e) { if (e !== 'skip') console.warn(e); }
+  SES.result.tasks = TK;
+  openNear();
+}
+function intro(title, ins, btn = '시작') { return new Promise(res => {
+  TA().innerHTML = `<p class="ttl">${title}</p><p class="ins">${ins}</p><button class="btn primary cta" id="tGo">${btn}</button><button class="btn" id="tSkipAll" style="justify-self:center">테스트 건너뛰기</button>`;
+  $('tGo').onclick = () => res(); $('tSkipAll').onclick = () => { TA().innerHTML = ''; res('skipall'); }; }).then(v => { if (v === 'skipall') throw 'skip'; }); }
+
+/* finger tapping: alternate two targets with one finger for 7 s (speed, rhythm, fatigue, left/right difference) */
+async function tapTask(hand) {
+  await intro(`${hand} 검지 두드리기`, `<b>${hand} 검지 하나</b>로 두 원을 <b>번갈아</b> 최대한 빠르게 7초 동안 누르세요. 첫 터치부터 시간이 시작돼요.`);
+  return new Promise(res => {
+    TA().innerHTML = `<p class="ttl">${hand} 검지 · 번갈아 빠르게</p><p class="tcount" id="tCnt">준비되면 아무 원이나 누르세요</p><div class="tapzone"><button id="tA">A</button><button id="tB">B</button></div>`;
+    const ts = []; let last = null, t0 = null, done = false, wrong = 0;
+    const hit = (id, e) => { e.preventDefault(); if (done) return; const t = now(); const el = $(id); el.classList.add('hit'); setTimeout(() => el.classList.remove('hit'), 70);
+      if (t0 == null) { t0 = t; setTimeout(finish, 7000); }
+      if (id === last) { wrong++; return; } last = id; ts.push(t - t0); $('tCnt').textContent = `${ts.length}회 · ${Math.max(0, 7 - (t - t0) / 1000).toFixed(1)}초`; };
+    $('tA').addEventListener('pointerdown', e => hit('tA', e)); $('tB').addEventListener('pointerdown', e => hit('tB', e));
+    function finish() { done = true; beep(660, 80);
+      const iti = ts.slice(1).map((t, i) => t - ts[i]), h = ts.length >> 1;
+      const half = (a) => a.length ? a.length / ((a[a.length - 1] - a[0]) / 1000 || 1) : NaN;
+      res({ n: ts.length, rate: ts.length / 7, itiMean: mean2(iti), itiCv: iti.length > 3 ? Math.sqrt(mean2(iti.map(x => (x - mean2(iti)) ** 2))) / mean2(iti) : NaN,
+        decrement: ts.length > 10 ? half(ts.slice(h)) / half(ts.slice(0, h)) : NaN, wrong }); }
+  });
+}
+
+/* simple reaction time: tap as soon as the pad turns green, 6 trials */
+async function rtTask() {
+  await intro('반응 속도', '회색 판이 <b>초록색으로 바뀌는 순간</b> 바로 누르세요. 6번 반복해요. 미리 누르면 다시 해요.');
+  return new Promise(res => {
+    TA().innerHTML = `<p class="ttl">초록색이 되면 바로!</p><div class="rtpad" id="pad">기다리세요…</div><p class="tcount" id="rtc">0 / 6</p>`;
+    const pad = $('pad'), rts = []; let state = 'wait', tGo = 0, tm = null, early = 0;
+    const arm = () => { state = 'wait'; pad.className = 'rtpad'; pad.textContent = '기다리세요…'; tm = setTimeout(() => { state = 'go'; tGo = now(); pad.className = 'rtpad go'; pad.textContent = '지금!'; }, 900 + Math.random() * 1600); };
+    pad.addEventListener('pointerdown', e => { e.preventDefault(); const t = now();
+      if (state === 'wait') { clearTimeout(tm); early++; pad.className = 'rtpad early'; pad.textContent = '너무 빨라요'; state = 'pause'; setTimeout(arm, 900); return; }
+      if (state !== 'go') return; rts.push(t - tGo); state = 'pause'; pad.className = 'rtpad'; pad.textContent = `${Math.round(t - tGo)}ms`; $('rtc').textContent = `${rts.length} / 6`;
+      if (rts.length >= 6) { setTimeout(() => res({ rts: rts.map(Math.round), median: med(rts), sd: Math.sqrt(mean2(rts.map(x => (x - mean2(rts)) ** 2))), cv: Math.sqrt(mean2(rts.map(x => (x - mean2(rts)) ** 2))) / mean2(rts), early }), 500); }
+      else setTimeout(arm, 600); });
+    arm();
+  });
+}
+
+/* Stroop: press the INK colour, not the word; 10 trials, half conflicting */
+async function stroopTask() {
+  const C = [['빨강', '#d63a2f'], ['파랑', '#2a62d6'], ['초록', '#1c9a5a'], ['노랑', '#e0b000']];
+  await intro('색깔 맞히기 (스트룹)', '글자의 <b>뜻이 아니라 글자의 색깔</b>을 누르세요. 예: <b style="color:#2a62d6">빨강</b> → <b>파랑</b>을 누르기. 10문제예요.');
+  const trials = []; for (let i = 0; i < 10; i++) { const ink = Math.floor(Math.random() * 4); let word = ink; if (i % 2) { do word = Math.floor(Math.random() * 4); while (word === ink); } trials.push({ ink, word, con: word === ink }); }
+  trials.sort(() => Math.random() - 0.5);
+  const out = [];
+  for (let i = 0; i < trials.length; i++) {
+    const tr = trials[i];
+    const r = await new Promise(res => {
+      TA().innerHTML = `<p class="tcount">${i + 1} / 10 · 글자 색을 누르세요</p><div class="stroopw" style="color:${C[tr.ink][1]}">${C[tr.word][0]}</div>
+        <div class="stroopb">${C.map((c, k) => `<button data-k="${k}"><i style="background:${c[1]}"></i>${c[0]}</button>`).join('')}</div>`;
+      const t0 = now(); TA().querySelectorAll('.stroopb button').forEach(b => b.addEventListener('pointerdown', e => { e.preventDefault(); res({ rt: now() - t0, ok: +b.dataset.k === tr.ink, con: tr.con }); }, { once: true }));
+    });
+    out.push(r); await sleep(250);
+  }
+  const ok = out.filter(r => r.ok), rc = mean2(ok.filter(r => r.con).map(r => r.rt)), ri = mean2(ok.filter(r => !r.con).map(r => r.rt));
+  return { acc: ok.length / out.length, rtCon: rc, rtInc: ri, interference: ri - rc, rtAll: mean2(ok.map(r => r.rt)) };
+}
+
+/* delayed recall of the three words heard at the start */
+async function recallTask() {
+  const all = [...WORDS.w, ...WORDS.d].sort(() => Math.random() - 0.5), sel = new Set(); const t0 = now();
+  return new Promise(res => {
+    TA().innerHTML = `<p class="ttl">처음에 기억한 세 단어는?</p><p class="ins">촬영을 시작할 때 들은 <b>세 단어</b>를 고르세요.</p>
+      <div class="wgrid">${all.map(w => `<button aria-pressed="false" data-w="${w}">${w}</button>`).join('')}</div>
+      <button class="btn primary cta" id="rcOk" disabled>확인</button><button class="btn" id="rcNo" style="justify-self:center">기억나지 않아요</button>`;
+    TA().querySelectorAll('.wgrid button').forEach(b => b.onclick = () => { const w = b.dataset.w; if (sel.has(w)) sel.delete(w); else if (sel.size < 3) sel.add(w); b.setAttribute('aria-pressed', sel.has(w)); $('rcOk').disabled = sel.size === 0; });
+    const fin = () => { const hits = [...sel].filter(w => WORDS.w.includes(w)).length; res({ score: hits, wrong: sel.size - hits, picked: [...sel], ms: Math.round(now() - t0) }); };
+    $('rcOk').onclick = fin; $('rcNo').onclick = () => { sel.clear(); fin(); };
+  });
+}
+
 /* ================= results: raw numbers -> scores, signals, face age, eye age ================= */
 const REF = {
   bili: ['BiliScreen, 워싱턴대 (2017): 스마트폰 공막 사진으로 빌리루빈 상승 선별, 민감도 89.7%·특이도 96.8% (보정 도구 사용)', 'https://ubicomplab.cs.washington.edu/publications/biliscreen'],
@@ -1380,6 +1587,13 @@ const REF = {
   blink: ['정상 깜빡임은 분당 약 15~20회. 화면 집중 시 줄고 안구건조와 관련, 파킨슨병에서도 감소', 'https://www.parkinsons.org.au/information-hub/slowed-blink-rate/'],
   near: ['조절력은 나이에 따라 감소 (Hofstetter 평균식: 18.5 − 0.3 × 나이 디옵터). 스마트폰 근거리 시력 앱 검증 연구 (2022)', 'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9791149/'],
   perceived: ['Christensen 외 (BMJ 2009): 70세 이상 쌍둥이 1,826명, 더 늙어 보이는 쪽이 생존율이 낮음 — 보이는 나이는 노화 지표', 'https://www.bmj.com/content/339/bmj.b5262.long'],
+  befast: ['Aroor 외 (Stroke 2017): FAST에 균형(B)·눈(E)을 더한 BE-FAST가 놓치는 뇌졸중을 줄임', 'https://pubmed.ncbi.nlm.nih.gov/28082668/'],
+  minicog: ['Borson 외 (J Am Geriatr Soc 2003): 단어 3개 지연 회상 + 시계 그리기(Mini-Cog)로 치매 선별', 'https://geriatrictoolkit.missouri.edu/cog/mini-cog/Borson-Mini-Cog-2003.pdf'],
+  tap: ['Lee 외 (PLOS ONE 2016): 스마트폰 손가락 두드리기 앱으로 파킨슨병 운동완만 정량 평가', 'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4965104/'],
+  iiv: ['반응 시간의 들쭉날쭉함(개인 내 변동성)이 알츠하이머병 인지 저하와 관련 (2018)', 'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5900796/'],
+  stroop: ['스마트폰 인지 평가 앱(스트룹 포함)의 노인 인지기능 평가 타당도 연구 (2024)', 'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11719899/'],
+  pursuit: ['Frontiers in Neurology 2017: 안구 추적 운동 이상과 경도인지장애·알츠하이머병의 관련성', 'https://www.frontiersin.org/journals/neurology/articles/10.3389/fneur.2017.00377/full'],
+  speech: ['메타분석 (J Int Neuropsychol Soc): 말 속도 저하·멈춤 증가가 경도인지장애·알츠하이머병과 관련', 'https://resolve.cambridge.org/core/journals/journal-of-the-international-neuropsychological-society/article/abs/speech-pause-and-speech-rate-for-evaluating-alzheimers-and-mild-cognitive-impairment-a-metaanalysis/26ADD29A52BE763FF3A87C6F6F8EFEDB'],
   rt: ['Der & Deary (Psychol Aging 2006): 성인 7천여 명, 반응 시간은 나이가 들수록 느려짐', 'https://www.research.ed.ac.uk/en/publications/age-and-sex-differences-in-reaction-time-in-adulthood-results-fro/'],
 };
 const TIER = { ok: ['정상 범위', 'g'], watch: ['관찰 필요', 'm'], check: ['확인 권장', 'c'], na: ['판단 불가', 'n'], base: ['기준 쌓는 중', 'n'] };
@@ -1494,6 +1708,7 @@ function compute(R, profile, survey, history) {
     add({ id: 'hr', name: '안정 심박수', org: '컨디션', tier: t, value: `${fmt(V.hr)} bpm (신호 품질 ${V.q}/5)`, refs: [], text: { ok: '안정 심박수가 일반 범위예요.', watch: V.hr > 100 ? '안정 상태인데 심박이 빠르게 측정됐어요. 카페인·긴장 영향일 수 있어요. 자주 그렇다면 확인해 보세요.' : '심박이 느리게 측정됐어요. 운동을 많이 하는 분은 흔해요. 어지럼이 있다면 확인해 보세요.', na: '신호 품질이 낮아 판단하기 어려워요. 밝은 곳에서 휴대폰을 고정하고 다시 해 보세요.' }[t] }); }
   sig.sort((a, b) => tierOrder[a.tier] - tierOrder[b.tier]);
 
+  const BR = computeBrain(R, age, survey, sig);
   // ---- face age ----
   const mlAge = R.out.ages.length ? med(R.out.ages) : NaN;
   const sk = Object.fromEntries(skin.map(m => [m.key, m.score])), hk = Object.fromEntries(hair.map(m => [m.key, m.score]));
@@ -1511,15 +1726,19 @@ function compute(R, profile, survey, history) {
   const rts = ['turnL', 'turnR'].map(k => R.missions[k]?.ms).filter(x => isFinite(x) && x > 150 && x < 3000);
   const react = rts.length && R.detFps >= 5 ? Math.round(mean(rts)) : null;
   return { at: new Date().toISOString(), age, sex: profile.sex || null, glass: profile.glass || null, faceAge, mlAge: isFinite(mlAge) ? +mlAge.toFixed(1) : null, adj: +adj.toFixed(2), factors: factors.slice(0, 5),
-    near, react, skin, hair, shape, signals: sig, vit: V ? { hr: V.hr, rr: V.rr, stress: V.stress, rmssd: V.rmssd, blinkRate: V.blinkRate, q: V.q, dur: V.dur } : null,
+    near, react, skin, hair, shape, signals: sig, brain: BR, tasks: R.tasks || null, voice: R.voice || null, pursuit: R.pursuit || null, words: R.words?.w || null, vit: V ? { hr: V.hr, rr: V.rr, stress: V.stress, rmssd: V.rmssd, blinkRate: V.blinkRate, q: V.q, dur: V.dur } : null,
     raw: { skin: F.skin, eye: { ...F.eye, scleraYellow: sY, scleraA2: sA, scleraPx2: sPx }, lip: F.lip, shapeRaw: F.shape, hairRaw: F.hair, malar: F.malar, neck: nk || null, conj: cj || null, tongue: mo || null, closed: cl || null, smile: sm || null, crown: cr },
     geom: { faceRatio: F.shape.faceRatio }, missions: R.missions, detFps: +(R.detFps || 0).toFixed(1), frontN: R.frontN, survey };
 }
 
 /* ---------- report ---------- */
+const sigHTML = s => `<div class="sig ${TIER[s.tier][1]}">
+        <div class="top"><span><span class="t">${s.name}</span>${s.exp ? '<span class="exp">실험</span>' : ''}<span class="org">${s.org}</span></span><span class="chip ${TIER[s.tier][1]}">${TIER[s.tier][0]}</span></div>
+        <p>${esc(s.text)}</p><span class="raw">측정값 ${esc(s.value)}</span>
+        ${s.refs.length ? `<div class="ev">근거: ${s.refs.map(k => `<a href="${REF[k][1]}" target="_blank" rel="noopener">${esc(REF[k][0])}</a>`).join(' / ')}</div>` : ''}</div>`;
 function ageLine(real, a) { const d = real - a; return d > 0 ? [`실제보다 ${d}살 어려 보여요`, 'dn'] : d < 0 ? [`실제보다 ${-d}살 많아 보여요`, 'up'] : ['나이 그대로예요', '']; }
 function renderReport(r, savedMsg) {
-  const flagged = r.signals.filter(s => s.tier === 'watch' || s.tier === 'check');
+  const flagged = [...r.signals, ...(r.brain?.cog || [])].filter(s => s.tier === 'watch' || s.tier === 'check');
   const [fl, fc] = ageLine(r.age, r.faceAge), ea = r.near?.eyeAge, [el, ec] = ea ? ageLine(r.age, ea) : ['노안 테스트를 하면 나와요', ''];
   const best = [...r.skin, ...r.hair, ...r.shape].filter(m => isFinite(m.score)).sort((a, b) => b.score - a.score);
   const head = flagged.length ? `확인해 볼 건강 신호 ${flagged.length}개` : '눈에 띄는 건강 신호는 없어요';
@@ -1530,21 +1749,23 @@ function renderReport(r, savedMsg) {
       <span class="chip ${tone(m.score)}">${m.band}</span></div>`).join('')}</div></div>`;
   $('report').innerHTML = `
     <div class="reportHead"><p class="eyebrow" style="margin:0">나의 원샷 리포트</p><span class="pill">${new Date(r.at).toLocaleString('ko-KR')}</span></div>
-    <div class="ages" style="margin-top:12px">
+    ${r.brain?.acute ? `<div class="alert" style="margin-top:12px"><b>지금 바로 119에 연락하세요</b><span>뇌졸중 경고 증상이 갑자기 생겼다고 답했어요. 이 앱의 결과와 관계없이 즉시 응급실 진료가 필요할 수 있어요.</span></div>` : ''}
+    <div class="ages ages3" style="margin-top:12px">
       <div class="agebox"><span class="sub">얼굴 나이</span><div class="big">${r.faceAge}<small>세</small></div><span class="cmp ${fc}">${fl}</span><span class="sub">실제 ${r.age}세${r.mlAge ? ` · AI 나이 모델 ${fmt(r.mlAge)}세` : ''}</span></div>
-      <div class="agebox"><span class="sub">눈 나이 (가까운 글씨 초점)</span><div class="big">${ea ?? '—'}<small>${ea ? '세' : ''}</small></div><span class="cmp ${ec}">${el}</span><span class="sub">${r.near ? `흐려지는 거리 ${r.near.bound ? '약 ' : ''}${fmt(r.near.cm)}cm · 조절력 ${fmt(r.near.amp, 1)}D` : '건너뜀'}</span></div>
+      <div class="agebox"><span class="sub">두뇌 나이 <span class="exp">실험</span></span><div class="big">${r.brain?.brainAge ?? '—'}<small>${r.brain?.brainAge ? '세' : ''}</small></div><span class="cmp ${r.brain?.brainAge ? ageLine(r.age, r.brain.brainAge)[1] : ''}">${r.brain?.brainAge ? ageLine(r.age, r.brain.brainAge)[0] : '테스트를 하면 나와요'}</span><span class="sub">반응·스트룹·기억</span></div>
+      <div class="agebox"><span class="sub">눈 나이 (노안)</span><div class="big">${ea ?? '—'}<small>${ea ? '세' : ''}</small></div><span class="cmp ${ec}">${el}</span><span class="sub">${r.near ? `흐려지는 거리 ${r.near.bound ? '약 ' : ''}${fmt(r.near.cm)}cm · 조절력 ${fmt(r.near.amp, 1)}D` : '건너뜀'}</span></div>
     </div>
     <p class="headline">${head}</p>
     <p class="summary">${best.length ? `가장 좋은 항목은 <b>${best.slice(0, 2).map(m => m.name).join('</b>, <b>')}</b>, 관리하면 좋을 항목은 <b>${best.slice(-2).reverse().map(m => m.name).join('</b>, <b>')}</b>이에요.` : ''}</p>
-    ${r.factors.length ? `<ul class="factors">${r.factors.map(f => `<li><span class="d ${f.y > 0 ? 'up' : 'dn'}">${f.y > 0 ? '+' : ''}${fmt(f.y, 1)}세</span><span>${esc(f.label)}</span></li>`).join('')}</ul>` : ''}
+    ${r.factors.length ? `<p class="eyebrow" style="margin:14px 0 0">얼굴 나이를 움직인 요인</p><ul class="factors">${r.factors.map(f => `<li><span class="d ${f.y > 0 ? 'up' : 'dn'}">${f.y > 0 ? '+' : ''}${fmt(f.y, 1)}세</span><span>${esc(f.label)}</span></li>`).join('')}</ul>` : ''}
     <p class="note2" style="margin-top:8px">얼굴 나이 = AI 나이 추정 모델 60% + 실제 나이 40% + 피부·모발 지표 보정(±6세). 실험용 지표이며 파일럿 데이터로 보정 중이에요. <a href="${REF.perceived[1]}" target="_blank" rel="noopener" style="color:var(--accent)">보이는 나이와 건강의 관계 (BMJ 2009)</a></p>
 
+    ${r.brain ? `<div class="sec"><p class="eyebrow">뇌졸중 셀프 체크 (BE-FAST) · 측정 + 문진</p><div class="befast">${r.brain.befast.map(b => `<div class="bf"><span class="L">${b.L}</span><div><b>${b.name}</b>${b.exp ? '<span class="exp">실험</span>' : ''}<p>${esc(b.text)}</p>${b.raw ? `<span class="raw">${esc(b.raw)}</span>` : ''}</div><span class="chip ${TIER[b.tier][1]}">${TIER[b.tier][0]}</span></div>`).join('')}</div>
+      <p class="note2" style="margin-top:6px">근거: <a href="${REF.befast[1]}" target="_blank" rel="noopener" style="color:var(--accent)">${esc(REF.befast[0])}</a>. 이 체크는 응급 판단을 대신하지 않아요.</p></div>
+    <div class="sec"><p class="eyebrow">인지·운동 기능</p><div class="signals">${r.brain.cog.map(sigHTML).join('')}</div></div>` : ''}
     <div class="sec"><p class="eyebrow">얼굴로 본 건강 신호 · 결과는 진단이 아니에요</p>
       <div class="legend">${['ok', 'watch', 'check', 'base', 'na'].map(k => `<span class="chip ${TIER[k][1]}">${TIER[k][0]}</span>`).join('')}</div>
-      <div class="signals">${r.signals.map(s => `<div class="sig ${TIER[s.tier][1]}">
-        <div class="top"><span><span class="t">${s.name}</span>${s.exp ? '<span class="exp">실험</span>' : ''}<span class="org">${s.org}</span></span><span class="chip ${TIER[s.tier][1]}">${TIER[s.tier][0]}</span></div>
-        <p>${esc(s.text)}</p><span class="raw">측정값 ${esc(s.value)}</span>
-        ${s.refs.length ? `<div class="ev">근거: ${s.refs.map(k => `<a href="${REF[k][1]}" target="_blank" rel="noopener">${esc(REF[k][0])}</a>`).join(' / ')}</div>` : ''}</div>`).join('')}</div></div>
+      <div class="signals">${r.signals.map(sigHTML).join('')}</div></div>
 
     ${r.vit ? `<div class="sec"><p class="eyebrow">30초 정면 영상으로 본 오늘의 컨디션</p><div class="vit4">
       <div><b>${fmt(r.vit.hr)}</b><span>심박수 bpm</span></div><div><b>${fmt(r.vit.rr)}</b><span>호흡수 회/분</span></div>
@@ -1570,18 +1791,78 @@ function shareCard(r) {
   g.fillStyle = '#f4f6f5'; g.fillRect(0, 0, 1080, 1350); g.fillStyle = '#16825a'; g.fillRect(0, 0, 1080, 14);
   g.fillStyle = '#14201b'; g.font = '700 44px "Nanum Myeongjo", serif'; g.fillText('나의 원샷 페이스 리포트', 80, 120);
   g.fillStyle = '#5b6b65'; g.font = '500 30px "IBM Plex Sans KR", sans-serif'; g.fillText(new Date(r.at).toLocaleDateString('ko-KR') + ` · 실제 ${r.age}세`, 80, 170);
-  const box = (x, label, val, line) => { g.fillStyle = '#5b6b65'; g.font = '500 32px "IBM Plex Sans KR", sans-serif'; g.fillText(label, x, 250);
-    g.fillStyle = '#16825a'; g.font = '800 200px "Nanum Myeongjo", serif'; g.fillText(val, x - 8, 450); g.fillStyle = '#14201b'; g.font = '700 34px "IBM Plex Sans KR", sans-serif'; g.fillText(line, x, 510); };
+  const box = (x, label, val, line) => { g.fillStyle = '#5b6b65'; g.font = '500 30px "IBM Plex Sans KR", sans-serif'; g.fillText(label, x, 250);
+    g.fillStyle = '#16825a'; g.font = '800 150px "Nanum Myeongjo", serif'; g.fillText(val, x - 6, 410); g.fillStyle = '#14201b'; g.font = '700 26px "IBM Plex Sans KR", sans-serif'; g.fillText(line, x, 460); };
   box(80, '얼굴 나이', String(r.faceAge), ageLine(r.age, r.faceAge)[0]);
-  box(570, '눈 나이', r.near ? String(r.near.eyeAge) : '—', r.near ? ageLine(r.age, r.near.eyeAge)[0] : '테스트 안 함');
+  box(410, '두뇌 반응 나이', r.brain?.brainAge ? String(r.brain.brainAge) : '—', r.brain?.brainAge ? ageLine(r.age, r.brain.brainAge)[0] : '테스트 안 함');
+  box(740, '눈 나이', r.near ? String(r.near.eyeAge) : '—', r.near ? ageLine(r.age, r.near.eyeAge)[0] : '테스트 안 함');
   const list = [...r.skin, ...r.hair].filter(m => isFinite(m.score)).slice(0, 8);
   list.forEach((m, i) => { const y = 600 + i * 72; g.fillStyle = '#14201b'; g.font = '600 32px "IBM Plex Sans KR", sans-serif'; g.fillText(m.name, 84, y + 26);
     g.fillStyle = '#e3ebe7'; g.fillRect(480, y + 6, 360, 20); const t2 = tone(m.score); g.fillStyle = t2 === 'g' ? '#16825a' : t2 === 'm' ? '#c98a12' : '#d0533e'; g.fillRect(480, y + 6, 3.6 * m.score, 20);
     g.fillStyle = '#5b6b65'; g.font = '500 28px "IBM Plex Sans KR", sans-serif'; g.fillText(m.band, 870, y + 26); });
-  const fl = r.signals.filter(s => s.tier === 'watch' || s.tier === 'check').length;
+  const fl = [...r.signals, ...(r.brain?.cog || [])].filter(s => s.tier === 'watch' || s.tier === 'check').length;
   g.fillStyle = '#14201b'; g.font = '700 34px "IBM Plex Sans KR", sans-serif'; g.fillText(fl ? `확인해 볼 건강 신호 ${fl}개` : '눈에 띄는 건강 신호 없음', 84, 1220);
   g.fillStyle = '#5b6b65'; g.font = '400 24px "IBM Plex Sans KR", sans-serif'; g.fillText('휴대폰 카메라 측정값 · 건강관리 참고용 · GreenRibbon', 84, 1300);
   return c;
+}
+
+/* ---------- brain health: BE-FAST self check, cognition, motor, risk factors ---------- */
+function computeBrain(R, age, survey, sig) {
+  const T = R.tasks || {}, V = R.voice, P = R.pursuit || {}, sx = survey.stroke || [], rk = survey.risk || [], mm = survey.mem || [];
+  const acute = sx.length > 0;
+  const cog = [], add = x => cog.push(x);
+  // ---- BE-FAST ----
+  const bf = [];
+  const symp = k => sx.includes(k);
+  bf.push({ L: 'B', name: '균형', tier: symp('balance') ? 'check' : 'ok', text: symp('balance') ? '갑작스러운 어지럼·균형 이상이 있다고 답했어요.' : '갑작스러운 균형 이상은 없다고 답했어요.', raw: '문진' });
+  let t = !(P.n >= 12) ? 'na' : P.follow < 0.3 ? 'watch' : (isFinite(P.asym) && P.asym > 0.6) ? 'watch' : 'ok';
+  if (symp('eyes')) t = 'check';
+  bf.push({ L: 'E', name: '눈 (시선 따라가기)', exp: true, tier: t, text: symp('eyes') ? '갑작스러운 시야 이상이 있다고 답했어요.' : t === 'ok' ? '움직이는 점을 눈이 잘 따라갔어요.' : t === 'watch' ? '점을 따라가는 움직임이 고르지 않거나 한쪽이 덜 움직였어요. 고개를 같이 돌렸거나 인식이 흔들렸을 수 있어요.' : '시선 데이터가 부족했어요.', raw: P.n >= 12 ? `따라가기 일치도 ${fmt(P.follow, 2)} · 좌우 차 ${fmt(P.asym * 100)}% · ${P.n}회 인식` : '측정 안 됨' });
+  const smile = sig.find(x => x.id === 'smile');
+  t = smile ? smile.tier : 'na'; if (symp('face')) t = 'check';
+  bf.push({ L: 'F', name: '얼굴 (미소 대칭)', tier: t, text: symp('face') ? '갑작스러운 얼굴 처짐이 있다고 답했어요.' : smile ? smile.text : '측정 안 됨', raw: smile ? smile.value : '' });
+  const r = T.tapR?.rate, l = T.tapL?.rate, tapAsym = isFinite(r) && isFinite(l) && Math.max(r, l) > 0 ? Math.abs(r - l) / Math.max(r, l) : NaN;
+  t = !isFinite(tapAsym) ? 'na' : tapAsym > 0.45 ? 'check' : tapAsym > 0.3 ? 'watch' : 'ok'; if (symp('arm')) t = 'check';
+  bf.push({ L: 'A', name: '팔·손 (좌우 두드리기)', tier: t, text: symp('arm') ? '갑작스러운 팔다리 힘 빠짐이 있다고 답했어요.' : t === 'ok' ? '양손 두드리기 속도가 비슷해요.' : t === 'na' ? '두드리기 테스트를 하지 않았어요.' : `${r < l ? '오른손' : '왼손'}이 눈에 띄게 느려요. 주로 쓰는 손이 아니어서일 수 있지만, 최근 생긴 변화라면 진료를 받아 보세요.`, raw: isFinite(tapAsym) ? `오른손 ${fmt(r, 1)}회/초 · 왼손 ${fmt(l, 1)}회/초 (차이 ${fmt(tapAsym * 100)}%)` : '' });
+  t = !V || V.error ? 'na' : V.rate < 1.8 ? 'check' : (V.rate < 2.5 || V.pauses >= 3) ? 'watch' : 'ok'; if (symp('speech')) t = 'check';
+  bf.push({ L: 'S', name: '말 (문장 읽기)', tier: t, text: symp('speech') ? '갑작스러운 말 이상이 있다고 답했어요.' : t === 'ok' ? '문장을 일정한 속도로 읽었어요.' : t === 'na' ? (V?.error === 'nomic' ? '마이크를 쓰지 않아 측정하지 못했어요.' : '목소리가 충분히 잡히지 않았어요.') : t === 'watch' ? '읽는 속도가 느리거나 중간에 멈춤이 많았어요. 처음 보는 문장이라 그럴 수 있어요.' : '읽는 속도가 많이 느렸어요. 평소와 다르다면 확인해 보세요.', raw: V && !V.error ? `초당 ${fmt(V.rate, 1)}음절 · 멈춤 ${V.pauses}회 (${fmt(V.pauseT, 1)}초) · 시작까지 ${fmt(V.onset, 1)}초` : '' });
+  bf.push({ L: 'T', name: '시간', tier: acute ? 'check' : 'ok', text: acute ? '위 증상이 갑자기 생겼다면 지금 바로 119에 연락하세요. 뇌졸중은 치료 시작이 빠를수록 결과가 좋아요.' : '갑작스러운 경고 증상은 없다고 답했어요.', raw: '' });
+  // ---- cognition / motor ----
+  const rc = T.recall;
+  t = !rc ? 'na' : rc.score >= 3 && !rc.wrong ? 'ok' : rc.score >= 2 ? 'watch' : 'check';
+  add({ id: 'recall', name: '단어 기억 (지연 회상)', org: '기억력', tier: t, value: rc ? `${rc.score}/3개 맞힘${rc.wrong ? ` · 오답 ${rc.wrong}개` : ''}` : '측정 안 됨', refs: ['minicog'],
+    text: { ok: '1분여 전에 들은 단어 3개를 모두 기억했어요.', watch: '단어 하나를 놓쳤어요. 촬영에 집중하느라 그럴 수 있어요. 다음에 다시 확인해 보세요.', check: '단어를 2개 이상 기억하지 못했어요. 피곤하거나 집중이 어려웠을 수 있지만, 기억력 변화가 걱정된다면 보건소 치매안심센터에서 무료 인지 선별검사를 받아 보세요.', na: '기억 테스트를 하지 않았어요.' }[t] });
+  const st = T.stroop;
+  t = !st ? 'na' : st.acc < 0.7 ? 'check' : (st.acc < 0.9 || st.interference > 350) ? 'watch' : 'ok';
+  add({ id: 'stroop', name: '주의·억제 (스트룹)', org: '집중력·판단력', tier: t, value: st ? `정답 ${fmt(st.acc * 100)}% · 평균 ${fmt(st.rtAll)}ms · 간섭 ${fmt(st.interference)}ms` : '측정 안 됨', refs: ['stroop'],
+    text: { ok: '헷갈리는 색 글자에서도 정확하고 빠르게 답했어요.', watch: '헷갈리는 문제에서 실수하거나 시간이 많이 걸렸어요.', check: '정답률이 낮았어요. 규칙을 잘못 이해했을 수도 있으니 다음에 다시 해 보세요.', na: '측정 안 됨' }[t] });
+  const rt = T.rt;
+  t = !rt ? 'na' : (rt.median > 550 || rt.cv > 0.3) ? 'watch' : 'ok';
+  add({ id: 'rt', name: '반응 속도와 일정함', org: '처리 속도', tier: t, value: rt ? `중앙값 ${fmt(rt.median)}ms · 들쭉날쭉함 ${fmt(rt.cv * 100)}% · 성급한 터치 ${rt.early}회` : '측정 안 됨', refs: ['rt', 'iiv'],
+    text: { ok: '반응이 빠르고 일정해요.', watch: rt && rt.cv > 0.3 ? '반응 시간이 들쭉날쭉해요. 피로·수면 부족 때도 그래요.' : '반응이 느린 편이에요. 피로·수면 부족 때도 그래요.', na: '측정 안 됨' }[t] });
+  const tr = T.tapR, tl = T.tapL, tapRate = mean2([tr?.rate, tl?.rate]), dec = mean2([tr?.decrement, tl?.decrement]);
+  t = !isFinite(tapRate) ? 'na' : (tapRate < 3.5 || dec < 0.75) ? 'watch' : 'ok';
+  add({ id: 'tap', name: '손가락 운동 (두드리기)', org: '운동 기능', tier: t, value: isFinite(tapRate) ? `양손 평균 ${fmt(tapRate, 1)}회/초 · 후반 속도 유지 ${fmt(dec * 100)}% · 리듬 변동 ${fmt(mean2([tr?.itiCv, tl?.itiCv]) * 100)}%` : '측정 안 됨', refs: ['tap'],
+    text: { ok: '손가락 움직임이 빠르고 끝까지 유지됐어요.', watch: dec < 0.75 ? '두드릴수록 속도가 크게 떨어졌어요. 피로 때문일 수 있지만, 손이 굳거나 떨림이 있다면 신경과 상담을 권해요.' : '두드리는 속도가 느린 편이에요.', na: '측정 안 됨' }[t] });
+  t = mm.length >= 4 ? 'check' : mm.length >= 2 ? 'watch' : 'ok';
+  add({ id: 'scd', name: '기억력 자가 체크', org: '주관적 인지 변화', tier: t, value: `${mm.length}/7개 해당`, refs: [],
+    text: { ok: '스스로 느끼는 기억력 변화가 거의 없어요.', watch: '기억력 변화를 몇 가지 느끼고 있어요. 수면·스트레스 관리부터 챙기고, 계속되면 검사를 받아 보세요.', check: '기억력 변화를 여러 가지 느끼고 있어요. 보건소 치매안심센터나 신경과에서 인지 선별검사를 받아 보세요.' }[t] });
+  const riskN = rk.length, hard = rk.includes('af') || rk.includes('prior');
+  t = hard || riskN >= 3 ? 'check' : riskN >= 2 ? 'watch' : 'ok';
+  add({ id: 'risk', name: '뇌혈관 위험 요인', org: '뇌졸중 예방', tier: t, value: `${riskN}개 해당`, refs: ['befast'],
+    text: { ok: '해당하는 위험 요인이 적어요.', watch: '위험 요인이 2개 있어요. 혈압·혈당·콜레스테롤을 정기적으로 관리하세요.', check: hard ? '부정맥이나 뇌졸중 경험이 있다면 처방받은 약을 꾸준히 복용하고 정기 진료를 받으세요.' : '위험 요인이 여러 개예요. 뇌혈관 건강검진과 생활습관 관리를 권해요.' }[t] });
+  cog.sort((a, b) => tierOrder[a.tier] - tierOrder[b.tier]);
+  // ---- brain age (experimental): reaction speed vs age, adjusted by Stroop and recall ----
+  const parts = [];
+  if (rt && isFinite(rt.median)) parts.push(20 + (rt.median - 300) / 2.2);
+  if (st && isFinite(st.rtAll)) parts.push(20 + (st.rtAll - 750) / 6);
+  let brainAge = null; const bfac = [];
+  if (parts.length) { let raw = 0.5 * age + 0.5 * mean2(parts), adj = 0;
+    if (rt) bfac.push({ label: `반응 속도 ${fmt(rt.median)}ms`, y: 0.5 * ((20 + (rt.median - 300) / 2.2) - age) / (parts.length || 1) });
+    if (rc) { const y = (3 - rc.score) * 1.5 + rc.wrong * 0.5; adj += y; if (y) bfac.push({ label: '단어 기억', y }); }
+    if (st && st.acc < 0.8) { adj += 2; bfac.push({ label: '스트룹 정확도', y: 2 }); }
+    brainAge = Math.round(Math.max(age - 15, Math.min(age + 15, raw + adj))); }
+  return { befast: bf, cog, acute, riskN, brainAge, bfac };
 }
 
 /* ================= navigation, profile, history, diagnostics ================= */
@@ -1589,7 +1870,7 @@ let cur = 'home';
 function show(s, title) {
   cur = s; document.querySelectorAll('.screen').forEach(el => el.hidden = el.dataset.s !== s);
   $('title').textContent = title || '페이스체크';
-  const flow = ['proc', 'near', 'survey'].includes(s);
+  const flow = ['proc', 'tasks', 'near', 'survey'].includes(s);
   $('back').hidden = !flow; $('tabbar').hidden = flow;
   document.querySelectorAll('#tabbar button').forEach(b => b.setAttribute('aria-current', b.dataset.t === s ? 'page' : 'false'));
   window.scrollTo(0, 0);
@@ -1605,7 +1886,7 @@ const saveProfile = () => { try { localStorage.setItem(PKEY, JSON.stringify({ bi
 function realAge() { const y = +$('birth').value, n = new Date().getFullYear(); return y >= 1930 && y <= n - 14 ? n - y : null; }
 function gateStart() { $('start').disabled = !(realAge() && $('agree').checked && AI.ready); $('start').textContent = AI.ready ? '원샷 체크 시작' : (AI.err ? '인식 모델 오류 · 새로고침해 주세요' : '얼굴 인식 준비 중…'); saveProfile(); }
 ['birth', 'sex', 'glass', 'agree'].forEach(id => { $(id).addEventListener('input', gateStart); $(id).addEventListener('change', gateStart); });
-$('plan').innerHTML = MISSIONS.filter(m => m.what).map((m, i) => `<li><b>${String(i + 1).padStart(2, '0')}</b><span>${esc(m.t.replace(/[↑←→"]/g, '').trim())} · <span class="note2">${esc(m.what)}</span></span></li>`).join('') + '<li><b>+</b><span>노안 테스트 · <span class="note2">눈 나이</span></span></li>';
+$('plan').innerHTML = MISSIONS.filter(m => m.what).map((m, i) => `<li><b>${String(i + 1).padStart(2, '0')}</b><span>${esc(m.t.replace(/[↑←→"]/g, '').trim())} · <span class="note2">${esc(m.what)}</span></span></li>`).join('') + '<li><b>+</b><span>터치 테스트 40초 · <span class="note2">손 운동·반응·스트룹·기억</span></span></li><li><b>+</b><span>노안 테스트 · <span class="note2">눈 나이</span></span></li><li><b>+</b><span>문진 1분 · <span class="note2">뇌졸중 증상·위험요인·기억력</span></span></li>';
 
 $('start').onclick = async () => {
   // unlock speech + sound inside the tap (iPhone requires a user gesture)
@@ -1615,6 +1896,7 @@ $('start').onclick = async () => {
 };
 $('toResult').onclick = () => {
   const survey = Object.fromEntries(['qSleep', 'qAlc', 'qSwell', 'qCond', 'qMake', 'qLight', 'qLiver', 'qAnemia'].map(id => [id.slice(1).toLowerCase(), $(id).value || null]));
+  ['qStroke', 'qRisk', 'qMem'].forEach(id => survey[{ qStroke: 'stroke', qRisk: 'risk', qMem: 'mem' }[id]] = [...document.querySelectorAll('#' + id + ' input:checked')].map(i => i.value));
   let r;
   try { r = compute(SES.result, { age: realAge(), sex: $('sex').value, glass: $('glass').value }, survey, HIST); }
   catch (e) { toast('결과 계산 중 오류: ' + e.message); console.error(e); return; }
@@ -1631,9 +1913,9 @@ function renderHome() {
   $('today').textContent = new Date().toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'long' });
   const h = HIST[0];
   if (!h) { $('lastBox').innerHTML = '<p class="eyebrow">최근 결과</p><p class="summary">아직 기록이 없어요. 첫 체크를 시작해 보세요. 3번 이상 측정하면 붓기처럼 "평소 대비" 지표가 켜져요.</p>'; return; }
-  const fl = h.signals.filter(s => s.tier === 'watch' || s.tier === 'check').length;
+  const fl = [...h.signals, ...(h.brain?.cog || [])].filter(s => s.tier === 'watch' || s.tier === 'check').length;
   $('lastBox').innerHTML = `<p class="eyebrow">최근 결과 · ${esc(new Date(h.at).toLocaleDateString('ko-KR'))}</p>
-    <div class="lastcard"><div><div class="num">${h.faceAge}<small>세</small></div><span class="lbl">얼굴 나이</span></div><div><div class="num">${h.near?.eyeAge ?? '—'}<small>${h.near ? '세' : ''}</small></div><span class="lbl">눈 나이</span></div>
+    <div class="lastcard"><div><div class="num">${h.faceAge}<small>세</small></div><span class="lbl">얼굴 나이</span></div><div><div class="num">${h.brain?.brainAge ?? '—'}<small>${h.brain?.brainAge ? '세' : ''}</small></div><span class="lbl">두뇌 반응 나이</span></div>
     <div class="note2">실제 ${h.age}세<br>확인해 볼 신호 ${fl}개<br>누적 ${HIST.length}회</div></div>`;
 }
 function renderHistory() {
@@ -1656,7 +1938,9 @@ function flat(r) {
   [...r.skin, ...r.hair, ...r.shape].forEach(m => { o[m.key + '.v'] = m.v; o[m.key + '.s'] = m.score; });
   r.signals.forEach(s => o['sig.' + s.id] = s.tier);
   const walk = (p, v) => { if (v && typeof v === 'object' && !Array.isArray(v)) Object.entries(v).forEach(([k, x]) => walk(p + '.' + k, x)); else if (typeof v === 'number' || typeof v === 'boolean') o[p] = v; };
-  walk('raw', r.raw); Object.entries(r.survey || {}).forEach(([k, v]) => o['survey.' + k] = v);
+  walk('raw', r.raw); walk('tasks', r.tasks); walk('voice', r.voice); walk('pursuit', r.pursuit);
+  o.brainAge = r.brain?.brainAge; (r.brain?.befast || []).forEach(b => o['befast.' + b.L] = b.tier); (r.brain?.cog || []).forEach(c => o['cog.' + c.id] = c.tier);
+  Object.entries(r.survey || {}).forEach(([k, v]) => { if (Array.isArray(v)) o['survey.' + k] = v.join('|'); }); Object.entries(r.survey || {}).forEach(([k, v]) => { if (!Array.isArray(v)) o['survey.' + k] = v; });
   Object.entries(r.missions || {}).forEach(([k, v]) => o['mission.' + k] = v.ok ? 1 : 0);
   return o;
 }
@@ -1673,7 +1957,7 @@ window.addEventListener('error', e => { DIAG.lastError = e.message; renderDiag()
 window.addEventListener('unhandledrejection', e => { DIAG.lastError = e.reason?.message || String(e.reason); renderDiag(); });
 function renderDiag() {
   DIAG.voice = koVoice ? '한국어 음성 있음' : (window.speechSynthesis ? '한국어 음성 없음 (화면 글자로 안내)' : '음성 미지원');
-  const rows = [['브라우저', DIAG.ua], ['보안 연결(https)', DIAG.secure], ['카메라 API', DIAG.gum], ['카메라', DIAG.cam], ['얼굴 인식 모델', AI.ready ? `준비 (${AI.backend})` : (AI.err ? '실패: ' + AI.err : '불러오는 중')], ['음성 안내', DIAG.voice], ['최근 오류', DIAG.lastError || '없음']];
+  const rows = [['브라우저', DIAG.ua], ['마이크', DIAG.mic || '미시험'], ['보안 연결(https)', DIAG.secure], ['카메라 API', DIAG.gum], ['카메라', DIAG.cam], ['얼굴 인식 모델', AI.ready ? `준비 (${AI.backend})` : (AI.err ? '실패: ' + AI.err : '불러오는 중')], ['음성 안내', DIAG.voice], ['최근 오류', DIAG.lastError || '없음']];
   $('diagT').innerHTML = rows.map(r => `<tr><td>${r[0]}</td><td>${esc(r[1])}</td></tr>`).join('');
 }
 $('diag').addEventListener('toggle', renderDiag);
