@@ -4,272 +4,270 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#16825a">
-<title>페이스체크</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@700;800&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<meta name="theme-color" content="#ffffff">
+<meta name="color-scheme" content="light">
+<title>라이프캐치 페이스체크</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
-
-/* Layout: personal report you would screenshot — inputs, then age hero + share card, beauty metrics, visual health signals (each with its raw number and literature), vitals, raw data; pilot data store at the end. */
+/* LifeCatch look & feel: white cards on a light grey page, Pretendard, LifeCatch green #27c57c, generous radius, bold numbers. Light theme only (matches the app). */
 :root{
-  --bg:#f4f6f5; --paper:#ffffff; --ink:#14201b; --muted:#5b6b65; --line:#dfe6e2; --soft:#eaf1ed;
-  --accent:#16825a; --accent-ink:#ffffff; --good:#16825a; --mid:#c98a12; --care:#d0533e; --urgent:#b3261e;
-  --f-display:"Nanum Myeongjo","AppleMyungjo",serif;
-  --f-ui:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
-  --f-num:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+  --bg:#F4F5F7; --paper:#ffffff; --ink:#1a1a1a; --ink2:#333333; --muted:#6C7682; --muted2:#9AA1A9; --line:#ECEEF1; --soft:#F2FCF6; --soft2:#E8F8EE;
+  --accent:#27c57c; --accent-d:#1a9e60; --accent-ink:#ffffff; --brand2:#1DB954;
+  --good:#1DB954; --good-bg:#F2FCF6; --mid:#D98B06; --mid-bg:#FFF7E6; --care:#E5484D; --care-bg:#FFF0F0; --na:#8B939C; --na-bg:#F1F2F4; --urgent:#D32F2F;
+  --f-ui:'Pretendard Variable','Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic','Segoe UI',sans-serif;
+  --f-display:var(--f-ui); --f-num:var(--f-ui);
+  --r:18px; --r-s:12px; --shadow:0 1px 2px rgba(17,24,39,.04),0 4px 16px rgba(17,24,39,.04);
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0f1513;--paper:#161e1b;--ink:#e3ebe7;--muted:#99aaa3;--line:#27332e;--soft:#1c2925;--accent:#3fbf86;--accent-ink:#06150e;--good:#3fbf86;--mid:#e3a83a;--care:#f0806c;--urgent:#ff6b5e;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#0f1513;--paper:#161e1b;--ink:#e3ebe7;--muted:#99aaa3;--line:#27332e;--soft:#1c2925;--accent:#3fbf86;--accent-ink:#06150e;--good:#3fbf86;--mid:#e3a83a;--care:#f0806c;--urgent:#ff6b5e;color-scheme:dark}
 [hidden]{display:none!important}
-html,body{background:var(--bg);color:var(--ink)}
-body{font-family:var(--f-ui);font-size:15px;line-height:1.6}
-.wrap{max-width:940px;margin:0 auto;padding-inline:16px;padding-block:22px 56px;display:grid;gap:18px}
-header h1{font-family:var(--f-display);font-weight:800;font-size:clamp(28px,5vw,40px);margin:0}
-header p{margin:6px 0 0;color:var(--muted);max-width:62ch}
-.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px;min-width:0}
-.eyebrow{font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--muted);text-transform:uppercase;margin:0 0 8px}
-.steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-@media (max-width:680px){.steps{grid-template-columns:1fr}}
-.step{border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;gap:8px;align-content:start;min-width:0}
-.step h3{margin:0;font-size:16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.step h3 .n{font-family:var(--f-num);font-size:12px;color:var(--accent);border:1px solid var(--accent);border-radius:999px;width:22px;height:22px;display:inline-grid;place-items:center}
-.step p{margin:0;font-size:13px;color:var(--muted)}
-.opt{font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:1px 7px;font-weight:500}
-.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-label.f{display:grid;gap:4px;font-size:12px;color:var(--muted)}
-input[type=number],select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-width:0}
-.btn,.filebtn{font:inherit;font-size:14px;font-weight:600;border-radius:10px;padding:10px 14px;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;position:relative;display:inline-flex;align-items:center;gap:6px;overflow:hidden}
-.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.btn:disabled{opacity:.45;cursor:not-allowed}
-.filebtn input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0}
-.btn:focus-visible,.filebtn:focus-within,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.thumb{width:100%;max-width:180px;aspect-ratio:3/4;border-radius:10px;overflow:hidden;background:var(--soft);display:grid;place-items:center;color:var(--muted);font-size:12px;text-align:center;padding:4px}
-.thumb canvas{width:100%;height:100%;object-fit:cover;display:block}
+*{box-sizing:border-box}
+html,body{background:var(--bg);color:var(--ink);margin:0}
+body{font-family:var(--f-ui);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;letter-spacing:-.01em}
+button{font-family:inherit}
+a{color:var(--accent-d)}
+
+/* shell */
+.app{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);display:flex;flex-direction:column;position:relative}
+.topbar{position:sticky;top:0;z-index:5;background:#fff;display:flex;align-items:center;gap:10px;padding:12px 18px;padding-top:max(12px,env(safe-area-inset-top));border-bottom:1px solid var(--line)}
+.topbar .logo{height:22px;display:block}
+.topbar h1{font-size:17px;font-weight:700;margin:0;flex:1;color:var(--ink)}
+.topbar .back{background:none;border:0;font-size:26px;line-height:1;color:var(--ink);cursor:pointer;padding:0 4px 0 0}
+.pill{font-size:12px;font-weight:600;border-radius:99px;padding:5px 10px;background:var(--soft);color:var(--brand2);white-space:nowrap}
+.screens{flex:1;padding:16px 16px 100px;display:grid;gap:12px;align-content:start}
+.screen{display:grid;gap:12px;align-content:start;min-width:0}
+.card{background:var(--paper);border-radius:var(--r);padding:20px;box-shadow:var(--shadow);min-width:0}
+.eyebrow{font-size:13px;font-weight:700;color:var(--muted);margin:0 0 10px}
+.h2{font-size:19px;font-weight:800;margin:0 0 4px;color:var(--ink);letter-spacing:-.02em}
+.sub2{font-size:13.5px;color:var(--muted);margin:0 0 14px}
+.note2{font-size:12.5px;color:var(--muted);margin:0;line-height:1.55}
+.summary{color:var(--ink2);margin:0}
 .status{font-size:13px;color:var(--muted);min-height:1.3em;margin:0}
 .status.ok{color:var(--good)} .status.warn{color:var(--care)}
-.survey{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.survey label.f select{width:100%}
-.check{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--muted)}
-.check input{margin-top:3px}
-.go{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-top:14px;border-top:1px solid var(--line);padding-top:14px}
-.consent{font-size:12.5px;color:var(--muted);max-width:62ch;margin:0}
-
-.reportHead{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
-.pill{font-size:12px;border-radius:999px;padding:3px 10px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
-.pill.ex{border-color:var(--mid);color:var(--mid)}
-.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:center}
-@media (max-width:680px){.hero{grid-template-columns:1fr}}
-.age{display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap}
-.age .big{font-family:var(--f-display);font-weight:800;font-size:clamp(64px,13vw,104px);line-height:.9;color:var(--accent)}
-.age .big small{font-size:.32em;color:var(--ink);margin-left:4px}
-.age .real{font-size:14px;color:var(--muted);padding-bottom:10px}
-.age .real b{font-family:var(--f-display);font-size:28px;color:var(--ink)}
-.headline{font-family:var(--f-display);font-weight:700;font-size:clamp(20px,3.4vw,26px);line-height:1.4;margin:12px 0 6px;text-wrap:balance}
-.summary{color:var(--muted);margin:0;max-width:58ch}
-.factors{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:6px}
-.factors li{display:flex;gap:10px;align-items:baseline;font-size:14px}
-.factors .d{font-family:var(--f-num);min-width:3.4em;text-align:right}
-.factors .d.up{color:var(--care)} .factors .d.dn{color:var(--good)}
-.share img{width:100%;border-radius:12px;border:1px solid var(--line);display:block}
-.sec{margin-top:24px}
-.metrics{display:grid}
-.m{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1.3fr) auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
-.m:last-child{border-bottom:0}
-@media (max-width:560px){.m{grid-template-columns:1fr auto}.m .bar{grid-column:1/-1;grid-row:2}}
-.m .name{font-weight:600;min-width:0}
-.m .name small{display:block;font-weight:400;font-size:12.5px;color:var(--muted);line-height:1.45}
-.raw{font-family:var(--f-num);font-size:11.5px;color:var(--muted);display:block;margin-top:2px}
-.bar{height:8px;border-radius:4px;background:var(--soft);position:relative;overflow:hidden}
-.bar i{position:absolute;left:0;top:0;bottom:0;border-radius:4px}
-.chip{font-size:12.5px;font-weight:600;border-radius:999px;padding:3px 10px;white-space:nowrap;text-align:center}
-.chip.g{background:color-mix(in srgb,var(--good) 14%,transparent);color:var(--good)}
-.chip.m{background:color-mix(in srgb,var(--mid) 16%,transparent);color:var(--mid)}
-.chip.c{background:color-mix(in srgb,var(--care) 14%,transparent);color:var(--care)}
-.chip.u{background:var(--urgent);color:#fff}
-.chip.n{background:var(--soft);color:var(--muted)}
-.signals{display:grid;gap:10px}
-.sig{border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:6px;min-width:0}
-.sig.c{border-left:4px solid var(--care)} .sig.m{border-left:4px solid var(--mid)} .sig.u{border-left:4px solid var(--urgent)}
-.sig .top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;flex-wrap:wrap}
-.sig .t{font-weight:700}
-.sig .org{font-size:12px;color:var(--muted);font-weight:500;margin-left:6px}
-.sig p{margin:0;font-size:14px}
-.sig .ev{font-size:12.5px;color:var(--muted)}
-.sig .ev a{color:var(--accent)}
-.legend{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
-.tips{margin:0;padding-left:20px;display:grid;gap:8px}
-.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
-@media (max-width:680px){.grid2{grid-template-columns:1fr}}
-.vit{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.vit div{border:1px solid var(--line);border-radius:10px;padding:10px}
-.vit b{display:block;font-family:var(--f-display);font-size:28px}
-.vit span{font-size:12px;color:var(--muted)}
-.tablewrap{overflow-x:auto}
-table.raw2{width:100%;border-collapse:collapse;font-size:13px}
-table.raw2 th,table.raw2 td{text-align:left;padding:7px 8px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
-table.raw2 th{font-size:12px;color:var(--muted);font-weight:600;white-space:nowrap}
-table.raw2 td.n{font-family:var(--f-num);white-space:nowrap}
-.foot{font-size:12.5px;color:var(--muted);max-width:92ch}
-.thinking{display:flex;gap:10px;align-items:center;color:var(--muted)}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:p 1s infinite alternate}
-@keyframes p{from{opacity:.25}to{opacity:1}}
-@media (prefers-reduced-motion:reduce){.dot{animation:none}}
-.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:12px}
-.kpis div{border:1px solid var(--line);border-radius:10px;padding:10px}
-.kpis b{font-family:var(--f-display);font-size:26px;display:block}
-.kpis span{font-size:12px;color:var(--muted)}
-
-/* App shell: phone-width column, screens, bottom tab bar. The scan screen is a near-full-screen camera with the mission card on top. */
-body{margin:0}
-.app{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);display:flex;flex-direction:column;position:relative}
-@media (min-width:600px){.app{border-left:1px solid var(--line);border-right:1px solid var(--line)}}
-.topbar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);display:flex;align-items:center;gap:10px;padding:12px 16px;padding-top:max(12px,env(safe-area-inset-top));border-bottom:1px solid var(--line)}
-.topbar h1{font-family:var(--f-display);font-size:20px;margin:0;flex:1}
-.topbar .back{background:none;border:0;font-size:22px;color:var(--ink);cursor:pointer;padding:0 6px}
-.screens{flex:1;padding:16px 16px 96px;display:grid;gap:14px;align-content:start}
-.screen{display:grid;gap:14px;align-content:start;min-width:0}
-.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;display:grid;grid-template-columns:repeat(2,1fr);background:var(--paper);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:6}
-.tabbar button{background:none;border:0;padding:10px 0 12px;font:inherit;font-size:12px;color:var(--muted);cursor:pointer;display:grid;justify-items:center;gap:2px}
-.tabbar button svg{width:22px;height:22px}
-.tabbar button[aria-current="page"]{color:var(--accent);font-weight:600}
-.hello{font-family:var(--f-display);font-size:26px;font-weight:800;margin:4px 0 0;line-height:1.3}
-.cta{width:100%;justify-content:center;font-size:16px;padding:14px}
-.lastcard{display:grid;grid-template-columns:auto auto 1fr;gap:16px;align-items:center}
-.lastcard .num{font-family:var(--f-display);font-size:48px;font-weight:800;color:var(--accent);line-height:1}
-.lastcard .num small{font-size:15px;color:var(--ink)}
-.lastcard .lbl{font-size:12px;color:var(--muted);display:block;margin-top:2px}
-.plan{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 10px;font-size:13px}
-.plan li{display:flex;gap:6px;align-items:baseline}
-.plan li b{font-family:var(--f-num);font-size:11px;color:var(--accent);min-width:1.6em}
-.note2{font-size:12.5px;color:var(--muted);margin:0}
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:84px;max-width:440px;width:calc(100% - 32px);background:#2a1513;color:#fff;border-radius:10px;padding:10px 12px;font-size:13px;z-index:40}
-details.diag{font-size:13px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{font-size:15px;font-weight:700;border-radius:14px;padding:13px 16px;border:0;background:var(--na-bg);color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn.primary{background:var(--accent);color:#fff}
+.btn.ghost{background:transparent;color:var(--muted);font-weight:600}
+.btn:disabled{background:#D9DDE1;color:#fff;cursor:not-allowed}
+.cta{width:100%;font-size:17px;padding:17px;border-radius:16px}
+.btn:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+label.f{display:grid;gap:6px;font-size:13px;font-weight:600;color:var(--muted);flex:1;min-width:120px}
+input[type=number],select{font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1px solid transparent;border-radius:12px;padding:12px 12px;min-width:0;width:100%}
+input[type=number]:focus,select:focus{border-color:var(--accent);background:#fff;outline:none}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--muted);line-height:1.5}
+.check input{margin-top:2px;width:20px;height:20px;accent-color:var(--accent);flex:none}
+.survey{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:96px;max-width:440px;width:calc(100% - 32px);background:#1a1a1a;color:#fff;border-radius:14px;padding:12px 14px;font-size:14px;z-index:40;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;display:grid;grid-template-columns:repeat(2,1fr);background:#fff;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:6}
+.tabbar button{background:none;border:0;padding:10px 0 12px;font-size:12px;font-weight:600;color:var(--muted2);cursor:pointer;display:grid;justify-items:center;gap:3px}
+.tabbar button svg{width:24px;height:24px}
+.tabbar button[aria-current="page"]{color:var(--ink)}
+.tabbar button[aria-current="page"] svg{color:var(--accent)}
+details.diag{font-size:13px;background:transparent;box-shadow:none;padding:4px 4px}
+details.diag summary{color:var(--muted);cursor:pointer}
 details.diag table{width:100%;border-collapse:collapse;margin-top:6px}
-details.diag td{padding:4px 0;border-bottom:1px solid var(--line);vertical-align:top}
-details.diag td:last-child{text-align:right;font-family:var(--f-num);font-size:12px;word-break:break-all;padding-left:8px}
+details.diag td{padding:6px 0;border-bottom:1px solid var(--line);vertical-align:top}
+details.diag td:last-child{text-align:right;font-size:12px;word-break:break-all;padding-left:8px;color:var(--muted)}
 
-/* ---- scan screen ---- */
-.scanwrap{position:fixed;inset:0;z-index:30;background:#05080a;display:flex;flex-direction:column;align-items:center}
-.cam{position:relative;width:100%;max-width:480px;flex:1;overflow:hidden;background:#05080a}
+/* home */
+.hero{background:linear-gradient(135deg,#27c57c 0%,#1a9e60 100%);color:#fff;border-radius:22px;padding:22px 20px;position:relative;overflow:hidden;box-shadow:0 8px 24px rgba(39,197,124,.25)}
+.hero .tag{display:inline-block;font-size:12px;font-weight:700;background:rgba(255,255,255,.2);border-radius:99px;padding:4px 10px}
+.hero h2{font-size:24px;font-weight:800;line-height:1.35;margin:12px 0 6px;letter-spacing:-.03em}
+.hero p{margin:0;font-size:14px;opacity:.92}
+.hero svg.deco{position:absolute;right:-6px;bottom:-8px;width:120px;height:120px;opacity:.95}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.tile{background:var(--bg);border-radius:14px;padding:12px 10px;text-align:center;display:grid;gap:2px}
+.tile .v{font-size:28px;font-weight:800;line-height:1.1;color:var(--ink);letter-spacing:-.03em}
+.tile .v small{font-size:13px;font-weight:700;margin-left:1px;color:var(--muted)}
+.tile .l{font-size:12px;font-weight:600;color:var(--muted)}
+.tile .d{font-size:11.5px;font-weight:700}
+.tile .d.up{color:var(--care)} .tile .d.dn{color:var(--good)}
+.plan{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.plan li{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.plan li:last-child{border-bottom:0}
+.plan li b{width:26px;height:26px;border-radius:50%;background:var(--soft);color:var(--brand2);font-size:12px;font-weight:800;display:grid;place-items:center}
+.plan li .w{font-weight:700;color:var(--ink)}
+.plan li .x{font-size:12px;color:var(--muted)}
+.plan li .tm{font-size:12px;color:var(--muted2);font-weight:600}
+.hello{display:none}
+.lastcard{display:none}
+
+/* scan overlay */
+.scanwrap{position:fixed;inset:0;z-index:30;background:#0d1110;display:flex;flex-direction:column;align-items:center}
+.cam{position:relative;width:100%;max-width:480px;flex:1;overflow:hidden;background:#0d1110}
 .cam video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
 .cam canvas.ov{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.mcard{position:absolute;left:12px;right:12px;top:max(12px,env(safe-area-inset-top));background:rgba(5,10,8,.72);backdrop-filter:blur(6px);color:#fff;border-radius:16px;padding:14px 16px;display:grid;gap:4px;text-align:center}
-.mcard .k{font-size:12px;letter-spacing:.06em;color:#9fd8bd;font-family:var(--f-num)}
-.mcard .t{font-family:var(--f-display);font-weight:800;font-size:clamp(24px,7vw,34px);line-height:1.2}
-.mcard .h{font-size:13.5px;color:#d5e3dc}
-.mcard.done{outline:3px solid #3fbf86}
-.timer{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:var(--f-display);font-weight:800;font-size:72px;color:rgba(255,255,255,.9);text-shadow:0 2px 12px rgba(0,0,0,.6);pointer-events:none}
-.dotc{position:absolute;left:50%;top:44%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:#3fbf86;box-shadow:0 0 0 6px rgba(63,191,134,.25)}
-.ticker{position:absolute;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom));display:flex;gap:4px}
-.ticker i{flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.22)}
-.ticker i.ok{background:#3fbf86}.ticker i.miss{background:#e3a83a}.ticker i.now{background:#fff}
-.livebar{position:absolute;left:12px;right:12px;bottom:calc(98px + env(safe-area-inset-bottom));display:flex;justify-content:space-between;font-family:var(--f-num);font-size:12px;color:#fff}
-.livebar span{background:rgba(0,0,0,.55);padding:3px 8px;border-radius:6px}
-.scanfoot{position:absolute;left:0;right:0;bottom:0;padding:12px 16px calc(14px + env(safe-area-inset-bottom));display:flex;gap:8px;justify-content:center}
-.scanfoot .btn{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.25)}
-.bigcheck{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%) scale(.6);opacity:0;font-size:96px;color:#3fbf86;transition:all .25s;pointer-events:none}
+.mcard{position:absolute;left:14px;right:14px;top:max(14px,env(safe-area-inset-top));background:#fff;color:var(--ink);border-radius:20px;padding:14px 16px 16px;display:grid;gap:2px;text-align:center;box-shadow:0 8px 28px rgba(0,0,0,.25);transition:outline-color .2s}
+.mcard .k{font-size:12.5px;font-weight:800;color:var(--accent)}
+.mcard .t{font-weight:800;font-size:clamp(22px,6.4vw,28px);line-height:1.25;letter-spacing:-.03em}
+.mcard .t.words{font-size:clamp(26px,8vw,34px);color:var(--accent-d)}
+.mcard .h{font-size:13.5px;color:var(--muted);font-weight:500}
+.mcard .h.read{font-size:clamp(18px,5.2vw,22px);color:var(--ink);font-weight:700;line-height:1.5;margin-top:4px;background:var(--soft);border-radius:12px;padding:10px 12px}
+.mcard.done{outline:3px solid var(--accent)}
+.timer{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-weight:800;font-size:76px;color:rgba(255,255,255,.92);text-shadow:0 2px 14px rgba(0,0,0,.55);pointer-events:none}
+.dotc{position:absolute;left:50%;top:44%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 7px rgba(39,197,124,.3)}
+.pdot{position:absolute;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 9px rgba(39,197,124,.32),0 0 18px rgba(0,0,0,.45);pointer-events:none}
+.ticker{position:absolute;left:16px;right:16px;bottom:calc(86px + env(safe-area-inset-bottom));display:flex;gap:4px}
+.ticker i{flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.25)}
+.ticker i.ok{background:var(--accent)}.ticker i.miss{background:#F5B43C}.ticker i.now{background:#fff}
+.livebar{position:absolute;left:16px;right:16px;bottom:calc(100px + env(safe-area-inset-bottom));display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:#fff}
+.livebar span{background:rgba(0,0,0,.5);padding:4px 10px;border-radius:99px}
+.scanfoot{position:absolute;left:0;right:0;bottom:0;padding:12px 16px calc(16px + env(safe-area-inset-bottom));display:flex;gap:8px;justify-content:center}
+.scanfoot .btn{background:rgba(255,255,255,.14);color:#fff;font-size:14px;padding:11px 16px}
+.bigcheck{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%) scale(.6);opacity:0;width:96px;height:96px;border-radius:50%;background:var(--accent);color:#fff;font-size:56px;font-weight:800;display:grid;place-items:center;transition:all .25s;pointer-events:none}
 .bigcheck.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
 @media (prefers-reduced-motion:reduce){.bigcheck{transition:none}}
-.proc{display:grid;gap:10px}
-.prog{height:8px;border-radius:4px;background:var(--soft);overflow:hidden}
-.prog i{display:block;height:100%;background:var(--accent);width:0}
+.proc{display:grid;gap:12px;text-align:center;padding:28px 20px}
+.proc .spin{width:56px;height:56px;margin:0 auto;border-radius:50%;border:5px solid var(--soft2);border-top-color:var(--accent);animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.prog{height:8px;border-radius:4px;background:var(--soft2);overflow:hidden}
+.prog i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
+.headline{font-size:19px;font-weight:800;line-height:1.4;margin:0;letter-spacing:-.02em}
 
-/* ---- near-point test ---- */
-.reader{font-size:11px;line-height:1.5;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:justify}
-.reader.big{font-size:13px}
+/* near-point */
+.reader{font-size:11px;line-height:1.55;color:var(--ink2);background:#fff;border-radius:14px;padding:14px;text-align:justify;box-shadow:var(--shadow)}
 .dist{display:flex;align-items:baseline;gap:8px;justify-content:center}
-.dist b{font-family:var(--f-display);font-size:56px;font-weight:800;color:var(--accent);line-height:1}
-.mini{position:relative;width:96px;height:128px;border-radius:12px;overflow:hidden;background:#05080a;margin:0 auto}
+.dist b{font-size:56px;font-weight:800;color:var(--accent);line-height:1;letter-spacing:-.03em}
+.mini{position:relative;width:96px;height:128px;border-radius:16px;overflow:hidden;background:#0d1110;margin:0 auto}
 .mini video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
 
-/* ---- report additions ---- */
-.ages{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.agebox{border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:4px}
-.agebox .big{font-family:var(--f-display);font-weight:800;font-size:clamp(48px,14vw,72px);line-height:.95;color:var(--accent)}
-.agebox .big small{font-size:.32em;color:var(--ink);margin-left:3px}
-.agebox .cmp{font-size:13px;font-weight:600}
-.agebox .cmp.up{color:var(--care)} .agebox .cmp.dn{color:var(--good)}
-.agebox .sub{font-size:12px;color:var(--muted)}
-.tabs2{display:flex;gap:6px;flex-wrap:wrap}
-.tabs2 button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer}
-.tabs2 button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-.missions{display:flex;flex-wrap:wrap;gap:6px}
-.vit4{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.vit4 div{border:1px solid var(--line);border-radius:10px;padding:10px}
-.vit4 b{display:block;font-family:var(--f-display);font-size:26px}
-.vit4 span{font-size:12px;color:var(--muted)}
-.hist{display:grid;gap:8px}
-.hrow{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--paper)}
-.hrow .d{font-family:var(--f-num);font-size:12px;color:var(--muted)}
-.hrow b{font-family:var(--f-display);font-size:24px}
-.spark{width:100%;height:90px;display:block}
-.exp{font-size:11px;border:1px solid var(--mid);color:var(--mid);border-radius:999px;padding:0 6px;margin-left:6px;font-weight:600}
-
-.pdot{position:absolute;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:#3fbf86;box-shadow:0 0 0 8px rgba(63,191,134,.3),0 0 18px rgba(0,0,0,.5);pointer-events:none}
-.mcard .t.words{font-size:clamp(28px,9vw,40px);letter-spacing:.04em}
-.mcard .h.read{font-family:var(--f-display);font-size:clamp(19px,5.6vw,24px);color:#fff;line-height:1.45}
-/* ---- touch tasks ---- */
-.task{display:grid;gap:12px}
-.task .ttl{font-family:var(--f-display);font-weight:800;font-size:22px;margin:0}
-.task .ins{margin:0;color:var(--muted);font-size:14px}
-.tapzone{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:8px 0}
-.tapzone button{aspect-ratio:1;border-radius:50%;border:3px solid var(--accent);background:var(--paper);font:inherit;font-size:28px;font-weight:700;color:var(--accent);touch-action:manipulation;-webkit-user-select:none;user-select:none}
-.tapzone button.hit{background:var(--accent);color:var(--accent-ink)}
-.rtpad{height:260px;border-radius:18px;display:grid;place-items:center;font-family:var(--f-display);font-size:30px;font-weight:800;color:#fff;background:#6b7a74;touch-action:manipulation;-webkit-user-select:none;user-select:none;cursor:pointer}
-.rtpad.go{background:#16a36a}.rtpad.early{background:#c0573f}
-.stroopw{height:150px;display:grid;place-items:center;font-family:var(--f-display);font-size:64px;font-weight:800;background:var(--paper);border:1px solid var(--line);border-radius:16px}
+/* touch tasks */
+.task{display:grid;gap:14px}
+.task .ttl{font-weight:800;font-size:21px;margin:0;letter-spacing:-.02em}
+.task .ins{margin:0;color:var(--muted);font-size:14.5px}
+.tapzone{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:8px 4px}
+.tapzone button{aspect-ratio:1;border-radius:50%;border:0;background:var(--soft2);font-size:30px;font-weight:800;color:var(--accent-d);touch-action:manipulation;-webkit-user-select:none;user-select:none;box-shadow:inset 0 0 0 3px var(--accent)}
+.tapzone button.hit{background:var(--accent);color:#fff}
+.rtpad{height:270px;border-radius:20px;display:grid;place-items:center;font-size:30px;font-weight:800;color:#fff;background:#A8B0B8;touch-action:manipulation;-webkit-user-select:none;user-select:none;cursor:pointer}
+.rtpad.go{background:var(--accent)}.rtpad.early{background:var(--care)}
+.stroopw{height:150px;display:grid;place-items:center;font-size:62px;font-weight:900;background:var(--bg);border-radius:18px}
 .stroopb{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.stroopb button{font:inherit;font-size:18px;font-weight:700;padding:16px 8px;border-radius:12px;border:1px solid var(--line);background:var(--paper);color:var(--ink);display:flex;gap:8px;align-items:center;justify-content:center;touch-action:manipulation}
+.stroopb button{font-size:18px;font-weight:700;padding:17px 8px;border-radius:14px;border:0;background:var(--bg);color:var(--ink);display:flex;gap:8px;align-items:center;justify-content:center;touch-action:manipulation}
 .stroopb i{width:18px;height:18px;border-radius:50%;display:inline-block}
 .wgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.wgrid button{font:inherit;font-size:17px;font-weight:600;padding:16px 4px;border-radius:12px;border:1px solid var(--line);background:var(--paper);color:var(--ink)}
-.wgrid button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-.tcount{font-family:var(--f-num);font-size:13px;color:var(--muted);text-align:center}
-.qgroup{display:grid;gap:6px}
-.qgroup label{display:flex;gap:8px;align-items:flex-start;font-size:14px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--paper)}
-.qgroup input{margin-top:3px}
-.alert{border:2px solid var(--urgent);background:color-mix(in srgb,var(--urgent) 10%,transparent);border-radius:14px;padding:14px;display:grid;gap:4px}
+.wgrid button{font-size:17px;font-weight:700;padding:17px 4px;border-radius:14px;border:0;background:var(--bg);color:var(--ink)}
+.wgrid button[aria-pressed="true"]{background:var(--accent);color:#fff}
+.tcount{font-size:13px;font-weight:600;color:var(--muted);text-align:center;margin:0}
+.stepper{display:flex;gap:6px}
+.qgroup{display:grid;gap:8px}
+.qgroup label{display:flex;gap:10px;align-items:center;font-size:14.5px;padding:13px 14px;border-radius:14px;background:var(--bg);cursor:pointer}
+.qgroup label:has(input:checked){background:var(--soft2);box-shadow:inset 0 0 0 1.5px var(--accent)}
+.qgroup input{width:20px;height:20px;accent-color:var(--accent);flex:none;margin:0}
+
+/* result */
+.rhero{background:linear-gradient(150deg,#27c57c 0%,#1a9e60 100%);color:#fff;border-radius:22px;padding:20px 16px 16px;box-shadow:0 8px 24px rgba(39,197,124,.25)}
+.rhero .date{font-size:12.5px;opacity:.85;font-weight:600}
+.rhero h2{font-size:22px;font-weight:800;margin:6px 0 14px;line-height:1.35;letter-spacing:-.03em}
+.rhero .tiles .tile{background:rgba(255,255,255,.16)}
+.rhero .tile .v{color:#fff}.rhero .tile .v small{color:rgba(255,255,255,.8)}
+.rhero .tile .l{color:rgba(255,255,255,.85)}
+.rhero .tile .d{color:#fff;opacity:.95}
+.rhero .exp{border-color:rgba(255,255,255,.6);color:#fff}
+.counts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.counts div{background:#fff;border-radius:14px;padding:10px;text-align:center;color:var(--ink)}
+.counts b{display:block;font-size:22px;font-weight:800;line-height:1.2}
+.counts span{font-size:12px;color:var(--muted);font-weight:600}
+.counts .c b{color:var(--care)} .counts .m b{color:var(--mid)} .counts .g b{color:var(--good)}
+.alert{background:var(--care-bg);border-radius:var(--r);padding:16px;display:grid;gap:4px;box-shadow:inset 0 0 0 2px var(--urgent)}
 .alert b{color:var(--urgent);font-size:17px}
-.ages3{grid-template-columns:repeat(3,minmax(0,1fr))}
-.ages3 .agebox{padding:10px}
-.ages3 .agebox .big{font-size:clamp(38px,11vw,60px)}
-.befast{display:grid;gap:8px}
-.bf{display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:10px}
-.bf .L{font-family:var(--f-display);font-weight:800;font-size:28px;color:var(--accent);text-align:center}
-.bf p{margin:0;font-size:13.5px}.bf .raw{margin-top:2px}
+.secttl{display:flex;align-items:center;gap:8px;font-size:18px;font-weight:800;margin:0 0 12px;padding-left:10px;border-left:3px solid var(--accent);letter-spacing:-.02em}
+.chip{font-size:12px;font-weight:700;border-radius:99px;padding:4px 10px;white-space:nowrap;text-align:center}
+.chip.g{background:var(--good-bg);color:var(--good)} .chip.m{background:var(--mid-bg);color:var(--mid)} .chip.c{background:var(--care-bg);color:var(--care)} .chip.u{background:var(--urgent);color:#fff} .chip.n{background:var(--na-bg);color:var(--na)}
+.exp{font-size:10.5px;font-weight:700;border:1px solid var(--mid);color:var(--mid);border-radius:99px;padding:0 6px;margin-left:6px;vertical-align:2px}
+.signals{display:grid}
+.sig{display:grid;gap:4px;padding:14px 0;border-bottom:1px solid var(--line);min-width:0}
+.sig:last-child{border-bottom:0;padding-bottom:0}
+.sig:first-child{padding-top:0}
+.sig .top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.sig .t{font-weight:700;font-size:15.5px}
+.sig .org{display:block;font-size:12px;color:var(--muted2);font-weight:600}
+.sig p{margin:2px 0 0;font-size:14px;color:var(--ink2);line-height:1.6}
+.sig details{font-size:12.5px;color:var(--muted)}
+.sig details summary{cursor:pointer;font-weight:600;color:var(--muted2);list-style:none;margin-top:2px}
+.sig details summary::-webkit-details-marker{display:none}
+.sig details summary::after{content:' ›'}
+.sig details[open] summary::after{content:' ⌄'}
+.raw{font-size:12px;color:var(--muted);display:block;margin-top:4px}
+.ev{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.5}
+.ev a{color:var(--accent-d)}
+.legend{display:none}
+.befast{display:grid;gap:0}
+.bf{display:grid;grid-template-columns:40px 1fr auto;gap:12px;align-items:start;padding:12px 0;border-bottom:1px solid var(--line)}
+.bf:last-child{border-bottom:0}
+.bf .L{width:40px;height:40px;border-radius:12px;background:var(--soft);color:var(--brand2);font-weight:900;font-size:20px;display:grid;place-items:center}
+.bf b{font-size:15px}
+.bf p{margin:2px 0 0;font-size:13.5px;color:var(--ink2)}
+.factors{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.factors li{display:flex;justify-content:space-between;gap:10px;align-items:center;font-size:14.5px;padding:10px 12px;background:var(--bg);border-radius:12px}
+.factors .d{font-weight:800;font-size:14px}
+.factors .d.up{color:var(--care)} .factors .d.dn{color:var(--good)}
+.metrics{display:grid}
+.m{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.m:last-child{border-bottom:0}
+.m .name{font-weight:700;min-width:0;font-size:15px}
+.m .name small{display:block;font-weight:500;font-size:12.5px;color:var(--muted);line-height:1.45}
+.m .bar{grid-column:1/-1}
+.bar{height:8px;border-radius:4px;background:var(--bg);position:relative;overflow:hidden}
+.bar i{position:absolute;left:0;top:0;bottom:0;border-radius:4px}
+.vit4{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.vit4 div{background:var(--bg);border-radius:14px;padding:14px}
+.vit4 b{display:block;font-size:28px;font-weight:800;letter-spacing:-.03em;line-height:1.2}
+.vit4 span{font-size:12px;color:var(--muted);font-weight:600}
+.missions{display:flex;flex-wrap:wrap;gap:6px}
+.disclaimer{font-size:12px;color:var(--muted2);text-align:center;padding:4px 8px 0;margin:0;line-height:1.6}
+.share img{width:100%;border-radius:14px;display:block}
+
+/* history */
+.hist{display:grid;gap:8px}
+.hrow{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:14px 16px;border-radius:16px;background:#fff;box-shadow:var(--shadow)}
+.hrow .d{font-size:12.5px;color:var(--muted);font-weight:600}
+.hrow .ag{display:flex;gap:12px;margin-top:4px;font-size:13px;color:var(--muted)}
+.hrow .ag b{font-size:18px;color:var(--ink);font-weight:800;margin-left:3px}
+.chart{width:100%;display:block}
+.chart text{font-family:var(--f-ui)}
+.clegend{display:flex;flex-wrap:wrap;gap:12px;font-size:12.5px;color:var(--muted);font-weight:600;margin-top:6px}
+.clegend i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:5px;vertical-align:middle}
+.rstack{display:grid;gap:12px;min-width:0}
+.tile .exp{display:none}
+.chip{display:inline-block;line-height:1.45;flex:none;align-self:flex-start;height:auto}
+.counts .cc b{color:var(--care)} .counts .cm b{color:var(--mid)} .counts .cg b{color:var(--good)}
+.chip{white-space:nowrap;min-width:max-content}
+.mcard .h.tiny{font-size:11.5px;color:var(--ink);line-height:1.5;background:var(--bg);border-radius:10px;padding:8px 10px;margin-top:4px}
+.qhead{font-size:13.5px;font-weight:700;color:var(--muted);margin:4px 0 8px}
+.qchips{display:flex;flex-wrap:wrap;gap:8px}
+.qchips button{font-size:14px;font-weight:600;border:0;border-radius:99px;padding:10px 14px;background:var(--bg);color:var(--ink2);cursor:pointer}
+.qchips button[aria-pressed="true"]{background:var(--accent);color:#fff}
+
 </style>
 </head>
 <body>
 <div class="toast" id="toast" hidden role="alert"></div>
 <div class="app">
-  <div class="topbar"><button class="back" id="back" hidden aria-label="뒤로">‹</button><h1 id="title">페이스체크</h1><span class="pill" id="aiState">얼굴 인식 준비 중</span></div>
+  <div class="topbar"><button class="back" id="back" hidden aria-label="뒤로">‹</button><img class="logo" id="logo" src="data:image/png;base64,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" alt="LifeCatch"><h1 id="title">페이스체크</h1><span class="pill" id="aiState">얼굴 인식 준비 중</span></div>
   <main class="screens">
     <!-- HOME -->
     <section class="screen" data-s="home">
-      <div><p class="eyebrow" style="margin:0" id="today"></p><p class="hello">약 1분 촬영 + 터치 테스트로<br>얼굴·눈·두뇌 나이와 건강 신호를</p></div>
+      <div class="hero"><span class="tag">AI 페이스체크 · 약 1분 30초</span><h2>얼굴을 비추면<br>얼굴·두뇌·눈 나이와<br>건강 신호를 알려드려요</h2><p id="today"></p>
+        <svg class="deco" viewBox="0 0 120 120" fill="none" aria-hidden="true"><rect x="18" y="14" width="84" height="92" rx="22" fill="rgba(255,255,255,.16)"/><path d="M30 30v-6a6 6 0 0 1 6-6h6M78 18h6a6 6 0 0 1 6 6v6M90 82v6a6 6 0 0 1-6 6h-6M42 94h-6a6 6 0 0 1-6-6v-6" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="48" cy="52" r="4" fill="#fff"/><circle cx="72" cy="52" r="4" fill="#fff"/><path d="M48 72c6 6 18 6 24 0" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg></div>
       <div class="card" id="lastBox"></div>
+      <div class="card"><p class="h2">이렇게 진행돼요</p><p class="sub2">음성 안내를 따라 하기만 하면 돼요</p><ol class="plan" id="plan"></ol></div>
       <div class="card">
-        <p class="eyebrow">촬영 약 75초 · 음성 안내를 따라 해 주세요</p>
-        <ol class="plan" id="plan"></ol>
-      </div>
-      <div class="card">
-        <p class="eyebrow">내 정보</p>
-        <div class="row">
+        <p class="h2">내 정보</p><p class="sub2">나이 비교와 결과 해석에 쓰여요</p>
+        <div class="row" style="gap:10px">
           <label class="f" for="birth">출생 연도<input type="number" id="birth" min="1930" max="2012" placeholder="예: 1978" inputmode="numeric"></label>
           <label class="f" for="sex">성별<select id="sex"><option value="">선택 안 함</option><option value="여성">여성</option><option value="남성">남성</option></select></label>
-          <label class="f" for="glass">평소 안경·렌즈<select id="glass"><option value="">선택 안 함</option><option>안 씀</option><option>먼 거리용(근시)</option><option>돋보기·다초점</option></select></label>
         </div>
-        <label class="check" style="margin-top:10px"><input type="checkbox" id="agree">파일럿 참여에 동의합니다. 영상·사진·음성은 이 휴대폰 안에서만 분석되고 어디에도 전송·저장되지 않습니다(음성은 크기 변화만 계산). 측정 수치와 설문만 이 휴대폰에 기록되며, 파일로 내보내 담당자에게 제출할 수 있습니다.</label>
+        <label class="f" for="glass" style="margin-top:10px">평소 안경·렌즈<select id="glass"><option value="">선택 안 함</option><option>안 씀</option><option>먼 거리용(근시)</option><option>돋보기·다초점</option></select></label>
+        <label class="check" style="margin-top:14px"><input type="checkbox" id="agree"><span><b style="color:var(--ink)">[필수] 측정 및 정보 이용 동의</b><br>영상·사진·음성은 이 휴대폰 안에서만 분석되고 어디에도 전송·저장되지 않아요(음성은 소리 크기만 계산). 측정 수치와 문진 답변은 이 휴대폰에 기록돼요.</span></label>
       </div>
-      <button class="btn primary cta" id="start" disabled>원샷 체크 시작</button>
-      <p class="note2" id="startNote">소리를 켜고 조용한 곳에서 해 주세요. 카메라와 마이크 권한을 물으면 허용해 주세요. 휴대폰을 얼굴 정면, 팔을 편하게 굽힌 거리(30~40cm)에 들고 시작합니다. 결과는 건강관리 참고용이며 진단이 아닙니다.</p>
-      <details class="diag card" id="diag"><summary>작동이 안 되나요? 환경 점검</summary><table id="diagT"></table><p class="note2" style="margin-top:8px">문제가 있으면 이 표를 캡처해서 보내 주세요.</p></details>
+      <button class="btn primary cta" id="start" disabled>페이스체크 시작하기</button>
+      <p class="note2" id="startNote" style="text-align:center">조용하고 밝은 곳에서, 소리를 켜고 시작하세요.<br>카메라·마이크 권한을 물으면 허용해 주세요.</p>
+      <p class="disclaimer">페이스체크는 건강관리 참고용 서비스이며 의료 진단을 대신하지 않아요.</p>
+      <details class="diag" id="diag"><summary>작동이 안 되나요? 환경 점검</summary><table id="diagT"></table><p class="note2" style="margin-top:8px">문제가 있으면 이 표를 캡처해서 보내 주세요.</p></details>
     </section>
 
     <!-- PROCESSING -->
     <section class="screen" data-s="proc" hidden>
-      <div class="card proc"><p class="eyebrow" style="margin:0">분석 중</p><p class="headline" style="margin:0" id="procT">촬영한 장면을 분석하고 있어요</p><div class="prog"><i id="procBar"></i></div><p class="note2" id="procN"></p></div>
+      <div class="card proc"><div class="spin" aria-hidden="true"></div><p class="headline" style="margin:0" id="procT">촬영한 장면을 분석하고 있어요</p><div class="prog"><i id="procBar"></i></div><p class="note2" id="procN"></p></div>
     </section>
 
 
@@ -281,20 +279,19 @@ details.diag td:last-child{text-align:right;font-family:var(--f-num);font-size:1
     </section>
     <!-- NEAR POINT -->
     <section class="screen" data-s="near" hidden>
-      <div class="card"><p class="eyebrow">보너스 · 눈 나이 (노안) 테스트 · 약 30초</p>
+      <div class="card"><p class="h2">눈 나이 테스트</p><p class="sub2">노안 정도를 재요 · 약 30초</p>
         <p class="summary" style="color:var(--ink)">평소 쓰는 <b>안경이 있다면 쓴 채로</b> 하세요. 휴대폰을 팔을 쭉 편 거리에서 아래 글자를 읽으며 <b>천천히 얼굴 쪽으로</b> 가져오다가, <b>글자가 흐려지기 시작하는 순간</b> 버튼을 누르세요.</p></div>
       <div class="mini"><video id="nearVid" playsinline muted></video></div>
       <div class="dist"><b id="nearD">—</b><span>cm · <span id="nearTry">1/2회차</span></span></div>
       <p class="reader" id="reader">가까운 글씨가 잘 안 보이기 시작하는 것은 눈 속 수정체가 딱딱해지면서 초점을 맞추는 힘(조절력)이 줄어들기 때문입니다. 조절력은 10대부터 조금씩 줄어들어 40대 중반이 되면 책이나 휴대폰을 멀리 들어야 글씨가 또렷해집니다. 이 테스트는 글씨가 흐려지기 시작하는 거리를 재서 내 조절력이 평균적으로 몇 살 수준인지 보여 드립니다.</p>
       <button class="btn primary cta" id="blurBtn">흐려졌어요</button>
-      <div class="row" style="justify-content:center"><button class="btn" id="nearSkip">건너뛰기</button></div>
+      <button class="btn ghost" id="nearSkip">건너뛰기</button>
       <p class="status" id="nearSt" style="text-align:center"></p>
     </section>
 
     <!-- SURVEY -->
     <section class="screen" data-s="survey" hidden>
-      <div><h2 style="margin:0 0 4px;font-size:20px">오늘의 컨디션</h2><p class="note2">측정값과 비교해 기준을 다듬는 데 씁니다. 답하기 싫은 항목은 비워 두세요.</p></div>
-      <div class="card"><div class="survey">
+      <div class="card"><p class="h2">오늘의 컨디션</p><p class="sub2">결과를 더 정확하게 해석하는 데 쓰여요. 답하기 어려운 항목은 비워 두세요.</p><div class="survey">
         <label class="f" for="qSleep">지난밤 수면<select id="qSleep"><option value="">—</option><option>5시간 미만</option><option>5~7시간</option><option>7시간 이상</option></select></label>
         <label class="f" for="qAlc">어제 음주<select id="qAlc"><option value="">—</option><option>안 함</option><option>조금</option><option>많이</option></select></label>
         <label class="f" for="qSwell">오늘 얼굴 붓기<select id="qSwell"><option value="">—</option><option>없음</option><option>조금</option><option>많이</option></select></label>
@@ -305,19 +302,19 @@ details.diag td:last-child{text-align:right;font-family:var(--f-num);font-size:1
         <label class="f" for="qAnemia">빈혈 진단 경험<select id="qAnemia"><option value="">응답 안 함</option><option>없음</option><option>있음</option><option>모름</option></select></label>
       </div></div>
 
-      <div class="card"><p class="eyebrow">지금 또는 최근 24시간 안에 갑자기 생긴 증상 (뇌졸중 경고 신호)</p><div class="qgroup" id="qStroke">
+      <div class="card"><p class="h2">갑자기 생긴 증상이 있나요?</p><p class="sub2">지금 또는 최근 24시간 안에 생긴 것만 골라 주세요</p><div class="qgroup" id="qStroke">
         <label><input type="checkbox" value="balance">갑자기 어지럽고 몸의 균형을 잡기 어렵다</label>
         <label><input type="checkbox" value="eyes">갑자기 한쪽 눈이 안 보이거나 물체가 두 개로 보인다</label>
         <label><input type="checkbox" value="face">갑자기 얼굴 한쪽이 처지거나 감각이 둔하다</label>
         <label><input type="checkbox" value="arm">갑자기 한쪽 팔다리에 힘이 빠지거나 저리다</label>
         <label><input type="checkbox" value="speech">갑자기 말이 어눌하거나 말을 이해하기 어렵다</label>
         <label><input type="checkbox" value="headache">갑자기 지금까지 없던 심한 두통이 생겼다</label></div></div>
-      <div class="card"><p class="eyebrow">뇌혈관 위험 요인 (진단받았거나 해당되면 선택)</p><div class="qgroup" id="qRisk">
+      <div class="card"><p class="h2">해당하는 항목을 골라 주세요</p><p class="sub2">진단받았거나 해당되는 것 · 뇌혈관 위험 요인</p><div class="qgroup" id="qRisk">
         <label><input type="checkbox" value="htn">고혈압</label><label><input type="checkbox" value="dm">당뇨병</label>
         <label><input type="checkbox" value="lipid">고지혈증(이상지질혈증)</label><label><input type="checkbox" value="smoke">현재 흡연</label>
         <label><input type="checkbox" value="af">심방세동 등 부정맥</label><label><input type="checkbox" value="prior">뇌졸중·일과성 뇌허혈 경험</label>
         <label><input type="checkbox" value="fam">부모·형제의 뇌졸중·치매</label><label><input type="checkbox" value="inactive">거의 운동하지 않음</label></div></div>
-      <div class="card"><p class="eyebrow">최근 1~2년 사이 기억력 변화 (예전보다 나빠졌다면 선택)</p><div class="qgroup" id="qMem">
+      <div class="card"><p class="h2">요즘 기억력은 어떠세요?</p><p class="sub2">최근 1~2년 사이 예전보다 나빠졌다면 골라 주세요</p><div class="qgroup" id="qMem">
         <label><input type="checkbox" value="m1">약속이나 날짜를 잊는 일이 늘었다</label>
         <label><input type="checkbox" value="m2">같은 질문이나 이야기를 반복한다는 말을 듣는다</label>
         <label><input type="checkbox" value="m3">물건을 둔 곳을 자주 잊는다</label>
@@ -330,15 +327,15 @@ details.diag td:last-child{text-align:right;font-family:var(--f-num);font-size:1
 
     <!-- RESULT -->
     <section class="screen" data-s="result" hidden>
-      <div class="card" id="report" aria-live="polite"></div>
+      <div class="rstack" id="report" aria-live="polite"></div>
       <button class="btn cta" id="home2">홈으로</button>
     </section>
 
     <!-- HISTORY -->
     <section class="screen" data-s="history" hidden>
-      <div class="card"><p class="eyebrow">얼굴 나이 추이</p><svg class="spark" id="spark" viewBox="0 0 300 90" preserveAspectRatio="none" role="img" aria-label="얼굴 나이 추이"></svg><p class="note2" id="sparkNote"></p></div>
+      <div class="card"><p class="h2">나이 변화</p><p class="sub2" id="sparkNote"></p><svg class="chart" id="spark" role="img" aria-label="얼굴·두뇌·눈 나이 추이"></svg><div class="clegend" id="clegend"></div></div>
       <div class="hist" id="hist"></div>
-      <div class="card"><p class="eyebrow">파일럿 데이터 제출</p><p class="note2">이 휴대폰에 쌓인 측정 수치 전체를 파일로 받아 담당자에게 보내 주세요. 사진은 들어 있지 않아요.</p>
+      <div class="card"><p class="h2">파일럿 데이터 제출</p><p class="note2">이 휴대폰에 쌓인 측정 수치 전체를 파일로 받아 담당자에게 보내 주세요. 사진은 들어 있지 않아요.</p>
         <div class="row" style="margin-top:10px"><button class="btn" id="csvAll">전체 기록 CSV</button><button class="btn" id="jsonAll">전체 기록 JSON</button></div><p class="status" id="expSt"></p></div>
     </section>
   </main>
@@ -618,10 +615,10 @@ function analyzeBasic(frames) {
   let hr = pk.f * 60;
   const peaks = DSP.findPeaks(p, FS, hr), v = DSP.hrv(peaks);
   let stress = NaN;
-  if (dur >= 20 && !isNaN(v.rmssd) && v.rmssd > 5 && v.rmssd < 150) stress = Math.max(0, Math.min(100, Math.round(100 * (4.5 - Math.log(v.rmssd)) / 2)));
+  if (dur >= 14 && !isNaN(v.rmssd) && v.rmssd > 5 && v.rmssd < 150) stress = Math.max(0, Math.min(100, Math.round(100 * (4.5 - Math.log(v.rmssd)) / 2)));
   const RFS = 10, rts = use.map(f => f.t);
   let rr = NaN, rrSnr = -99;
-  if (dur >= 20) {
+  if (dur >= 14) {
     const cy = DSP.bandpass(DSP.resample(rts, use.map(f => f.cy), RFS), RFS, 0.1, 0.6);
     const gi = DSP.bandpass(DSP.resample(rts, use.map(f => f.all[1]), RFS), RFS, 0.1, 0.6);
     const ra = DSP.spectrumPeak(cy, RFS, 0.1, 0.6, 0.005, 0.03), rb = DSP.spectrumPeak(gi, RFS, 0.1, 0.6, 0.005, 0.03);
@@ -1161,9 +1158,21 @@ async function detect(cv, opt, withAge) {
 
 /* ---------- audio / voice guidance ---------- */
 let actx = null;
-function beep(f = 880, ms = 120, n = 1) { try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); for (let i = 0; i < n; i++) { const o = actx.createOscillator(), g = actx.createGain(), t = actx.currentTime + i * (ms / 1000 + 0.08);
-  o.frequency.value = f; g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.25, t + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + ms / 1000); o.connect(g).connect(actx.destination); o.start(t); o.stop(t + ms / 1000 + 0.02); } } catch {}
-  try { navigator.vibrate?.(60); } catch {} }
+function wavURL(freq, ms, vol = 0.9) {
+  const sr = 22050, n = Math.round(sr * ms / 1000), buf = new ArrayBuffer(44 + n * 2), v = new DataView(buf), w = (o, t) => [...t].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
+  w(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); w(8, 'WAVEfmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, sr, true); v.setUint32(28, sr * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); w(36, 'data'); v.setUint32(40, n * 2, true);
+  for (let i = 0; i < n; i++) { const env = Math.min(1, i / 200, (n - i) / 400); v.setInt16(44 + i * 2, Math.sin(2 * Math.PI * freq * i / sr) * env * vol * 32767, true); }
+  let bin = ''; new Uint8Array(buf).forEach(x => bin += String.fromCharCode(x)); return 'data:audio/wav;base64,' + btoa(bin);
+}
+const BEEPS = {};
+// call inside the start tap: creates and unlocks the sound players (mobile browsers only allow sound after a tap)
+function unlockSound() { [[880, 180], [660, 160], [1046, 220]].forEach(([f, ms]) => { const k = f + '_' + ms; if (BEEPS[k]) return; const a = new Audio(wavURL(f, ms)); a.preload = 'auto'; a.volume = 0.01; a.play().then(() => { a.pause(); a.currentTime = 0; a.volume = 1; }).catch(() => { a.volume = 1; }); BEEPS[k] = a; });
+  try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); actx.resume?.(); } catch {} }
+function beep(f = 880, ms = 180, n = 1) {
+  const k = f + '_' + ms, a = BEEPS[k] || BEEPS['880_180'];
+  for (let i = 0; i < n; i++) setTimeout(() => { if (a) { try { a.currentTime = 0; a.volume = 1; a.play().catch(() => {}); } catch {} } }, i * (ms + 90));
+  try { navigator.vibrate?.(n > 1 ? [80, 80, 80] : 80); } catch {}
+}
 let koVoice = null;
 function pickVoice() { try { const v = speechSynthesis.getVoices(); koVoice = v.find(x => /ko[-_]KR/i.test(x.lang)) || v.find(x => /^ko/i.test(x.lang)) || null; } catch {} }
 try { speechSynthesis.onvoiceschanged = pickVoice; pickVoice(); } catch {}
@@ -1177,23 +1186,20 @@ const WORDSETS = [
   { w: ['기차', '연필', '장미'], d: ['버스', '비행기', '지우개', '공책', '튤립', '국화'] },
   { w: ['우산', '호랑이', '시계'], d: ['모자', '장갑', '사자', '곰', '달력', '안경'] },
 ];
-const READ_TEXT = '오늘 아침에 공원에서 친구와 함께 산책을 했습니다', READ_SYL = 21;
+const READ_TEXT = '오늘 공원에서 친구와 산책했어요', READ_SYL = 14;
 let WORDS = WORDSETS[0];
 const MISSIONS = [
-  { id: 'ready', k: '준비', t: '얼굴을 원 안에', h: '밝은 곳에서 앞머리를 넘기고, 안경은 벗어 주세요', say: '얼굴을 화면의 원 안에 맞춰 주세요.', max: 25, need: 4, check: g => g.centered && g.sizeOK, cap: null },
-  { id: 'words', k: '기억', t: '', h: '세 단어를 기억해 두세요 · 얼굴은 가만히', sayFn: () => `지금부터 30초 동안 얼굴을 가만히 두세요. 세 단어를 기억해 주세요. ${WORDS.w.join(', ')}. 나중에 물어볼게요.`, fixed: 1.5, waitSpeech: true, vstart: true, still: true, cap: 'front', from: 1.5, every: 2, what: '기억력 (단어 3개)' },
-  { id: 'pursuit', k: '눈 운동', t: '초록 점을 눈으로만', h: '고개는 그대로, 점을 끝까지 따라가세요', say: '고개는 그대로 두고, 움직이는 초록 점을 눈으로만 따라가세요.', fixed: 14, pursuit: true, capAt: [1.3, 3.8, 6.3, 8.8, 11.8], cap: 'gaze', what: '눈 움직임·눈 흰자 색 (간)' },
-  { id: 'still', k: '정면', t: '가운데 점을 보며 가만히', h: '말하지 말고 편하게 숨 쉬기', say: '가운데 점을 보며 가만히 있어 주세요.', fixed: 9, vend: true, still: true, cap: 'front', from: 0.8, every: 2, what: '심박·호흡·스트레스·피부·얼굴 나이' },
-  { id: 'close', k: '눈꺼풀', t: '눈을 감으세요', h: '편하게 2초간 감고 있기', say: '눈을 감아 주세요. 삐 소리가 나면 뜨세요.', max: 6, need: 2, check: (g, b) => g.ear < b.ear * 0.62, cap: 'closed', what: '눈꺼풀 노란 반점 (지질)', endBeep: true },
-  { id: 'smile', k: '표정', t: '이가 보이게 활짝', h: '크게 웃어 주세요', say: '눈을 뜨고, 이가 보이게 활짝 웃어 주세요.', max: 6, need: 2, check: (g, b) => g.mouthW > b.mouthW * 1.14, cap: 'smile', what: '미소 대칭 (신경)·치아 밝기' },
-  { id: 'read', k: '말하기', t: '소리 내어 읽기', h: READ_TEXT, hClass: 'read', say: '화면의 문장을 또박또박 소리 내어 읽어 주세요.', fixed: 7, voice: true, cap: null, what: '말 속도·멈춤 (뇌졸중·인지)' },
-  { id: 'ah', k: '입안', t: '입 크게 "아~"', h: '혀가 보이게 크게 벌리기', say: '입을 크게 벌리고 아 해 주세요.', max: 6, need: 2, check: g => g.mouthOpen > 0.32, cap: 'mouth', what: '혀 색 (혈액)' },
-  { id: 'conj', k: '눈 안쪽', t: '아래 눈꺼풀 당기기', h: '검지로 아래 눈꺼풀을 살짝 내려 안쪽 붉은 부분을 보여 주세요', say: '검지로 아래 눈꺼풀을 살짝 당겨서, 눈 안쪽 붉은 부분을 보여 주세요.', fixed: 6, from: 1.5, every: 0.6, cap: 'conj', what: '눈꺼풀 안쪽 혈색 (빈혈)' },
-  { id: 'chin', k: '목', t: '턱을 위로 ↑', h: '천장을 보듯 턱을 들어 목을 보여 주세요', say: '손을 내리고, 턱을 위로 들어 목이 보이게 해 주세요.', max: 6, need: 2, check: (g, b) => Math.abs(g.pitch - b.pitch) > 0.06 || g.cy < b.cy - 0.05, cap: 'neck', what: '목 피부색 (대사)·목주름' },
-  { id: 'turnL', k: '반응', t: '고개를 한쪽으로', h: '소리가 나면 바로 고개를 돌리세요', say: '고개를 한쪽으로 돌리세요.', max: 5, pre: (g, b) => Math.abs(g.yaw - b.yaw) < 0.07, check: (g, b) => Math.abs(g.yaw - b.yaw) > 0.13, react: true, cap: null, what: '반응 속도' },
-  { id: 'turnR', k: '반응', t: '반대쪽으로', h: '소리가 나면 반대쪽으로 고개를 돌리세요', say: '반대쪽으로 돌리세요.', max: 5, pre: (g, b) => Math.abs(g.yaw - b.yaw) < 0.07, check: (g, b, m) => Math.abs(g.yaw - b.yaw) > 0.13 && Math.sign(g.yaw - b.yaw) !== m.prevSign, react: true, cap: null, what: '반응 속도' },
-  { id: 'far', k: '목·어깨', t: '팔을 쭉 펴서 멀리', h: '목과 어깨까지 화면에 나오게', say: '정면을 보고, 팔을 쭉 펴서 휴대폰을 멀리 들어 주세요. 목과 어깨까지 보이게요.', max: 7, need: 2, check: (g, b) => g.size < b.size * 0.74, cap: 'neck', what: '목 피부·페이스라인' },
-  { id: 'crown', k: '정수리', t: '머리 위로 들어 정수리', h: '화면이 바닥을 보게 머리 위로 · 삐 소리 두 번이면 내리기', say: '마지막이에요. 휴대폰을 머리 위로 들어서, 화면이 바닥을 보게 하고 정수리를 비춰 주세요. 삐 소리가 두 번 나면 내리세요.', max: 16, crown: true, cap: 'crown', what: '모발 밀도·흰머리' },
+  { id: 'ready', k: '준비', t: '얼굴을 원 안에', h: '밝은 곳에서, 앞머리는 넘겨 주세요', say: '얼굴을 원 안에 맞춰 주세요.', max: 15, need: 3, check: g => g.centered && g.sizeOK, cap: null },
+  { id: 'words', k: '기억', t: '', h: '세 단어를 기억해 두세요 · 얼굴은 가만히', sayFn: () => `가만히 화면을 보세요. 세 단어를 기억하세요. ${WORDS.w.join(', ')}.`, fixed: 1, waitSpeech: true, vstart: true, still: true, cap: 'front', from: 1.2, every: 2 },
+  { id: 'pursuit', k: '눈 운동', t: '초록 점을 눈으로만', h: '고개는 그대로, 점을 따라가세요', say: '초록 점을 눈으로만 따라가세요.', fixed: 8, pursuit: true, capAt: [1.25, 3.75, 6.4], cap: 'gaze' },
+  { id: 'still', k: '정면', t: '가만히 정면 보기', h: '편하게 숨 쉬세요', say: '가운데 점을 보세요.', fixed: 6, vend: true, still: true, cap: 'front', from: 0.6, every: 1.6 },
+  { id: 'close', k: '눈꺼풀', t: '눈을 감으세요', h: '"눈 뜨세요" 하면 뜨세요', say: '눈을 감으세요.', max: 4, need: 2, check: (g, b) => g.ear < b.ear * 0.62, cap: 'closed', endSay: '눈 뜨세요.' },
+  { id: 'smile', k: '표정', t: '이가 보이게 활짝', h: '크게 웃어 주세요', say: '활짝 웃어 보세요.', max: 4, need: 2, check: (g, b) => g.mouthW > b.mouthW * 1.14, cap: 'smile' },
+  { id: 'read', k: '말하기', t: '소리 내어 읽기', h: READ_TEXT, hClass: 'read', say: '문장을 소리 내어 읽어 주세요.', fixed: 4.5, voice: true, cap: null },
+  { id: 'conj', k: '눈 안쪽', t: '아래 눈꺼풀 내리기', h: '검지로 살짝 내려 안쪽 붉은 부분을 보여 주세요', say: '검지로 아래 눈꺼풀을 살짝 내려 주세요.', fixed: 3.5, from: 1, every: 0.5, cap: 'conj' },
+  { id: 'far', k: '목', t: '팔을 쭉 펴고 턱 살짝 들기', h: '목까지 화면에 나오게', say: '손을 내리고, 팔을 쭉 펴서 턱을 살짝 드세요.', max: 4, need: 2, check: (g, b) => g.size < b.size * 0.78, cap: 'neck' },
+  { id: 'near', k: '눈 나이', t: '천천히 가까이 → 흐려지면 탭', h: '가까운 글씨가 흐릿해지기 시작하는 순간 화면 아무 곳이나 누르세요. 휴대폰을 얼굴 쪽으로 천천히 가져오세요.', hClass: 'tiny', say: '이제 글씨를 보며 천천히 가까이 오세요. 흐려지면 화면을 누르세요.', near: true, max: 10, cap: null },
+  { id: 'crown', k: '정수리', t: '머리 위로 들어 정수리', h: '"내려 주세요" 하면 내리세요', say: '마지막이에요. 휴대폰을 머리 위로 들어 정수리를 비춰 주세요.', max: 9, crown: true, cap: 'crown' },
 ];
 
 /* ---------- camera ---------- */
@@ -1311,7 +1317,7 @@ function onDetect(L) {
   if (waiter) waiter(L);
 }
 // pursuit target: two slow left-right sweeps, then up and back
-function dotPos(s) { if (s < 10) return { x: 0.5 + 0.36 * Math.sin(2 * Math.PI * s / 5), y: 0.46 }; if (s < 11) return { x: 0.5, y: 0.46 - 0.22 * (s - 10) }; if (s < 12.6) return { x: 0.5, y: 0.24 }; return { x: 0.5, y: 0.24 + 0.22 * Math.min(1, (s - 12.6)) }; }
+function dotPos(s) { if (s < 5) return { x: 0.5 + 0.36 * Math.sin(2 * Math.PI * s / 5), y: 0.5 }; if (s < 5.8) return { x: 0.5, y: 0.5 - 0.24 * (s - 5) / 0.8 }; if (s < 7.2) return { x: 0.5, y: 0.26 }; return { x: 0.5, y: 0.26 + 0.24 * Math.min(1, (s - 7.2) / 0.8) }; }
 // wait until fn(L) is true for `need` consecutive detections or until `maxMs`
 function waitFor(fn, maxMs, need = 1) { return new Promise(res => { let hits = 0, first = null; const t0 = now();
   const done = (ok) => { waiter = null; clearInterval(iv); res({ ok, first }); };
@@ -1324,7 +1330,7 @@ async function runMission(m) {
   const B = SES.base;
   if (m.pre && B && SES.last) await waitFor(L => m.pre(L.g, B, m), 2000);
   if (m.id === 'right' || m.id === 'turnR') { const prev = SES.missions[m.id === 'right' ? 'left' : 'turnL']; m.prevSign = prev?.sign ?? 0; }
-  const cue = now(); beep(m.react ? 1046 : 880, m.react ? 160 : 110);
+  const cue = now(); beep(880, 180);
   const sp = speak(m.sayFn ? m.sayFn() : m.say); let spDone = false; sp.then(() => spDone = true);
   if (m.fixed) {
     if (m.vstart) { SES.vitFrames = []; SES.vitT0 = now(); SES.vitOn = true; }
@@ -1334,7 +1340,7 @@ async function runMission(m) {
     if (m.pursuit) { SES.pursuit = { t0, samples: [], cur: dotPos(0) }; $('pdot').hidden = false; }
     while (!SES.stop && !SES.skip && (now() - t0 < m.fixed * 1000 || (m.waitSpeech && !spDone))) {
       const el = now() - t0;
-      if (SES.vitOn) { $('timer').hidden = !m.still; $('timer').textContent = Math.max(1, Math.ceil(30 - (now() - SES.vitT0) / 1000)); }
+      if (SES.vitOn) { $('timer').hidden = !m.still; $('timer').textContent = Math.max(1, Math.ceil(20 - (now() - SES.vitT0) / 1000)); }
       if (m.voice) { $('timer').hidden = false; $('timer').textContent = Math.ceil(m.fixed - el / 1000); }
       if (m.pursuit) { const p = dotPos(el / 1000); SES.pursuit.cur = p; const pd = $('pdot'); pd.style.left = (p.x * 100) + '%'; pd.style.top = (p.y * 100) + '%'; }
       if (m.still && SES.last && SES.lastAt > now() - 400) SES.baseList.push(SES.last.g);
@@ -1345,30 +1351,43 @@ async function runMission(m) {
     }
     if (m.pursuit) { $('pdot').hidden = true; SES.pursuitData = SES.pursuit.samples; SES.pursuit = null; }
     if (m.vend) { SES.vitOn = false; computeBase(); $('timer').hidden = true; }
-    if (m.voice) { SES.voice = stopRec(); beep(660, 80); $('timer').hidden = true; }
+    if (m.voice) { SES.voice = stopRec(); beep(660, 160); $('timer').hidden = true; }
     rec.ok = !SES.skip && !SES.stop;
     if (m.voice) rec.ok = rec.ok && !SES.voice?.error;
+  } else if (m.near) {
+    // presbyopia: the user brings the phone closer while reading; a tap marks the blur point (distance from eye spacing)
+    const dist = () => { const L = SES.last; if (!L) return null; const u = Scan.geo(L.P).u; return { cm: Scan.distanceCm(u, $('live').videoWidth, $('live').videoHeight), t: L.t }; };
+    const hist = []; let tapped = null; const t0 = now();
+    const onTap = e => { if (e.target.closest('button')) return; tapped = now(); };
+    $('scan').addEventListener('pointerdown', onTap);
+    while (!SES.stop && !SES.skip && !tapped && now() - t0 < (m.max + 4) * 1000) {
+      const d = SES.lastAt > now() - 300 ? dist() : null; if (d) { hist.push(d); $('lbL').textContent = `약 ${Math.round(d.cm)}cm`; }
+      await sleep(60);
+    }
+    $('scan').removeEventListener('pointerdown', onTap);
+    if (tapped) { const rec2 = hist.filter(h => h.t > tapped - 700), use = rec2.length ? rec2 : hist.slice(-3);
+      if (use.length) { SES.near = { cm: med(use.map(h => h.cm)), tries: [Math.round(med(use.map(h => h.cm)))], bound: !rec2.length }; rec.ok = true; flashDone(); beep(660, 160); } }
+    await sleep(300);
   } else if (m.crown) {
     await sp;
     let lostSince = null, got = 0; const t0 = now();
-    while (!SES.stop && !SES.skip && now() - t0 < m.max * 1000 && got < 6) {
+    while (!SES.stop && !SES.skip && now() - t0 < m.max * 1000 && got < 4) {
       const faceNow = SES.last && SES.lastAt > now() - 350;
-      if (!faceNow) { lostSince = lostSince ?? now(); if (now() - lostSince > 1200) { SES.caps.push({ kind: 'crown', c: grab($('live'), 900), P: null }); got++; await sleep(450); continue; } }
+      if (!faceNow) { lostSince = lostSince ?? now(); if (now() - lostSince > 900) { SES.caps.push({ kind: 'crown', c: grab($('live'), 900), P: null }); got++; await sleep(350); continue; } }
       else lostSince = null;
       await sleep(100);
     }
-    beep(988, 120, 2); rec.ok = got >= 3; await speak(rec.ok ? '좋아요. 휴대폰을 내려 주세요. 수고하셨어요.' : '휴대폰을 내려 주세요. 수고하셨어요.');
+    beep(1046, 220, 2); rec.ok = got >= 3; await speak('좋아요, 내려 주세요.');
     SES.finished = true;
   } else {
-    const r = await waitFor(L => !!(m.check && (m.id === 'ready' || B) && m.check(L.g, B || {}, m)), (m.max + 2.5) * 1000, m.need || 2);
+    const r = await waitFor(L => !!(m.check && (m.id === 'ready' || B) && m.check(L.g, B || {}, m)), (m.max + 1) * 1000, m.need || 2);
     rec.ok = r.ok;
     if (r.ok && m.react) rec.ms = Math.round(r.first - cue);
     if (r.ok && SES.last && B) { if (m.id === 'left') rec.sign = Math.sign(SES.last.g.gx - B.gx); if (m.id === 'turnL') rec.sign = Math.sign(SES.last.g.yaw - B.yaw); }
     if (m.cap) SES.caps.push({ kind: m.cap, c: grab($('live')), P: SES.last && SES.lastAt > now() - 500 ? SES.last.P : null, ok: r.ok, mission: m.id });
     if (m.id === 'ready' && !r.ok && !SES.last) { rec.ok = false; }
-    if (m.endBeep) beep(660, 100);
     if (r.ok) flashDone();
-    await sp; await sleep(r.ok ? 350 : 150);
+    if (m.endSay) { await sleep(700); beep(660, 160); await speak(m.endSay); } else { await sp; await sleep(r.ok ? 200 : 100); }
   }
   rec.skipped = SES.skip; SES.missions[m.id] = rec; ticker();
 }
@@ -1385,7 +1404,7 @@ function drawOverlay(P, W, H) {
   const m = MISSIONS[SES?.idx ?? 0];
   if (m && (m.id === 'ready' || m.still)) { g.strokeStyle = 'rgba(255,255,255,.75)'; g.lineWidth = 3 * dpr; g.setLineDash([10 * dpr, 8 * dpr]); g.beginPath(); g.ellipse(c.width / 2, c.height * 0.47, c.width * 0.3, c.height * 0.26, 0, 0, 7); g.stroke(); g.setLineDash([]); }
   if (!P || m?.crown) return;
-  g.fillStyle = 'rgba(63,191,134,.9)'; P.forEach(([x, y], i) => { if (i < 17 && i % 2) return; g.beginPath(); g.arc(X(x), Y(y), 1.8 * dpr, 0, 7); g.fill(); });
+  g.fillStyle = 'rgba(39,197,124,.95)'; P.forEach(([x, y], i) => { if (i < 17 && i % 2) return; g.beginPath(); g.arc(X(x), Y(y), 1.8 * dpr, 0, 7); g.fill(); });
 }
 
 /* ---------- after the scan: precise landmarks on full-resolution captures, then the numbers ---------- */
@@ -1428,17 +1447,17 @@ async function postProcess() {
   F = pickFront(out.front);
   if (SES.missions.conj) SES.missions.conj.ok = out.conj.some(c => c.exposed);
   bar(1, 1, '정리 중');
-  SES.result = { F: F?.f || null, frontN: out.front.length, vit, out, missions: SES.missions, detFps: SES.detFps, pursuit: pursuitStats(SES.pursuitData || []), voice: SES.voice || null, words: WORDS };
+  SES.result = { near: SES.near || null, F: F?.f || null, frontN: out.front.length, vit, out, missions: SES.missions, detFps: SES.detFps, pursuit: pursuitStats(SES.pursuitData || []), voice: SES.voice || null, words: WORDS };
   if (!F) { toast('정면 얼굴을 분석하지 못했어요. 밝은 곳에서 얼굴이 화면 가운데에 오게 다시 해 주세요.'); show('home'); renderHome(); return; }
   openTasks();
 }
 function pursuitStats(S) {
-  const v = S.filter(p => p.gx != null && isFinite(p.gx)); if (v.length < 12) return { n: v.length };
+  const v = S.filter(p => p.gx != null && isFinite(p.gx)); if (v.length < 8) return { n: v.length };
   const corr = (a, b) => { const ma = a.reduce((x, y) => x + y, 0) / a.length, mb = b.reduce((x, y) => x + y, 0) / b.length; let sab = 0, saa = 0, sbb = 0; a.forEach((x, i) => { sab += (x - ma) * (b[i] - mb); saa += (x - ma) ** 2; sbb += (b[i] - mb) ** 2; }); return saa && sbb ? sab / Math.sqrt(saa * sbb) : 0; };
-  const sweep = v.filter(p => p.t < 10), dx = sweep.map(p => p.dx);
-  const cG = sweep.length >= 10 ? corr(dx, sweep.map(p => p.gx)) : NaN, cY = sweep.length >= 10 ? corr(dx, sweep.map(p => p.yaw)) : NaN;
+  const sweep = v.filter(p => p.t < 5), dx = sweep.map(p => p.dx);
+  const cG = sweep.length >= 6 ? corr(dx, sweep.map(p => p.gx)) : NaN, cY = sweep.length >= 6 ? corr(dx, sweep.map(p => p.yaw)) : NaN;
   const ctr = mean2(sweep.filter(p => Math.abs(p.dx - 0.5) < 0.12).map(p => p.gx)), A = mean2(sweep.filter(p => p.dx > 0.75).map(p => p.gx)) - ctr, B = mean2(sweep.filter(p => p.dx < 0.25).map(p => p.gx)) - ctr;
-  const up = v.filter(p => p.t >= 10.6 && p.t < 12.6), base = v.filter(p => p.t < 10);
+  const up = v.filter(p => p.t >= 5.8 && p.t < 7.2), base = v.filter(p => p.t < 5);
   return { n: v.length, follow: Math.max(Math.abs(cG || 0), Math.abs(cY || 0)), corrGaze: cG, corrHead: cY, asym: isFinite(A) && isFinite(B) && Math.max(Math.abs(A), Math.abs(B)) > 0.02 ? Math.abs(Math.abs(A) - Math.abs(B)) / Math.max(Math.abs(A), Math.abs(B)) : NaN,
     upShift: up.length >= 2 ? mean2(base.map(p => p.gy)) - mean2(up.map(p => p.gy)) : NaN, headMove: Math.sqrt(mean2(sweep.map(p => (p.yaw - mean2(sweep.map(q => q.yaw))) ** 2))) };
 }
@@ -1482,40 +1501,41 @@ function finishNear(skipped) {
 }
 
 /* ================= touch tasks (about 40 s): finger tapping, reaction, Stroop, delayed word recall ================= */
-const TASKS = ['tapR', 'tapL', 'rt', 'stroop', 'recall'];
+const TASKS = ['tapR', 'tapL', 'stroop', 'recall', 'quiz'];
+const TAP_SEC = 5;
 let TK = null;
 function tstep(i) { $('tstep').innerHTML = TASKS.map((_, k) => `<i style="flex:1;height:4px;border-radius:2px;background:${k <= i ? 'var(--accent)' : 'var(--line)'}"></i>`).join(''); }
 const TA = () => $('taskArea');
 async function openTasks() {
-  show('tasks', '두뇌·손 반응 테스트'); TK = {};
+  show('tasks', '터치 체크 · 약 30초'); TK = {}; let sv = null;
   try {
-    tstep(0); TK.tapR = await tapTask('오른손');
-    tstep(1); TK.tapL = await tapTask('왼손');
-    tstep(2); TK.rt = await rtTask();
-    tstep(3); TK.stroop = await stroopTask();
-    tstep(4); TK.recall = await recallTask();
+    tstep(0); TK.tapR = await tapTask('오른손'); if (TK.skipped) throw 'skip';
+    tstep(1); TK.tapL = await tapTask('왼손'); if (TK.skipped) throw 'skip';
+    tstep(2); TK.stroop = await stroopTask();
+    tstep(3); TK.recall = await recallTask();
   } catch (e) { if (e !== 'skip') console.warn(e); }
   SES.result.tasks = TK;
-  openNear();
+  tstep(4); sv = await quizTask();
+  finishAll(sv);
 }
 function intro(title, ins, btn = '시작') { return new Promise(res => {
-  TA().innerHTML = `<p class="ttl">${title}</p><p class="ins">${ins}</p><button class="btn primary cta" id="tGo">${btn}</button><button class="btn" id="tSkipAll" style="justify-self:center">테스트 건너뛰기</button>`;
+  TA().innerHTML = `<p class="ttl">${title}</p><p class="ins">${ins}</p><button class="btn primary cta" id="tGo">${btn}</button><button class="btn ghost" id="tSkipAll">테스트 건너뛰기</button>`;
   $('tGo').onclick = () => res(); $('tSkipAll').onclick = () => { TA().innerHTML = ''; res('skipall'); }; }).then(v => { if (v === 'skipall') throw 'skip'; }); }
 
 /* finger tapping: alternate two targets with one finger for 7 s (speed, rhythm, fatigue, left/right difference) */
 async function tapTask(hand) {
-  await intro(`${hand} 검지 두드리기`, `<b>${hand} 검지 하나</b>로 두 원을 <b>번갈아</b> 최대한 빠르게 7초 동안 누르세요. 첫 터치부터 시간이 시작돼요.`);
   return new Promise(res => {
-    TA().innerHTML = `<p class="ttl">${hand} 검지 · 번갈아 빠르게</p><p class="tcount" id="tCnt">준비되면 아무 원이나 누르세요</p><div class="tapzone"><button id="tA">A</button><button id="tB">B</button></div>`;
+    TA().innerHTML = `<p class="ttl">${hand} 검지로 번갈아 빠르게</p><p class="ins"><b>${hand} 검지 하나</b>로 두 원을 번갈아 ${TAP_SEC}초 동안 최대한 빠르게 누르세요. 첫 터치부터 시작돼요.</p><p class="tcount" id="tCnt">아무 원이나 눌러 시작</p><div class="tapzone"><button id="tA">A</button><button id="tB">B</button></div><button class="btn ghost" id="tSkipAll">테스트 건너뛰기</button>`;
+    $('tSkipAll').onclick = () => { done = true; res(null); TK.skipped = true; };
     const ts = []; let last = null, t0 = null, done = false, wrong = 0;
     const hit = (id, e) => { e.preventDefault(); if (done) return; const t = now(); const el = $(id); el.classList.add('hit'); setTimeout(() => el.classList.remove('hit'), 70);
-      if (t0 == null) { t0 = t; setTimeout(finish, 7000); }
-      if (id === last) { wrong++; return; } last = id; ts.push(t - t0); $('tCnt').textContent = `${ts.length}회 · ${Math.max(0, 7 - (t - t0) / 1000).toFixed(1)}초`; };
+      if (t0 == null) { t0 = t; setTimeout(finish, TAP_SEC * 1000); }
+      if (id === last) { wrong++; return; } last = id; ts.push(t - t0); $('tCnt').textContent = `${ts.length}회 · ${Math.max(0, TAP_SEC - (t - t0) / 1000).toFixed(1)}초`; };
     $('tA').addEventListener('pointerdown', e => hit('tA', e)); $('tB').addEventListener('pointerdown', e => hit('tB', e));
-    function finish() { done = true; beep(660, 80);
+    function finish() { if (done) return; done = true; beep(660, 160);
       const iti = ts.slice(1).map((t, i) => t - ts[i]), h = ts.length >> 1;
       const half = (a) => a.length ? a.length / ((a[a.length - 1] - a[0]) / 1000 || 1) : NaN;
-      res({ n: ts.length, rate: ts.length / 7, itiMean: mean2(iti), itiCv: iti.length > 3 ? Math.sqrt(mean2(iti.map(x => (x - mean2(iti)) ** 2))) / mean2(iti) : NaN,
+      res({ n: ts.length, rate: ts.length / TAP_SEC, itiMean: mean2(iti), itiCv: iti.length > 3 ? Math.sqrt(mean2(iti.map(x => (x - mean2(iti)) ** 2))) / mean2(iti) : NaN,
         decrement: ts.length > 10 ? half(ts.slice(h)) / half(ts.slice(0, h)) : NaN, wrong }); }
   });
 }
@@ -1539,21 +1559,22 @@ async function rtTask() {
 /* Stroop: press the INK colour, not the word; 10 trials, half conflicting */
 async function stroopTask() {
   const C = [['빨강', '#d63a2f'], ['파랑', '#2a62d6'], ['초록', '#1c9a5a'], ['노랑', '#e0b000']];
-  await intro('색깔 맞히기 (스트룹)', '글자의 <b>뜻이 아니라 글자의 색깔</b>을 누르세요. 예: <b style="color:#2a62d6">빨강</b> → <b>파랑</b>을 누르기. 10문제예요.');
-  const trials = []; for (let i = 0; i < 10; i++) { const ink = Math.floor(Math.random() * 4); let word = ink; if (i % 2) { do word = Math.floor(Math.random() * 4); while (word === ink); } trials.push({ ink, word, con: word === ink }); }
+  await intro('글자 색 맞히기', '글자의 <b>뜻이 아니라 색깔</b>을 누르세요.<br>예: <b style="color:#2a62d6;font-size:20px">빨강</b> → <b>파랑</b> 누르기 · 6문제', '시작');
+  const trials = []; for (let i = 0; i < 6; i++) { const ink = Math.floor(Math.random() * 4); let word = ink; if (i % 2) { do word = Math.floor(Math.random() * 4); while (word === ink); } trials.push({ ink, word, con: word === ink }); }
   trials.sort(() => Math.random() - 0.5);
   const out = [];
   for (let i = 0; i < trials.length; i++) {
     const tr = trials[i];
     const r = await new Promise(res => {
-      TA().innerHTML = `<p class="tcount">${i + 1} / 10 · 글자 색을 누르세요</p><div class="stroopw" style="color:${C[tr.ink][1]}">${C[tr.word][0]}</div>
+      TA().innerHTML = `<p class="tcount">${i + 1} / 6 · 글자 <b>색</b>을 누르세요</p><div class="stroopw" style="color:${C[tr.ink][1]}">${C[tr.word][0]}</div>
         <div class="stroopb">${C.map((c, k) => `<button data-k="${k}"><i style="background:${c[1]}"></i>${c[0]}</button>`).join('')}</div>`;
       const t0 = now(); TA().querySelectorAll('.stroopb button').forEach(b => b.addEventListener('pointerdown', e => { e.preventDefault(); res({ rt: now() - t0, ok: +b.dataset.k === tr.ink, con: tr.con }); }, { once: true }));
     });
-    out.push(r); await sleep(250);
+    out.push(r); await sleep(180);
   }
   const ok = out.filter(r => r.ok), rc = mean2(ok.filter(r => r.con).map(r => r.rt)), ri = mean2(ok.filter(r => !r.con).map(r => r.rt));
-  return { acc: ok.length / out.length, rtCon: rc, rtInc: ri, interference: ri - rc, rtAll: mean2(ok.map(r => r.rt)) };
+  const okr = ok.map(r => r.rt), m = mean2(okr);
+  return { acc: ok.length / out.length, rtCon: rc, rtInc: ri, interference: ri - rc, rtAll: m, rtMed: med(okr), cv: okr.length > 2 ? Math.sqrt(mean2(okr.map(x => (x - m) ** 2))) / m : NaN };
 }
 
 /* delayed recall of the three words heard at the start */
@@ -1562,12 +1583,29 @@ async function recallTask() {
   return new Promise(res => {
     TA().innerHTML = `<p class="ttl">처음에 기억한 세 단어는?</p><p class="ins">촬영을 시작할 때 들은 <b>세 단어</b>를 고르세요.</p>
       <div class="wgrid">${all.map(w => `<button aria-pressed="false" data-w="${w}">${w}</button>`).join('')}</div>
-      <button class="btn primary cta" id="rcOk" disabled>확인</button><button class="btn" id="rcNo" style="justify-self:center">기억나지 않아요</button>`;
+      <button class="btn primary cta" id="rcOk" disabled>확인</button><button class="btn ghost" id="rcNo" style="justify-self:center">기억나지 않아요</button>`;
     TA().querySelectorAll('.wgrid button').forEach(b => b.onclick = () => { const w = b.dataset.w; if (sel.has(w)) sel.delete(w); else if (sel.size < 3) sel.add(w); b.setAttribute('aria-pressed', sel.has(w)); $('rcOk').disabled = sel.size === 0; });
     const fin = () => { const hits = [...sel].filter(w => WORDS.w.includes(w)).length; res({ score: hits, wrong: sel.size - hits, picked: [...sel], ms: Math.round(now() - t0) }); };
     $('rcOk').onclick = fin; $('rcNo').onclick = () => { sel.clear(); fin(); };
   });
 }
+
+/* one-screen questionnaire: tap what applies (about 10 s) */
+const QUIZ = [
+  ['stroke', '갑자기 생긴 증상 (지금 또는 24시간 안)', [['balance', '어지럽고 균형이 안 잡혀요'], ['eyes', '한쪽 시야가 안 보이거나 겹쳐 보여요'], ['face', '얼굴 한쪽이 처졌어요'], ['arm', '한쪽 팔다리에 힘이 빠져요'], ['speech', '말이 어눌해졌어요'], ['headache', '처음 겪는 심한 두통']]],
+  ['risk', '해당하는 것', [['htn', '고혈압'], ['dm', '당뇨'], ['lipid', '고지혈증'], ['smoke', '흡연'], ['af', '부정맥'], ['prior', '뇌졸중 경험'], ['fam', '가족 중 뇌졸중·치매'], ['inactive', '운동 거의 안 함']]],
+  ['mem', '요즘 기억력 (예전보다 나빠졌다면)', [['m1', '약속·날짜를 자주 잊어요'], ['m3', '물건 둔 곳을 자주 잊어요'], ['m6', '단어가 잘 떠오르지 않아요']]],
+  ['cond', '오늘 컨디션', [['sleep', '어젯밤 6시간 미만 잠'], ['alc', '어제 음주'], ['swell', '얼굴이 부은 느낌'], ['makeup', '화장·선크림 함'], ['liver', '검진 간 수치 이상 들음'], ['anemia', '빈혈 진단 받은 적']]],
+];
+function quizTask() { return new Promise(res => {
+  TA().innerHTML = `<p class="ttl">해당하는 것만 눌러 주세요</p><p class="ins">없으면 바로 결과 보기를 누르면 돼요.</p>
+    ${QUIZ.map(([g, t, items]) => `<div><p class="qhead">${t}</p><div class="qchips" data-g="${g}">${items.map(([v, l]) => `<button type="button" aria-pressed="false" data-v="${v}">${l}</button>`).join('')}</div></div>`).join('')}
+    <button class="btn primary cta" id="qDone">결과 보기</button>`;
+  TA().querySelectorAll('.qchips button').forEach(b => b.onclick = () => b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true'));
+  $('qDone').onclick = () => { const pick = g => [...TA().querySelectorAll(`.qchips[data-g="${g}"] button[aria-pressed="true"]`)].map(b => b.dataset.v), c = pick('cond');
+    res({ stroke: pick('stroke'), risk: pick('risk'), mem: pick('mem'), sleep: c.includes('sleep') ? '6시간 미만' : null, alc: c.includes('alc') ? '음주' : null, swell: c.includes('swell') ? '있음' : null,
+      make: c.includes('makeup') ? '함' : null, liver: c.includes('liver') ? '있음' : null, anemia: c.includes('anemia') ? '있음' : null }); };
+}); }
 
 /* ================= results: raw numbers -> scores, signals, face age, eye age ================= */
 const REF = {
@@ -1700,7 +1738,7 @@ function compute(R, profile, survey, history) {
   t = !isFinite(sA) ? 'na' : sA >= 10 ? 'watch' : 'ok';
   add({ id: 'redeye', name: '눈 충혈', org: '눈 피로', tier: t, value: `흰자 a* ${fmt(sA, 1)}`, refs: [], text: { ok: '눈 흰자 붉은기는 일반 범위예요.', watch: '눈이 충혈돼 보여요. 수면·화면 사용 시간을 점검해 보세요.', na: '측정되지 않았어요.' }[t] });
   const V = R.vit && !R.vit.error ? R.vit : null;
-  t = !V || !isFinite(V.blinkRate) || V.dur < 20 ? 'na' : V.blinkRate < 6 || V.blinkRate > 32 ? 'watch' : 'ok';
+  t = !V || !isFinite(V.blinkRate) || V.dur < 12 ? 'na' : V.blinkRate < 6 || V.blinkRate > 32 ? 'watch' : 'ok';
   add({ id: 'blink', name: '눈 깜빡임', org: '눈 (건조)·신경', tier: t, value: V ? `분당 ${fmt(V.blinkRate)}회 (정면 ${fmt(V.dur)}초)` : '측정 안 됨', refs: ['blink'],
     text: { ok: '깜빡임 횟수가 일반 범위예요.', watch: V && V.blinkRate < 6 ? '깜빡임이 적은 편이에요. 화면에 집중할 때 흔하며 눈이 쉽게 건조해질 수 있어요.' : '깜빡임이 많은 편이에요. 눈이 건조하거나 자극을 받으면 늘어나요.', na: '측정되지 않았어요.' }[t] });
   // condition
@@ -1731,81 +1769,85 @@ function compute(R, profile, survey, history) {
     geom: { faceRatio: F.shape.faceRatio }, missions: R.missions, detFps: +(R.detFps || 0).toFixed(1), frontN: R.frontN, survey };
 }
 
-/* ---------- report ---------- */
-const sigHTML = s => `<div class="sig ${TIER[s.tier][1]}">
+/* ---------- report (LifeCatch style) ---------- */
+const sigHTML = s => `<div class="sig">
         <div class="top"><span><span class="t">${s.name}</span>${s.exp ? '<span class="exp">실험</span>' : ''}<span class="org">${s.org}</span></span><span class="chip ${TIER[s.tier][1]}">${TIER[s.tier][0]}</span></div>
-        <p>${esc(s.text)}</p><span class="raw">측정값 ${esc(s.value)}</span>
-        ${s.refs.length ? `<div class="ev">근거: ${s.refs.map(k => `<a href="${REF[k][1]}" target="_blank" rel="noopener">${esc(REF[k][0])}</a>`).join(' / ')}</div>` : ''}</div>`;
+        <p>${esc(s.text)}</p>
+        <details><summary>측정값·근거 보기</summary><span class="raw">측정값 ${esc(s.value)}</span>
+        ${s.refs.length ? `<div class="ev">${s.refs.map(k => `<a href="${REF[k][1]}" target="_blank" rel="noopener">${esc(REF[k][0])}</a>`).join('<br>')}</div>` : ''}</details></div>`;
 function ageLine(real, a) { const d = real - a; return d > 0 ? [`실제보다 ${d}살 어려 보여요`, 'dn'] : d < 0 ? [`실제보다 ${-d}살 많아 보여요`, 'up'] : ['나이 그대로예요', '']; }
+const ageShort = (real, a) => { const d = real - a; return d > 0 ? [`${d}살 어려요`, 'dn'] : d < 0 ? [`${-d}살 많아요`, 'up'] : ['나이 그대로', '']; };
+function ageTiles(r) {
+  const T = (label, v, exp) => { const [t, c] = v != null ? ageShort(r.age, v) : ['측정 안 함', '']; return `<div class="tile"><span class="l">${label}${exp ? '<span class="exp">실험</span>' : ''}</span><span class="v">${v ?? '—'}<small>${v != null ? '세' : ''}</small></span><span class="d ${c}">${t}</span></div>`; };
+  return `<div class="tiles">${T('얼굴 나이', r.faceAge)}${T('두뇌 나이', r.brain?.brainAge ?? null, true)}${T('눈 나이', r.near?.eyeAge ?? null)}</div>`;
+}
 function renderReport(r, savedMsg) {
-  const flagged = [...r.signals, ...(r.brain?.cog || [])].filter(s => s.tier === 'watch' || s.tier === 'check');
-  const [fl, fc] = ageLine(r.age, r.faceAge), ea = r.near?.eyeAge, [el, ec] = ea ? ageLine(r.age, ea) : ['노안 테스트를 하면 나와요', ''];
+  const all = [...r.signals, ...(r.brain?.cog || [])], cnt = k => all.filter(s => s.tier === k).length;
+  const flagged = all.filter(s => s.tier === 'watch' || s.tier === 'check');
   const best = [...r.skin, ...r.hair, ...r.shape].filter(m => isFinite(m.score)).sort((a, b) => b.score - a.score);
-  const head = flagged.length ? `확인해 볼 건강 신호 ${flagged.length}개` : '눈에 띄는 건강 신호는 없어요';
-  const mlist = MISSIONS.filter(m => m.id !== 'ready').map(m => { const x = r.missions[m.id]; return `<span class="chip ${x?.ok ? 'g' : 'n'}" title="${esc(m.what || '')}">${esc(m.t.replace(/[↑←→"]/g, '').trim())}${x?.ok ? '' : ' · 미확인'}</span>`; }).join('');
-  const sec = (title, list) => !list.length ? '' : `<div class="sec"><p class="eyebrow">${title}</p><div class="metrics">${list.map(m => `<div class="m">
-      <div class="name">${m.name}<small>${m.how}</small><span class="raw">원본값 ${fmt(m.v, m.d)} ${m.u}</span></div>
-      <div class="bar" role="img" aria-label="${m.name} ${fmt(m.score)}점"><i style="width:${isFinite(m.score) ? m.score : 0}%;background:var(--${tone(m.score) === 'g' ? 'good' : tone(m.score) === 'm' ? 'mid' : 'care'})"></i></div>
-      <span class="chip ${tone(m.score)}">${m.band}</span></div>`).join('')}</div></div>`;
+  const head = cnt('check') ? `확인해 보면 좋을 신호가 ${cnt('check')}개 있어요` : cnt('watch') ? `지켜볼 신호가 ${cnt('watch')}개 있어요` : '눈에 띄는 건강 신호는 없어요';
+  const mlist = MISSIONS.filter(m => m.id !== 'ready').map(m => { const x = r.missions[m.id]; return `<span class="chip ${x?.ok ? 'g' : 'n'}">${esc((m.id === 'words' ? '단어 기억' : m.t).replace(/[↑←→"]/g, '').trim())}</span>`; }).join('');
+  const metricList = list => `<div class="metrics">${list.map(m => `<div class="m">
+      <div class="name">${m.name}<small>${m.how} · 원본값 ${fmt(m.v, m.d)} ${m.u}</small></div><span class="chip ${tone(m.score)}">${m.band}</span>
+      <div class="bar" role="img" aria-label="${m.name} ${fmt(m.score)}점"><i style="width:${isFinite(m.score) ? m.score : 0}%;background:${tone(m.score) === 'g' ? 'var(--accent)' : tone(m.score) === 'm' ? 'var(--mid)' : 'var(--care)'}"></i></div></div>`).join('')}</div>`;
+  const card = (title, inner, sub) => `<div class="card"><p class="secttl">${title}</p>${sub ? `<p class="sub2" style="margin-top:-6px">${sub}</p>` : ''}${inner}</div>`;
+  const sorted = [...r.signals].sort((a, b) => tierOrder[a.tier] - tierOrder[b.tier]);
   $('report').innerHTML = `
-    <div class="reportHead"><p class="eyebrow" style="margin:0">나의 원샷 리포트</p><span class="pill">${new Date(r.at).toLocaleString('ko-KR')}</span></div>
-    ${r.brain?.acute ? `<div class="alert" style="margin-top:12px"><b>지금 바로 119에 연락하세요</b><span>뇌졸중 경고 증상이 갑자기 생겼다고 답했어요. 이 앱의 결과와 관계없이 즉시 응급실 진료가 필요할 수 있어요.</span></div>` : ''}
-    <div class="ages ages3" style="margin-top:12px">
-      <div class="agebox"><span class="sub">얼굴 나이</span><div class="big">${r.faceAge}<small>세</small></div><span class="cmp ${fc}">${fl}</span><span class="sub">실제 ${r.age}세${r.mlAge ? ` · AI 나이 모델 ${fmt(r.mlAge)}세` : ''}</span></div>
-      <div class="agebox"><span class="sub">두뇌 나이 <span class="exp">실험</span></span><div class="big">${r.brain?.brainAge ?? '—'}<small>${r.brain?.brainAge ? '세' : ''}</small></div><span class="cmp ${r.brain?.brainAge ? ageLine(r.age, r.brain.brainAge)[1] : ''}">${r.brain?.brainAge ? ageLine(r.age, r.brain.brainAge)[0] : '테스트를 하면 나와요'}</span><span class="sub">반응·스트룹·기억</span></div>
-      <div class="agebox"><span class="sub">눈 나이 (노안)</span><div class="big">${ea ?? '—'}<small>${ea ? '세' : ''}</small></div><span class="cmp ${ec}">${el}</span><span class="sub">${r.near ? `흐려지는 거리 ${r.near.bound ? '약 ' : ''}${fmt(r.near.cm)}cm · 조절력 ${fmt(r.near.amp, 1)}D` : '건너뜀'}</span></div>
-    </div>
-    <p class="headline">${head}</p>
-    <p class="summary">${best.length ? `가장 좋은 항목은 <b>${best.slice(0, 2).map(m => m.name).join('</b>, <b>')}</b>, 관리하면 좋을 항목은 <b>${best.slice(-2).reverse().map(m => m.name).join('</b>, <b>')}</b>이에요.` : ''}</p>
-    ${r.factors.length ? `<p class="eyebrow" style="margin:14px 0 0">얼굴 나이를 움직인 요인</p><ul class="factors">${r.factors.map(f => `<li><span class="d ${f.y > 0 ? 'up' : 'dn'}">${f.y > 0 ? '+' : ''}${fmt(f.y, 1)}세</span><span>${esc(f.label)}</span></li>`).join('')}</ul>` : ''}
-    <p class="note2" style="margin-top:8px">얼굴 나이 = AI 나이 추정 모델 60% + 실제 나이 40% + 피부·모발 지표 보정(±6세). 실험용 지표이며 파일럿 데이터로 보정 중이에요. <a href="${REF.perceived[1]}" target="_blank" rel="noopener" style="color:var(--accent)">보이는 나이와 건강의 관계 (BMJ 2009)</a></p>
+    ${r.brain?.acute ? `<div class="alert"><b>지금 바로 119에 연락하세요</b><span>뇌졸중 경고 증상이 갑자기 생겼다고 답했어요. 이 결과와 관계없이 즉시 응급실 진료가 필요할 수 있어요.</span></div>` : ''}
+    <div class="rhero"><span class="date">${new Date(r.at).toLocaleString('ko-KR', { month: 'long', day: 'numeric', weekday: 'short', hour: '2-digit', minute: '2-digit' })} · 실제 ${r.age}세</span>
+      <h2>${head}</h2>${ageTiles(r)}
+      <div class="counts"><div class="cc"><b>${cnt('check')}</b><span>확인 권장</span></div><div class="cm"><b>${cnt('watch')}</b><span>관찰 필요</span></div><div class="cg"><b>${cnt('ok')}</b><span>정상 범위</span></div></div></div>
 
-    ${r.brain ? `<div class="sec"><p class="eyebrow">뇌졸중 셀프 체크 (BE-FAST) · 측정 + 문진</p><div class="befast">${r.brain.befast.map(b => `<div class="bf"><span class="L">${b.L}</span><div><b>${b.name}</b>${b.exp ? '<span class="exp">실험</span>' : ''}<p>${esc(b.text)}</p>${b.raw ? `<span class="raw">${esc(b.raw)}</span>` : ''}</div><span class="chip ${TIER[b.tier][1]}">${TIER[b.tier][0]}</span></div>`).join('')}</div>
-      <p class="note2" style="margin-top:6px">근거: <a href="${REF.befast[1]}" target="_blank" rel="noopener" style="color:var(--accent)">${esc(REF.befast[0])}</a>. 이 체크는 응급 판단을 대신하지 않아요.</p></div>
-    <div class="sec"><p class="eyebrow">인지·운동 기능</p><div class="signals">${r.brain.cog.map(sigHTML).join('')}</div></div>` : ''}
-    <div class="sec"><p class="eyebrow">얼굴로 본 건강 신호 · 결과는 진단이 아니에요</p>
-      <div class="legend">${['ok', 'watch', 'check', 'base', 'na'].map(k => `<span class="chip ${TIER[k][1]}">${TIER[k][0]}</span>`).join('')}</div>
-      <div class="signals">${r.signals.map(sigHTML).join('')}</div></div>
+    ${best.length ? card('한 줄 요약', `<p class="summary">가장 좋은 항목은 <b>${best.slice(0, 2).map(m => m.name).join('</b>, <b>')}</b>, 관리하면 좋을 항목은 <b>${best.slice(-2).reverse().map(m => m.name).join('</b>, <b>')}</b>이에요.</p>`) : ''}
 
-    ${r.vit ? `<div class="sec"><p class="eyebrow">30초 정면 영상으로 본 오늘의 컨디션</p><div class="vit4">
-      <div><b>${fmt(r.vit.hr)}</b><span>심박수 bpm</span></div><div><b>${fmt(r.vit.rr)}</b><span>호흡수 회/분</span></div>
-      <div><b>${fmt(r.vit.stress)}</b><span>스트레스 /100 (심박변이)</span></div><div><b>${fmt(r.vit.blinkRate)}</b><span>깜빡임 회/분</span></div></div>
-      ${r.react ? `<p class="note2" style="margin-top:8px">반응 속도: 소리 신호 후 고개 돌리기까지 평균 <b>${r.react}ms</b> (${r.react < 700 ? '빠른 편' : r.react < 1100 ? '보통' : '느린 편'}) · <a href="${REF.rt[1]}" target="_blank" rel="noopener" style="color:var(--accent)">근거</a></p>` : ''}
-      <p class="note2" style="margin-top:4px">신호 품질 ${r.vit.q}/5 · 카메라로 잰 추정값이며 의료기기 측정이 아니에요.</p></div>` : ''}
+    ${r.factors.length ? card('얼굴 나이를 움직인 요인', `<ul class="factors">${r.factors.map(f => `<li><span>${esc(f.label)}</span><span class="d ${f.y > 0 ? 'up' : 'dn'}">${f.y > 0 ? '+' : ''}${fmt(f.y, 1)}세</span></li>`).join('')}</ul>
+      <p class="note2" style="margin-top:10px">AI 나이 모델${r.mlAge ? ` ${fmt(r.mlAge)}세` : ''} 60% + 실제 나이 40% + 피부·모발 보정(±6세) · <a href="${REF.perceived[1]}" target="_blank" rel="noopener">보이는 나이와 건강 (BMJ 2009)</a></p>`) : ''}
 
-    ${sec('피부', r.skin)}
-    ${sec('모발', r.hair)}
-    ${sec('얼굴형·표정', r.shape)}
+    ${r.brain ? card('뇌졸중 셀프 체크', `<div class="befast">${r.brain.befast.map(b => `<div class="bf"><span class="L">${b.L}</span><div><b>${b.name}</b>${b.exp ? '<span class="exp">실험</span>' : ''}<p>${esc(b.text)}</p>${b.raw ? `<span class="raw">${esc(b.raw)}</span>` : ''}</div><span class="chip ${TIER[b.tier][1]}">${TIER[b.tier][0]}</span></div>`).join('')}</div>
+      <p class="note2" style="margin-top:10px">BE-FAST(균형·눈·얼굴·팔·말·시간) 기준 · <a href="${REF.befast[1]}" target="_blank" rel="noopener">근거</a> · 응급 판단을 대신하지 않아요.</p>`, '측정값과 문진 답변을 함께 봤어요') : ''}
 
-    <div class="sec"><p class="eyebrow">이번 촬영에서 확인된 동작</p><div class="missions">${mlist}</div>
-      <p class="note2" style="margin-top:6px">미확인 동작의 지표는 정확도가 낮거나 빠질 수 있어요. 인식 속도 ${fmt(r.detFps, 1)}fps.</p></div>
+    ${r.brain ? card('두뇌·운동 기능', `<div class="signals">${r.brain.cog.map(sigHTML).join('')}</div>`, '기억력·집중력·반응·손 움직임') : ''}
 
-    <div class="sec"><p class="eyebrow">파일럿 데이터</p><p class="summary">${savedMsg || ''}</p>
-      <div class="row" style="margin-top:10px"><button class="btn" id="saveCard">결과 카드 이미지 저장</button><button class="btn" id="saveJson">이번 측정 원본 (JSON)</button></div><p class="status" id="saveMsg"></p></div>`;
-  $('saveCard').onclick = () => shareCard(r).toBlob(b => download('facecheck-card.png', b, 'saveMsg'), 'image/png');
+    ${card('얼굴로 본 건강 신호', `<div class="signals">${sorted.map(sigHTML).join('')}</div>`, '결과는 진단이 아니며, 확인 권장 항목은 병원 상담을 권해요')}
+
+    ${r.vit ? card('오늘의 컨디션', `<div class="vit4"><div><b>${fmt(r.vit.hr)}</b><span>심박수 (bpm)</span></div><div><b>${fmt(r.vit.rr)}</b><span>호흡수 (회/분)</span></div>
+      <div><b>${fmt(r.vit.stress)}</b><span>스트레스 (/100)</span></div><div><b>${fmt(r.vit.blinkRate)}</b><span>눈 깜빡임 (회/분)</span></div></div>
+      ${r.react ? `<p class="note2" style="margin-top:10px">고개 돌리기 반응 ${r.react}ms (${r.react < 700 ? '빠른 편' : r.react < 1100 ? '보통' : '느린 편'})</p>` : ''}
+      <p class="note2" style="margin-top:6px">20초 얼굴 영상으로 추정한 값이에요 · 신호 품질 ${r.vit.q}/5</p>`) : ''}
+
+    ${card('피부', metricList(r.skin))}
+    ${r.hair.length ? card('모발', metricList(r.hair)) : ''}
+    ${card('얼굴형·표정', metricList(r.shape))}
+
+    ${card('이번 측정 정보', `<div class="missions">${mlist}</div><p class="note2" style="margin-top:8px">회색 동작은 확인되지 않아 해당 결과가 빠지거나 정확도가 낮을 수 있어요.</p>
+      <p class="summary" style="margin-top:12px;font-size:14px">${savedMsg || ''}</p>
+      <div class="row" style="margin-top:12px"><button class="btn" id="saveCard">결과 카드 저장</button><button class="btn" id="saveJson">원본 데이터 (JSON)</button></div><p class="status" id="saveMsg" style="margin-top:6px"></p>`)}
+    <p class="disclaimer">페이스체크는 휴대폰 카메라·마이크로 측정한 참고용 정보이며 의료 진단을 대신하지 않아요.<br>증상이 있거나 걱정되면 의료진과 상담하세요.</p>`;
+  $('saveCard').onclick = () => shareCard(r).toBlob(b => download('lifecatch-facecheck.png', b, 'saveMsg'), 'image/png');
   $('saveJson').onclick = () => download('facecheck-raw.json', new Blob([JSON.stringify(r, null, 2)], { type: 'application/json' }), 'saveMsg');
 }
 function download(name, blob, st) { try { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); $(st).textContent = '내려받았어요. 다운로드 폴더를 확인해 주세요.'; } catch { $(st).textContent = '저장하지 못했어요. 화면을 캡처해 주세요.'; } }
 function shareCard(r) {
-  const c = document.createElement('canvas'); c.width = 1080; c.height = 1350; const g = c.getContext('2d');
-  g.fillStyle = '#f4f6f5'; g.fillRect(0, 0, 1080, 1350); g.fillStyle = '#16825a'; g.fillRect(0, 0, 1080, 14);
-  g.fillStyle = '#14201b'; g.font = '700 44px "Nanum Myeongjo", serif'; g.fillText('나의 원샷 페이스 리포트', 80, 120);
-  g.fillStyle = '#5b6b65'; g.font = '500 30px "IBM Plex Sans KR", sans-serif'; g.fillText(new Date(r.at).toLocaleDateString('ko-KR') + ` · 실제 ${r.age}세`, 80, 170);
-  const box = (x, label, val, line) => { g.fillStyle = '#5b6b65'; g.font = '500 30px "IBM Plex Sans KR", sans-serif'; g.fillText(label, x, 250);
-    g.fillStyle = '#16825a'; g.font = '800 150px "Nanum Myeongjo", serif'; g.fillText(val, x - 6, 410); g.fillStyle = '#14201b'; g.font = '700 26px "IBM Plex Sans KR", sans-serif'; g.fillText(line, x, 460); };
-  box(80, '얼굴 나이', String(r.faceAge), ageLine(r.age, r.faceAge)[0]);
-  box(410, '두뇌 반응 나이', r.brain?.brainAge ? String(r.brain.brainAge) : '—', r.brain?.brainAge ? ageLine(r.age, r.brain.brainAge)[0] : '테스트 안 함');
-  box(740, '눈 나이', r.near ? String(r.near.eyeAge) : '—', r.near ? ageLine(r.age, r.near.eyeAge)[0] : '테스트 안 함');
-  const list = [...r.skin, ...r.hair].filter(m => isFinite(m.score)).slice(0, 8);
-  list.forEach((m, i) => { const y = 600 + i * 72; g.fillStyle = '#14201b'; g.font = '600 32px "IBM Plex Sans KR", sans-serif'; g.fillText(m.name, 84, y + 26);
-    g.fillStyle = '#e3ebe7'; g.fillRect(480, y + 6, 360, 20); const t2 = tone(m.score); g.fillStyle = t2 === 'g' ? '#16825a' : t2 === 'm' ? '#c98a12' : '#d0533e'; g.fillRect(480, y + 6, 3.6 * m.score, 20);
-    g.fillStyle = '#5b6b65'; g.font = '500 28px "IBM Plex Sans KR", sans-serif'; g.fillText(m.band, 870, y + 26); });
+  const c = document.createElement('canvas'); c.width = 1080; c.height = 1350; const g = c.getContext('2d'), F = '"Pretendard Variable", Pretendard, "Apple SD Gothic Neo", sans-serif';
+  const rr = (x, y, w, h, rad, fill) => { g.beginPath(); g.roundRect ? g.roundRect(x, y, w, h, rad) : g.rect(x, y, w, h); g.fillStyle = fill; g.fill(); };
+  g.fillStyle = '#F4F5F7'; g.fillRect(0, 0, 1080, 1350);
+  const gr = g.createLinearGradient(0, 0, 1080, 560); gr.addColorStop(0, '#27c57c'); gr.addColorStop(1, '#1a9e60'); rr(48, 48, 984, 560, 48, gr);
+  g.fillStyle = '#fff'; g.font = `700 34px ${F}`; g.fillText('LifeCatch 페이스체크', 100, 128);
+  g.font = `500 28px ${F}`; g.globalAlpha = 0.85; g.fillText(new Date(r.at).toLocaleDateString('ko-KR') + ` · 실제 ${r.age}세`, 100, 176); g.globalAlpha = 1;
+  const ages = [['얼굴 나이', r.faceAge], ['두뇌 나이', r.brain?.brainAge], ['눈 나이', r.near?.eyeAge]];
+  ages.forEach(([l, v], i) => { const x = 100 + i * 300; rr(x, 220, 276, 340, 32, 'rgba(255,255,255,.16)');
+    g.fillStyle = '#fff'; g.font = `600 30px ${F}`; g.fillText(l, x + 30, 280); g.font = `800 140px ${F}`; g.fillText(v != null ? String(v) : '—', x + 24, 430);
+    g.font = `700 28px ${F}`; g.fillText(v != null ? ageShort(r.age, v)[0] : '측정 안 함', x + 30, 510); });
+  rr(48, 640, 984, 560, 48, '#fff');
+  const list = [...r.skin, ...r.hair].filter(m => isFinite(m.score)).slice(0, 7);
+  list.forEach((m, i) => { const y = 700 + i * 66; g.fillStyle = '#1a1a1a'; g.font = `700 30px ${F}`; g.fillText(m.name, 100, y + 24);
+    rr(470, y + 4, 360, 18, 9, '#F4F5F7'); const t2 = tone(m.score); rr(470, y + 4, Math.max(18, 3.6 * m.score), 18, 9, t2 === 'g' ? '#27c57c' : t2 === 'm' ? '#D98B06' : '#E5484D');
+    g.fillStyle = '#6C7682'; g.font = `600 26px ${F}`; g.fillText(m.band, 860, y + 24); });
   const fl = [...r.signals, ...(r.brain?.cog || [])].filter(s => s.tier === 'watch' || s.tier === 'check').length;
-  g.fillStyle = '#14201b'; g.font = '700 34px "IBM Plex Sans KR", sans-serif'; g.fillText(fl ? `확인해 볼 건강 신호 ${fl}개` : '눈에 띄는 건강 신호 없음', 84, 1220);
-  g.fillStyle = '#5b6b65'; g.font = '400 24px "IBM Plex Sans KR", sans-serif'; g.fillText('휴대폰 카메라 측정값 · 건강관리 참고용 · GreenRibbon', 84, 1300);
+  g.fillStyle = '#1a1a1a'; g.font = `800 34px ${F}`; g.fillText(fl ? `확인해 볼 건강 신호 ${fl}개` : '눈에 띄는 건강 신호 없음', 100, 1250 - 80);
+  g.fillStyle = '#9AA1A9'; g.font = `500 24px ${F}`; g.fillText('휴대폰 카메라 측정 · 건강관리 참고용 · 의료 진단 아님', 100, 1290);
   return c;
 }
-
 /* ---------- brain health: BE-FAST self check, cognition, motor, risk factors ---------- */
 function computeBrain(R, age, survey, sig) {
   const T = R.tasks || {}, V = R.voice, P = R.pursuit || {}, sx = survey.stroke || [], rk = survey.risk || [], mm = survey.mem || [];
@@ -1836,16 +1878,16 @@ function computeBrain(R, age, survey, sig) {
   t = !st ? 'na' : st.acc < 0.7 ? 'check' : (st.acc < 0.9 || st.interference > 350) ? 'watch' : 'ok';
   add({ id: 'stroop', name: '주의·억제 (스트룹)', org: '집중력·판단력', tier: t, value: st ? `정답 ${fmt(st.acc * 100)}% · 평균 ${fmt(st.rtAll)}ms · 간섭 ${fmt(st.interference)}ms` : '측정 안 됨', refs: ['stroop'],
     text: { ok: '헷갈리는 색 글자에서도 정확하고 빠르게 답했어요.', watch: '헷갈리는 문제에서 실수하거나 시간이 많이 걸렸어요.', check: '정답률이 낮았어요. 규칙을 잘못 이해했을 수도 있으니 다음에 다시 해 보세요.', na: '측정 안 됨' }[t] });
-  const rt = T.rt;
-  t = !rt ? 'na' : (rt.median > 550 || rt.cv > 0.3) ? 'watch' : 'ok';
-  add({ id: 'rt', name: '반응 속도와 일정함', org: '처리 속도', tier: t, value: rt ? `중앙값 ${fmt(rt.median)}ms · 들쭉날쭉함 ${fmt(rt.cv * 100)}% · 성급한 터치 ${rt.early}회` : '측정 안 됨', refs: ['rt', 'iiv'],
+  const rt = T.rt || (T.stroop && isFinite(T.stroop.rtMed) ? { median: T.stroop.rtMed, cv: T.stroop.cv, early: 0, fromStroop: true } : null);
+  t = !rt ? 'na' : (rt.median > (rt.fromStroop ? 1100 : 550) || rt.cv > (rt.fromStroop ? 0.4 : 0.3)) ? 'watch' : 'ok';
+  add({ id: 'rt', name: '반응 속도와 일정함', org: '처리 속도', tier: t, value: rt ? `${rt.fromStroop ? '색 맞히기 ' : ''}중앙값 ${fmt(rt.median)}ms · 들쭉날쭉함 ${fmt(rt.cv * 100)}%` : '측정 안 됨', refs: ['rt', 'iiv'],
     text: { ok: '반응이 빠르고 일정해요.', watch: rt && rt.cv > 0.3 ? '반응 시간이 들쭉날쭉해요. 피로·수면 부족 때도 그래요.' : '반응이 느린 편이에요. 피로·수면 부족 때도 그래요.', na: '측정 안 됨' }[t] });
   const tr = T.tapR, tl = T.tapL, tapRate = mean2([tr?.rate, tl?.rate]), dec = mean2([tr?.decrement, tl?.decrement]);
   t = !isFinite(tapRate) ? 'na' : (tapRate < 3.5 || dec < 0.75) ? 'watch' : 'ok';
   add({ id: 'tap', name: '손가락 운동 (두드리기)', org: '운동 기능', tier: t, value: isFinite(tapRate) ? `양손 평균 ${fmt(tapRate, 1)}회/초 · 후반 속도 유지 ${fmt(dec * 100)}% · 리듬 변동 ${fmt(mean2([tr?.itiCv, tl?.itiCv]) * 100)}%` : '측정 안 됨', refs: ['tap'],
     text: { ok: '손가락 움직임이 빠르고 끝까지 유지됐어요.', watch: dec < 0.75 ? '두드릴수록 속도가 크게 떨어졌어요. 피로 때문일 수 있지만, 손이 굳거나 떨림이 있다면 신경과 상담을 권해요.' : '두드리는 속도가 느린 편이에요.', na: '측정 안 됨' }[t] });
-  t = mm.length >= 4 ? 'check' : mm.length >= 2 ? 'watch' : 'ok';
-  add({ id: 'scd', name: '기억력 자가 체크', org: '주관적 인지 변화', tier: t, value: `${mm.length}/7개 해당`, refs: [],
+  t = mm.length >= 2 ? 'check' : mm.length >= 1 ? 'watch' : 'ok';
+  add({ id: 'scd', name: '기억력 자가 체크', org: '주관적 인지 변화', tier: t, value: `${mm.length}/3개 해당`, refs: [],
     text: { ok: '스스로 느끼는 기억력 변화가 거의 없어요.', watch: '기억력 변화를 몇 가지 느끼고 있어요. 수면·스트레스 관리부터 챙기고, 계속되면 검사를 받아 보세요.', check: '기억력 변화를 여러 가지 느끼고 있어요. 보건소 치매안심센터나 신경과에서 인지 선별검사를 받아 보세요.' }[t] });
   const riskN = rk.length, hard = rk.includes('af') || rk.includes('prior');
   t = hard || riskN >= 3 ? 'check' : riskN >= 2 ? 'watch' : 'ok';
@@ -1854,11 +1896,11 @@ function computeBrain(R, age, survey, sig) {
   cog.sort((a, b) => tierOrder[a.tier] - tierOrder[b.tier]);
   // ---- brain age (experimental): reaction speed vs age, adjusted by Stroop and recall ----
   const parts = [];
-  if (rt && isFinite(rt.median)) parts.push(20 + (rt.median - 300) / 2.2);
+  if (rt && !rt.fromStroop && isFinite(rt.median)) parts.push(20 + (rt.median - 300) / 2.2);
   if (st && isFinite(st.rtAll)) parts.push(20 + (st.rtAll - 750) / 6);
   let brainAge = null; const bfac = [];
   if (parts.length) { let raw = 0.5 * age + 0.5 * mean2(parts), adj = 0;
-    if (rt) bfac.push({ label: `반응 속도 ${fmt(rt.median)}ms`, y: 0.5 * ((20 + (rt.median - 300) / 2.2) - age) / (parts.length || 1) });
+    
     if (rc) { const y = (3 - rc.score) * 1.5 + rc.wrong * 0.5; adj += y; if (y) bfac.push({ label: '단어 기억', y }); }
     if (st && st.acc < 0.8) { adj += 2; bfac.push({ label: '스트룹 정확도', y: 2 }); }
     brainAge = Math.round(Math.max(age - 15, Math.min(age + 15, raw + adj))); }
@@ -1884,27 +1926,26 @@ const PKEY = 'facecheck.profile.v2';
 try { const p = JSON.parse(localStorage.getItem(PKEY) || 'null'); if (p) { $('birth').value = p.birth || ''; $('sex').value = p.sex || ''; $('glass').value = p.glass || ''; $('agree').checked = !!p.agree; } } catch {}
 const saveProfile = () => { try { localStorage.setItem(PKEY, JSON.stringify({ birth: $('birth').value, sex: $('sex').value, glass: $('glass').value, agree: $('agree').checked })); } catch {} };
 function realAge() { const y = +$('birth').value, n = new Date().getFullYear(); return y >= 1930 && y <= n - 14 ? n - y : null; }
-function gateStart() { $('start').disabled = !(realAge() && $('agree').checked && AI.ready); $('start').textContent = AI.ready ? '원샷 체크 시작' : (AI.err ? '인식 모델 오류 · 새로고침해 주세요' : '얼굴 인식 준비 중…'); saveProfile(); }
+function gateStart() { $('start').disabled = !(realAge() && $('agree').checked && AI.ready); $('start').textContent = AI.ready ? '페이스체크 시작하기' : (AI.err ? '인식 모델 오류 · 새로고침해 주세요' : '얼굴 인식 준비 중…'); saveProfile(); }
 ['birth', 'sex', 'glass', 'agree'].forEach(id => { $(id).addEventListener('input', gateStart); $(id).addEventListener('change', gateStart); });
-$('plan').innerHTML = MISSIONS.filter(m => m.what).map((m, i) => `<li><b>${String(i + 1).padStart(2, '0')}</b><span>${esc(m.t.replace(/[↑←→"]/g, '').trim())} · <span class="note2">${esc(m.what)}</span></span></li>`).join('') + '<li><b>+</b><span>터치 테스트 40초 · <span class="note2">손 운동·반응·스트룹·기억</span></span></li><li><b>+</b><span>노안 테스트 · <span class="note2">눈 나이</span></span></li><li><b>+</b><span>문진 1분 · <span class="note2">뇌졸중 증상·위험요인·기억력</span></span></li>';
+$('plan').innerHTML = [['1', '얼굴 촬영', '약 1분'], ['2', '터치 체크 + 간단 문진', '약 30초'], ['3', '결과 확인', '바로']]
+  .map(([n, w, t]) => `<li><b>${n}</b><span class="w">${w}</span><span class="tm">${t}</span></li>`).join('');
 
 $('start').onclick = async () => {
   // unlock speech + sound inside the tap (iPhone requires a user gesture)
   try { speechSynthesis.cancel(); speechSynthesis.speak(Object.assign(new SpeechSynthesisUtterance(' '), { lang: 'ko-KR', volume: 0 })); } catch {}
-  beep(660, 60);
+  unlockSound(); beep(660, 160);
   await runScan();
 };
-$('toResult').onclick = () => {
-  const survey = Object.fromEntries(['qSleep', 'qAlc', 'qSwell', 'qCond', 'qMake', 'qLight', 'qLiver', 'qAnemia'].map(id => [id.slice(1).toLowerCase(), $(id).value || null]));
-  ['qStroke', 'qRisk', 'qMem'].forEach(id => survey[{ qStroke: 'stroke', qRisk: 'risk', qMem: 'mem' }[id]] = [...document.querySelectorAll('#' + id + ' input:checked')].map(i => i.value));
+function finishAll(survey) {
   let r;
   try { r = compute(SES.result, { age: realAge(), sex: $('sex').value, glass: $('glass').value }, survey, HIST); }
   catch (e) { toast('결과 계산 중 오류: ' + e.message); console.error(e); return; }
   HIST.unshift(r); let msg;
-  try { localStorage.setItem(HKEY, JSON.stringify(HIST.slice(0, 80))); msg = `이 휴대폰에 저장했어요 (누적 ${HIST.length}회). 파일럿 제출은 '기록' 탭에서 전체 기록 파일을 받아 담당자에게 보내 주세요.`; }
+  try { localStorage.setItem(HKEY, JSON.stringify(HIST.slice(0, 80))); msg = `이 휴대폰에 저장했어요 (누적 ${HIST.length}회).`; }
   catch { msg = '이 휴대폰에 저장하지 못했어요. 아래 버튼으로 원본 파일을 받아 두세요.'; }
   show('result', '나의 결과'); renderReport(r, msg);
-};
+}
 
 /* history */
 const HKEY = 'facecheck.scan.v1';
@@ -1912,25 +1953,41 @@ let HIST = []; try { HIST = JSON.parse(localStorage.getItem(HKEY) || '[]'); } ca
 function renderHome() {
   $('today').textContent = new Date().toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'long' });
   const h = HIST[0];
-  if (!h) { $('lastBox').innerHTML = '<p class="eyebrow">최근 결과</p><p class="summary">아직 기록이 없어요. 첫 체크를 시작해 보세요. 3번 이상 측정하면 붓기처럼 "평소 대비" 지표가 켜져요.</p>'; return; }
+  if (!h) { $('lastBox').innerHTML = '<p class="h2">최근 결과</p><p class="sub2" style="margin:0">아직 측정 기록이 없어요. 첫 페이스체크를 시작해 보세요.<br>3번 이상 측정하면 "평소 대비" 붓기 비교가 켜져요.</p>'; return; }
   const fl = [...h.signals, ...(h.brain?.cog || [])].filter(s => s.tier === 'watch' || s.tier === 'check').length;
-  $('lastBox').innerHTML = `<p class="eyebrow">최근 결과 · ${esc(new Date(h.at).toLocaleDateString('ko-KR'))}</p>
-    <div class="lastcard"><div><div class="num">${h.faceAge}<small>세</small></div><span class="lbl">얼굴 나이</span></div><div><div class="num">${h.brain?.brainAge ?? '—'}<small>${h.brain?.brainAge ? '세' : ''}</small></div><span class="lbl">두뇌 반응 나이</span></div>
-    <div class="note2">실제 ${h.age}세<br>확인해 볼 신호 ${fl}개<br>누적 ${HIST.length}회</div></div>`;
+  $('lastBox').innerHTML = `<div style="display:flex;justify-content:space-between;align-items:baseline"><p class="h2">최근 결과</p><span class="note2">${esc(new Date(h.at).toLocaleDateString('ko-KR', { month: 'long', day: 'numeric' }))} · 누적 ${HIST.length}회</span></div>
+    <div style="margin-top:10px">${ageTiles(h)}</div>
+    <p class="note2" style="margin-top:10px">실제 ${h.age}세 기준 · 확인해 볼 신호 <b style="color:${fl ? 'var(--care)' : 'var(--good)'}">${fl}개</b></p>`;
 }
+const SERIES = [{ k: 'face', name: '얼굴 나이', color: '#27c57c', get: h => h.faceAge }, { k: 'brain', name: '두뇌 나이', color: '#3B82F6', get: h => h.brain?.brainAge }, { k: 'eye', name: '눈 나이', color: '#F59E0B', get: h => h.near?.eyeAge }];
 function renderHistory() {
-  if (!HIST.length) { $('hist').innerHTML = '<div class="card"><p class="summary">아직 기록이 없어요.</p></div>'; $('spark').innerHTML = ''; $('sparkNote').textContent = ''; return; }
-  const pts = [...HIST].reverse();
-  if (pts.length >= 2) {
-    const ys = pts.flatMap(h => [h.faceAge, h.age, h.near?.eyeAge].filter(x => x != null)), lo = Math.min(...ys) - 2, hi = Math.max(...ys) + 2, X = i => 10 + i * 280 / (pts.length - 1), Y = v => 80 - (v - lo) / (hi - lo) * 70;
-    const eyes = pts.map((h, i) => h.near ? `${X(i)},${Y(h.near.eyeAge)}` : null).filter(Boolean);
-    $('spark').innerHTML = `<polyline fill="none" stroke="var(--muted)" stroke-dasharray="4 4" stroke-width="1.5" points="${pts.map((h, i) => `${X(i)},${Y(h.age)}`).join(' ')}"/>
-      <polyline fill="none" stroke="var(--accent)" stroke-width="2.5" points="${pts.map((h, i) => `${X(i)},${Y(h.faceAge)}`).join(' ')}"/>
-      ${eyes.length >= 2 ? `<polyline fill="none" stroke="var(--mid)" stroke-width="2" points="${eyes.join(' ')}"/>` : ''}`;
-    $('sparkNote').textContent = `초록: 얼굴 나이 · 주황: 눈 나이 · 점선: 실제 나이 · ${pts.length}회`;
-  } else { $('spark').innerHTML = ''; $('sparkNote').textContent = '2회 이상 측정하면 추이가 그려져요.'; }
-  $('hist').innerHTML = HIST.map(h => { const fl = h.signals.filter(s => s.tier === 'watch' || s.tier === 'check');
-    return `<div class="hrow"><b>${h.faceAge}</b><div><span class="d">${esc(new Date(h.at).toLocaleString('ko-KR'))}</span><br>${fl.length ? `확인해 볼 신호 ${fl.length}개` : '눈에 띄는 신호 없음'}${h.vit ? ` · 심박 ${fmt(h.vit.hr)}` : ''}${h.near ? ` · 눈 나이 ${h.near.eyeAge}` : ''}</div><span class="chip ${fl.some(s => s.tier === 'check') ? 'c' : fl.length ? 'm' : 'g'}">${fl.length ? '관찰' : '양호'}</span></div>`; }).join('');
+  if (!HIST.length) { $('hist').innerHTML = '<div class="card"><p class="sub2" style="margin:0">아직 기록이 없어요.</p></div>'; $('spark').innerHTML = ''; $('sparkNote').textContent = ''; $('clegend').innerHTML = ''; return; }
+  const pts = [...HIST].reverse().slice(-8), n = pts.length, W = 340, H = 210, L = 30, R = 22, T = 22, B = 34;
+  const vals = pts.flatMap(h => [h.age, ...SERIES.map(s => s.get(h))]).filter(v => v != null && isFinite(v));
+  const lo = Math.floor(Math.min(...vals) / 5) * 5 - 5, hi = Math.ceil(Math.max(...vals) / 5) * 5 + 5;
+  const X = i => n === 1 ? (L + W - R) / 2 : L + i * (W - L - R) / (n - 1), Y = v => T + (hi - v) / (hi - lo) * (H - T - B);
+  const sameDay = new Set(pts.map(h => new Date(h.at).toDateString())).size < n;
+  const xl = h => { const d = new Date(h.at); return sameDay ? `${d.getMonth() + 1}/${d.getDate()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}` : `${d.getMonth() + 1}/${d.getDate()}`; };
+  let svg = '';
+  for (let v = lo; v <= hi; v += 10) svg += `<line x1="${L}" x2="${W - R}" y1="${Y(v)}" y2="${Y(v)}" stroke="#ECEEF1"/><text x="${L - 6}" y="${Y(v) + 4}" text-anchor="end" font-size="10" fill="#9AA1A9">${v}</text>`;
+  svg += `<polyline fill="none" stroke="#C3C8CE" stroke-width="1.5" stroke-dasharray="4 4" points="${pts.map((h, i) => `${X(i)},${Y(h.age)}`).join(' ')}"/>`;
+  svg += `<text x="${W - R + 2}" y="${Y(pts[n - 1].age) + 4}" font-size="10" fill="#9AA1A9">${pts[n - 1].age}</text>`;
+  const placed = [];
+  SERIES.forEach((s, si) => {
+    const p = pts.map((h, i) => ({ i, v: s.get(h) })).filter(q => q.v != null && isFinite(q.v));
+    if (!p.length) return;
+    if (p.length > 1) svg += `<polyline fill="none" stroke="${s.color}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="${p.map(q => `${X(q.i)},${Y(q.v)}`).join(' ')}"/>`;
+    p.forEach(q => { const x = X(q.i), y = Y(q.v); let ly = y - 9; while (placed.some(([px, py]) => Math.abs(px - x) < 14 && Math.abs(py - ly) < 12)) ly -= 12; placed.push([x, ly]);
+      svg += `<circle cx="${x}" cy="${y}" r="4.5" fill="#fff" stroke="${s.color}" stroke-width="2.5"/><text x="${x}" y="${ly}" text-anchor="middle" font-size="11.5" font-weight="800" fill="${s.color}">${q.v}</text>`; });
+  });
+  pts.forEach((h, i) => { svg += `<text x="${X(i)}" y="${H - 10}" text-anchor="middle" font-size="10" fill="#9AA1A9">${xl(h)}</text>`; });
+  $('spark').setAttribute('viewBox', `0 0 ${W} ${H}`); $('spark').innerHTML = svg;
+  $('sparkNote').textContent = `최근 ${n}회 측정 · 점선은 실제 나이`;
+  $('clegend').innerHTML = SERIES.map(s => `<span><i style="background:${s.color}"></i>${s.name}</span>`).join('') + '<span><i style="background:#C3C8CE"></i>실제 나이</span>';
+  $('hist').innerHTML = HIST.map(h => { const fl = [...h.signals, ...(h.brain?.cog || [])].filter(s => s.tier === 'watch' || s.tier === 'check');
+    return `<div class="hrow"><div><span class="d">${esc(new Date(h.at).toLocaleString('ko-KR', { month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }))}</span>
+      <div class="ag"><span>얼굴<b>${h.faceAge}</b></span><span>두뇌<b>${h.brain?.brainAge ?? '—'}</b></span><span>눈<b>${h.near?.eyeAge ?? '—'}</b></span>${h.vit ? `<span>심박<b>${fmt(h.vit.hr)}</b></span>` : ''}</div></div>
+      <span class="chip ${fl.some(s => s.tier === 'check') ? 'c' : fl.length ? 'm' : 'g'}">${fl.length ? `신호 ${fl.length}개` : '양호'}</span></div>`; }).join('');
 }
 function flat(r) {
   const o = { at: r.at, age: r.age, sex: r.sex, glass: r.glass, faceAge: r.faceAge, mlAge: r.mlAge, adj: r.adj, nearCm: r.near?.cm, eyeAge: r.near?.eyeAge, react: r.react, detFps: r.detFps };
