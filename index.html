@@ -1,0 +1,1282 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"></head><body style="margin:0"><title>페이스체크</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@700;800&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+
+/* Layout: personal report you would screenshot — inputs, then age hero + share card, beauty metrics, visual health signals (each with its raw number and literature), vitals, raw data; pilot data store at the end. */
+:root{
+  --bg:#f4f6f5; --paper:#ffffff; --ink:#14201b; --muted:#5b6b65; --line:#dfe6e2; --soft:#eaf1ed;
+  --accent:#16825a; --accent-ink:#ffffff; --good:#16825a; --mid:#c98a12; --care:#d0533e; --urgent:#b3261e;
+  --f-display:"Nanum Myeongjo","AppleMyungjo",serif;
+  --f-ui:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --f-num:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0f1513;--paper:#161e1b;--ink:#e3ebe7;--muted:#99aaa3;--line:#27332e;--soft:#1c2925;--accent:#3fbf86;--accent-ink:#06150e;--good:#3fbf86;--mid:#e3a83a;--care:#f0806c;--urgent:#ff6b5e;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1513;--paper:#161e1b;--ink:#e3ebe7;--muted:#99aaa3;--line:#27332e;--soft:#1c2925;--accent:#3fbf86;--accent-ink:#06150e;--good:#3fbf86;--mid:#e3a83a;--care:#f0806c;--urgent:#ff6b5e;color-scheme:dark}
+[hidden]{display:none!important}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:var(--f-ui);font-size:15px;line-height:1.6}
+.wrap{max-width:940px;margin:0 auto;padding-inline:16px;padding-block:22px 56px;display:grid;gap:18px}
+header h1{font-family:var(--f-display);font-weight:800;font-size:clamp(28px,5vw,40px);margin:0}
+header p{margin:6px 0 0;color:var(--muted);max-width:62ch}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px;min-width:0}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--muted);text-transform:uppercase;margin:0 0 8px}
+.steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:680px){.steps{grid-template-columns:1fr}}
+.step{border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;gap:8px;align-content:start;min-width:0}
+.step h3{margin:0;font-size:16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.step h3 .n{font-family:var(--f-num);font-size:12px;color:var(--accent);border:1px solid var(--accent);border-radius:999px;width:22px;height:22px;display:inline-grid;place-items:center}
+.step p{margin:0;font-size:13px;color:var(--muted)}
+.opt{font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:1px 7px;font-weight:500}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+label.f{display:grid;gap:4px;font-size:12px;color:var(--muted)}
+input[type=number],select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-width:0}
+.btn,.filebtn{font:inherit;font-size:14px;font-weight:600;border-radius:10px;padding:10px 14px;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;position:relative;display:inline-flex;align-items:center;gap:6px;overflow:hidden}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.filebtn input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0}
+.btn:focus-visible,.filebtn:focus-within,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.thumb{width:100%;max-width:180px;aspect-ratio:3/4;border-radius:10px;overflow:hidden;background:var(--soft);display:grid;place-items:center;color:var(--muted);font-size:12px;text-align:center;padding:4px}
+.thumb canvas{width:100%;height:100%;object-fit:cover;display:block}
+.status{font-size:13px;color:var(--muted);min-height:1.3em;margin:0}
+.status.ok{color:var(--good)} .status.warn{color:var(--care)}
+.survey{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.survey label.f select{width:100%}
+.check{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--muted)}
+.check input{margin-top:3px}
+.go{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-top:14px;border-top:1px solid var(--line);padding-top:14px}
+.consent{font-size:12.5px;color:var(--muted);max-width:62ch;margin:0}
+
+.reportHead{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.pill{font-size:12px;border-radius:999px;padding:3px 10px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.pill.ex{border-color:var(--mid);color:var(--mid)}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:center}
+@media (max-width:680px){.hero{grid-template-columns:1fr}}
+.age{display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap}
+.age .big{font-family:var(--f-display);font-weight:800;font-size:clamp(64px,13vw,104px);line-height:.9;color:var(--accent)}
+.age .big small{font-size:.32em;color:var(--ink);margin-left:4px}
+.age .real{font-size:14px;color:var(--muted);padding-bottom:10px}
+.age .real b{font-family:var(--f-display);font-size:28px;color:var(--ink)}
+.headline{font-family:var(--f-display);font-weight:700;font-size:clamp(20px,3.4vw,26px);line-height:1.4;margin:12px 0 6px;text-wrap:balance}
+.summary{color:var(--muted);margin:0;max-width:58ch}
+.factors{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:6px}
+.factors li{display:flex;gap:10px;align-items:baseline;font-size:14px}
+.factors .d{font-family:var(--f-num);min-width:3.4em;text-align:right}
+.factors .d.up{color:var(--care)} .factors .d.dn{color:var(--good)}
+.share img{width:100%;border-radius:12px;border:1px solid var(--line);display:block}
+.sec{margin-top:24px}
+.metrics{display:grid}
+.m{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1.3fr) auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.m:last-child{border-bottom:0}
+@media (max-width:560px){.m{grid-template-columns:1fr auto}.m .bar{grid-column:1/-1;grid-row:2}}
+.m .name{font-weight:600;min-width:0}
+.m .name small{display:block;font-weight:400;font-size:12.5px;color:var(--muted);line-height:1.45}
+.raw{font-family:var(--f-num);font-size:11.5px;color:var(--muted);display:block;margin-top:2px}
+.bar{height:8px;border-radius:4px;background:var(--soft);position:relative;overflow:hidden}
+.bar i{position:absolute;left:0;top:0;bottom:0;border-radius:4px}
+.chip{font-size:12.5px;font-weight:600;border-radius:999px;padding:3px 10px;white-space:nowrap;text-align:center}
+.chip.g{background:color-mix(in srgb,var(--good) 14%,transparent);color:var(--good)}
+.chip.m{background:color-mix(in srgb,var(--mid) 16%,transparent);color:var(--mid)}
+.chip.c{background:color-mix(in srgb,var(--care) 14%,transparent);color:var(--care)}
+.chip.u{background:var(--urgent);color:#fff}
+.chip.n{background:var(--soft);color:var(--muted)}
+.signals{display:grid;gap:10px}
+.sig{border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:6px;min-width:0}
+.sig.c{border-left:4px solid var(--care)} .sig.m{border-left:4px solid var(--mid)} .sig.u{border-left:4px solid var(--urgent)}
+.sig .top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;flex-wrap:wrap}
+.sig .t{font-weight:700}
+.sig .org{font-size:12px;color:var(--muted);font-weight:500;margin-left:6px}
+.sig p{margin:0;font-size:14px}
+.sig .ev{font-size:12.5px;color:var(--muted)}
+.sig .ev a{color:var(--accent)}
+.legend{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.tips{margin:0;padding-left:20px;display:grid;gap:8px}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+@media (max-width:680px){.grid2{grid-template-columns:1fr}}
+.vit{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.vit div{border:1px solid var(--line);border-radius:10px;padding:10px}
+.vit b{display:block;font-family:var(--f-display);font-size:28px}
+.vit span{font-size:12px;color:var(--muted)}
+.tablewrap{overflow-x:auto}
+table.raw2{width:100%;border-collapse:collapse;font-size:13px}
+table.raw2 th,table.raw2 td{text-align:left;padding:7px 8px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+table.raw2 th{font-size:12px;color:var(--muted);font-weight:600;white-space:nowrap}
+table.raw2 td.n{font-family:var(--f-num);white-space:nowrap}
+.foot{font-size:12.5px;color:var(--muted);max-width:92ch}
+.thinking{display:flex;gap:10px;align-items:center;color:var(--muted)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:p 1s infinite alternate}
+@keyframes p{from{opacity:.25}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.dot{animation:none}}
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.kpis div{border:1px solid var(--line);border-radius:10px;padding:10px}
+.kpis b{font-family:var(--f-display);font-size:26px;display:block}
+.kpis span{font-size:12px;color:var(--muted)}
+
+/* App shell: a phone-width column with screens and a bottom tab bar; on desktop it sits centred like a device. */
+body{margin:0}
+.app{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);display:flex;flex-direction:column;position:relative}
+@media (min-width:600px){.app{border-left:1px solid var(--line);border-right:1px solid var(--line)}}
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.topbar h1{font-family:var(--f-display);font-size:20px;margin:0;flex:1}
+.topbar .back{background:none;border:0;font-size:22px;color:var(--ink);cursor:pointer;padding:0 6px}
+.screens{flex:1;padding:16px 16px 96px;display:grid;gap:14px;align-content:start}
+.screen{display:grid;gap:14px;align-content:start}
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;display:grid;grid-template-columns:repeat(var(--tabs,3),1fr);background:var(--paper);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:6}
+.tabbar button{background:none;border:0;padding:10px 0 12px;font:inherit;font-size:12px;color:var(--muted);cursor:pointer;display:grid;justify-items:center;gap:2px}
+.tabbar button svg{width:22px;height:22px}
+.tabbar button[aria-current="page"]{color:var(--accent);font-weight:600}
+.hello{font-family:var(--f-display);font-size:26px;font-weight:800;margin:4px 0 0;line-height:1.3}
+.cta{width:100%;justify-content:center;font-size:16px;padding:14px}
+.lastcard{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center}
+.lastcard .num{font-family:var(--f-display);font-size:54px;font-weight:800;color:var(--accent);line-height:1}
+.lastcard .num small{font-size:16px;color:var(--ink)}
+.stepper{display:flex;gap:6px}
+.stepper i{flex:1;height:4px;border-radius:2px;background:var(--line)}
+.stepper i.on{background:var(--accent)}
+.stage2{position:relative;width:100%;aspect-ratio:3/4;background:#0b0f0d;border-radius:16px;overflow:hidden}
+.stage2 video,.stage2 canvas,.stage2 img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.stage2.mirror video{transform:scaleX(-1)}
+.guide{position:absolute;inset:0;pointer-events:none}
+.stage2 .msg2{position:absolute;left:12px;right:12px;bottom:12px;color:#fff;font-size:13px;text-align:center;text-shadow:0 1px 6px rgba(0,0,0,.9)}
+.stage2 .badge{position:absolute;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;font-family:var(--f-num);font-size:12px;color:#fff}
+.stage2 .badge span{background:rgba(0,0,0,.55);padding:3px 8px;border-radius:6px}
+.stage2 .empty{position:absolute;inset:0;display:grid;place-items:center;color:#9fb3ab;text-align:center;padding:24px;font-size:14px}
+.shutter{width:72px;height:72px;border-radius:50%;border:4px solid var(--accent);background:var(--paper);cursor:pointer;margin:0 auto;display:block}
+.shutter:disabled{opacity:.4}
+.actions2{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.wave2{width:100%;height:64px;display:block;background:#0b0f0d;border-radius:10px}
+.hist{display:grid;gap:8px}
+.hrow{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--paper)}
+.hrow .d{font-family:var(--f-num);font-size:12px;color:var(--muted)}
+.hrow b{font-family:var(--f-display);font-size:26px}
+.spark{width:100%;height:90px;display:block}
+.note2{font-size:12.5px;color:var(--muted);margin:0}
+.vh{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:84px;max-width:440px;width:calc(100% - 32px);background:#2a1513;color:#fff;border-radius:10px;padding:10px 12px;font-size:13px;z-index:20}
+details.diag{font-size:13px}
+details.diag table{width:100%;border-collapse:collapse;margin-top:6px}
+details.diag td{padding:4px 0;border-bottom:1px solid var(--line);vertical-align:top}
+details.diag td:last-child{text-align:right;font-family:var(--f-num);font-size:12px;word-break:break-all;padding-left:8px}
+</style>
+
+<div class="toast" id="toast" hidden role="alert"></div>
+<div class="app">
+  <div class="topbar"><button class="back" id="back" hidden aria-label="뒤로">‹</button><h1 id="title">페이스체크</h1><span class="pill" id="who">파일럿</span></div>
+
+  <main class="screens">
+    <!-- HOME -->
+    <section class="screen" data-s="home">
+      <div><p class="eyebrow" style="margin:0" id="today"></p><p class="hello">오늘 얼굴로<br>컨디션을 확인해 볼까요?</p></div>
+      <div class="card" id="lastBox"></div>
+      <div class="card" id="profileBox">
+        <p class="eyebrow">내 정보</p>
+        <div class="row">
+          <label class="f" for="birth">출생 연도<input type="number" id="birth" min="1930" max="2012" placeholder="예: 1988" inputmode="numeric"></label>
+          <label class="f" for="sex">성별<select id="sex"><option value="">선택 안 함</option><option value="여성">여성</option><option value="남성">남성</option></select></label>
+        </div>
+        <label class="check" style="margin-top:10px"><input type="checkbox" id="agree">파일럿 참여에 동의합니다. 사진은 분석에만 쓰이고 저장되지 않으며, 측정 수치·설문·AI 판독 결과만 익명 ID로 저장됩니다. 사진은 판독을 위해 Claude AI로 전송됩니다.</label>
+      </div>
+      <button class="btn primary cta" id="start" disabled>오늘의 체크 시작</button>
+      <details class="diag card" id="diag"><summary>작동이 안 되나요? 환경 점검</summary><table id="diagT"></table><p class="note2" style="margin-top:8px">문제가 있으면 이 표를 캡처해서 보내 주세요.</p><button class="btn" id="camTest" style="margin-top:8px">카메라 미리보기 시험</button></details>
+      <p class="note2">약 2분 · 정면 사진 1장은 필수, 나머지는 건너뛸 수 있어요. 결과는 건강관리 참고용이며 진단이 아닙니다.</p>
+    </section>
+
+    <!-- CAPTURE -->
+    <section class="screen" data-s="capture" hidden>
+      <div class="stepper" id="stepper"></div>
+      <div><p class="eyebrow" style="margin:0" id="stepNo"></p><h2 style="margin:2px 0 4px;font-size:20px" id="stepTitle"></h2><p class="note2" id="stepDesc"></p></div>
+      <div class="stage2" id="stage">
+        <video id="live" playsinline muted></video>
+        <canvas class="guide" id="guide"></canvas>
+        <img id="shot" alt="" hidden>
+        <div class="empty" id="stageEmpty" hidden></div>
+        <div class="badge" id="badge" hidden><span id="badgeL"></span><span id="badgeR"></span></div>
+        <div class="msg2" id="stageMsg"></div>
+      </div>
+      <canvas class="wave2" id="wave" hidden></canvas>
+      <div id="liveCtl"><button class="shutter" id="shutter" aria-label="촬영"></button></div>
+      <div class="actions2" id="fileCtl">
+        <input type="file" id="cap" class="vh" aria-label="카메라로 촬영"><label for="cap" class="btn primary" id="capWrap">카메라로 촬영</label>
+        <input type="file" id="pick" class="vh" aria-label="앨범에서 선택"><label for="pick" class="btn">앨범에서 선택</label>
+      </div>
+      <p class="status" id="capSt" style="text-align:center"></p>
+      <div class="actions2"><button class="btn" id="retake" hidden>다시 찍기</button><button class="btn" id="skip">건너뛰기</button><button class="btn primary" id="next" disabled>다음</button></div>
+    </section>
+
+    <!-- SURVEY -->
+    <section class="screen" data-s="survey" hidden>
+      <div class="stepper" id="stepper2"></div>
+      <div><h2 style="margin:0 0 4px;font-size:20px">오늘의 컨디션</h2><p class="note2">측정값과 비교해 기준을 다듬는 데 씁니다. 답하기 싫은 항목은 비워 두세요.</p></div>
+      <div class="card"><div class="survey">
+        <label class="f" for="qSleep">지난밤 수면<select id="qSleep"><option value="">—</option><option>5시간 미만</option><option>5~7시간</option><option>7시간 이상</option></select></label>
+        <label class="f" for="qAlc">어제 음주<select id="qAlc"><option value="">—</option><option>안 함</option><option>조금</option><option>많이</option></select></label>
+        <label class="f" for="qSwell">오늘 얼굴 붓기<select id="qSwell"><option value="">—</option><option>없음</option><option>조금</option><option>많이</option></select></label>
+        <label class="f" for="qCond">오늘 컨디션<select id="qCond"><option value="">—</option><option>좋음</option><option>보통</option><option>나쁨</option></select></label>
+        <label class="f" for="qLiver">검진 간 수치 이상<select id="qLiver"><option value="">응답 안 함</option><option>없음</option><option>있음</option><option>모름</option></select></label>
+        <label class="f" for="qAnemia">빈혈 진단 경험<select id="qAnemia"><option value="">응답 안 함</option><option>없음</option><option>있음</option><option>모름</option></select></label>
+      </div></div>
+      <button class="btn primary cta" id="analyze">결과 보기</button>
+    </section>
+
+    <!-- RESULT -->
+    <section class="screen" data-s="result" hidden>
+      <div class="card" id="report" aria-live="polite"></div>
+      <button class="btn cta" id="home2">홈으로</button>
+    </section>
+
+    <!-- HISTORY -->
+    <section class="screen" data-s="history" hidden>
+      <div class="card"><p class="eyebrow">얼굴 나이 추이</p><svg class="spark" id="spark" viewBox="0 0 300 90" preserveAspectRatio="none" role="img" aria-label="얼굴 나이 추이"></svg><p class="note2" id="sparkNote"></p></div>
+      <div class="hist" id="hist"></div>
+    </section>
+
+    <!-- ADMIN -->
+    <section class="screen" data-s="admin" hidden><div class="card" id="admin"></div></section>
+  </main>
+
+  <nav class="tabbar" id="tabbar">
+    <button data-t="home" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>홈</button>
+    <button data-t="history"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19h16M7 15l3-4 3 2 4-6"/></svg>기록</button>
+    <button data-t="admin" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 15v-3M12 15V9M16 15v-5"/></svg>데이터</button>
+  </nav>
+</div>
+
+<script>
+/* ===== FaceScan core: pure signal + face-feature code (shared by page and tests) ===== */
+const DSP = (() => {
+  const mean = a => { let s = 0; for (let i = 0; i < a.length; i++) s += a[i]; return a.length ? s / a.length : 0; };
+  const std = a => { const m = mean(a); let s = 0; for (let i = 0; i < a.length; i++) s += (a[i] - m) ** 2; return a.length ? Math.sqrt(s / a.length) : 0; };
+  const median = a => { if (!a.length) return NaN; const b = Array.from(a).sort((x, y) => x - y); const m = b.length >> 1; return b.length % 2 ? b[m] : (b[m - 1] + b[m]) / 2; };
+  function resample(ts, vals, fs) {
+    const n = Math.floor((ts[ts.length - 1] - ts[0]) * fs) + 1, out = new Float64Array(Math.max(0, n));
+    let j = 0;
+    for (let i = 0; i < n; i++) {
+      const t = ts[0] + i / fs;
+      while (j < ts.length - 2 && ts[j + 1] < t) j++;
+      const ta = ts[j], tb = ts[j + 1] ?? ta, va = vals[j], vb = vals[j + 1] ?? va;
+      const f = tb > ta ? Math.min(1, Math.max(0, (t - ta) / (tb - ta))) : 0;
+      out[i] = va + (vb - va) * f;
+    }
+    return out;
+  }
+  function biquad(type, f, fs, Q = Math.SQRT1_2) {
+    const w = 2 * Math.PI * f / fs, c = Math.cos(w), s = Math.sin(w), al = s / (2 * Q);
+    let b0, b1, b2;
+    if (type === 'lp') { b0 = (1 - c) / 2; b1 = 1 - c; b2 = (1 - c) / 2; } else { b0 = (1 + c) / 2; b1 = -(1 + c); b2 = (1 + c) / 2; }
+    const a0 = 1 + al;
+    return [b0 / a0, b1 / a0, b2 / a0, (-2 * c) / a0, (1 - al) / a0];
+  }
+  function filt(co, x) {
+    const [b0, b1, b2, a1, a2] = co, y = new Float64Array(x.length);
+    let x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+    for (let i = 0; i < x.length; i++) { const xi = x[i], yi = b0 * xi + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2; x2 = x1; x1 = xi; y2 = y1; y1 = yi; y[i] = yi; }
+    return y;
+  }
+  function bandpass(x, fs, lo, hi) {
+    const n = x.length; if (n < 4) return new Float64Array(n);
+    const m = mean(x), pad = Math.min(n - 1, Math.round(3 * fs));
+    const ext = new Float64Array(n + 2 * pad);
+    for (let i = 0; i < pad; i++) ext[i] = 2 * (x[0] - m) - (x[pad - i] - m);
+    for (let i = 0; i < n; i++) ext[pad + i] = x[i] - m;
+    for (let i = 0; i < pad; i++) ext[pad + n + i] = 2 * (x[n - 1] - m) - (x[n - 2 - i] - m);
+    const cos = [biquad('hp', lo, fs), biquad('hp', lo, fs), biquad('lp', hi, fs), biquad('lp', hi, fs)];
+    let y = ext;
+    for (const co of cos) { y = filt(co, y); y = filt(co, y.slice().reverse()).reverse(); }
+    return y.slice(pad, pad + n);
+  }
+  // Plane-Orthogonal-to-Skin (Wang et al., IEEE TBME 2017)
+  function pos(R, G, B, fs) {
+    const N = R.length, l = Math.max(2, Math.round(1.6 * fs)), H = new Float64Array(N);
+    if (N < l) return H;
+    const s1 = new Float64Array(l), s2 = new Float64Array(l);
+    for (let n = 0; n + l <= N; n++) {
+      let mr = 0, mg = 0, mb = 0;
+      for (let k = 0; k < l; k++) { mr += R[n + k]; mg += G[n + k]; mb += B[n + k]; }
+      mr /= l; mg /= l; mb /= l; if (!mr || !mg || !mb) continue;
+      for (let k = 0; k < l; k++) { const r = R[n + k] / mr, g = G[n + k] / mg, b = B[n + k] / mb; s1[k] = g - b; s2[k] = g + b - 2 * r; }
+      const a = std(s1) / (std(s2) || 1);
+      let hm = 0; for (let k = 0; k < l; k++) hm += s1[k] + a * s2[k]; hm /= l;
+      for (let k = 0; k < l; k++) H[n + k] += s1[k] + a * s2[k] - hm;
+    }
+    return H;
+  }
+  function spectrum(x, fs, lo, hi, step) {
+    const n = x.length, w = new Float64Array(n);
+    for (let i = 0; i < n; i++) w[i] = x[i] * (0.5 - 0.5 * Math.cos(2 * Math.PI * i / Math.max(1, n - 1)));
+    const fr = [], pw = [];
+    for (let f = lo; f <= hi + 1e-9; f += step) {
+      const d = 2 * Math.PI * f / fs; let re = 0, im = 0;
+      for (let i = 0; i < n; i++) { re += w[i] * Math.cos(d * i); im -= w[i] * Math.sin(d * i); }
+      fr.push(f); pw.push(re * re + im * im);
+    }
+    return { fr, pw };
+  }
+  function spectrumPeak(x, fs, lo, hi, step, bw) {
+    const { fr, pw } = spectrum(x, fs, lo, hi, step);
+    let best = -1, bf = lo; pw.forEach((p, j) => { if (p > best) { best = p; bf = fr[j]; } });
+    let sig = 0, tot = 0;
+    for (let j = 0; j < fr.length; j++) { tot += pw[j]; if (Math.abs(fr[j] - bf) <= bw || Math.abs(fr[j] - 2 * bf) <= bw) sig += pw[j]; }
+    return { f: bf, snr: 10 * Math.log10(sig / Math.max(1e-12, tot - sig)) };
+  }
+  function findPeaks(x, fs, hr) {
+    const minD = Math.max(2, Math.round(0.6 * fs * 60 / hr)), pk = [];
+    for (let i = 1; i < x.length - 1; i++) {
+      if (x[i] > x[i - 1] && x[i] >= x[i + 1] && x[i] > 0) {
+        if (pk.length && i - pk[pk.length - 1] < minD) { if (x[i] > x[pk[pk.length - 1]]) pk[pk.length - 1] = i; } else pk.push(i);
+      }
+    }
+    return pk.map(i => { const a = x[i - 1], b = x[i], c = x[i + 1], den = a - 2 * b + c; const d = den ? 0.5 * (a - c) / den : 0; return { i, t: (i + Math.max(-0.5, Math.min(0.5, d))) / fs }; });
+  }
+  function ibis(peaks) {
+    const out = []; for (let k = 1; k < peaks.length; k++) out.push({ t: peaks[k].t, ms: (peaks[k].t - peaks[k - 1].t) * 1000 });
+    const med = median(out.map(o => o.ms));
+    return out.map(o => ({ ...o, ok: o.ms > 300 && o.ms < 1500 && Math.abs(o.ms - med) < 0.2 * med }));
+  }
+  function hrv(peaks) {
+    const ib = ibis(peaks), good = ib.filter(o => o.ok).map(o => o.ms), diffs = [];
+    for (let k = 1; k < ib.length; k++) if (ib[k].ok && ib[k - 1].ok) diffs.push(ib[k].ms - ib[k - 1].ms);
+    return { n: good.length, sdnn: good.length > 5 ? std(good) : NaN, rmssd: diffs.length > 5 ? Math.sqrt(mean(diffs.map(d => d * d))) : NaN };
+  }
+  function ita(r, g, b) {
+    const lin = v => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+    const R = lin(r), G = lin(g), B = lin(b);
+    const Y = 0.2126 * R + 0.7152 * G + 0.0722 * B, Z = (0.0193 * R + 0.1192 * G + 0.9505 * B) / 1.08883;
+    const f = t => t > 0.008856 ? Math.cbrt(t) : 7.787 * t + 16 / 116;
+    return Math.atan2(116 * f(Y) - 16 - 50, 200 * (f(Y) - f(Z))) * 180 / Math.PI;
+  }
+  // systolic upstroke is shorter than the decline: pick the polarity with the smaller rise/IBI ratio
+  function riseRatio(x, fs, hr) {
+    const one = sig => { const pk = findPeaks(sig, fs, hr), r = [];
+      for (let k = 1; k < pk.length; k++) { const ibi = pk[k].i - pk[k - 1].i; let mi = pk[k].i, mv = Infinity;
+        for (let j = Math.max(pk[k - 1].i, pk[k].i - Math.round(0.6 * ibi)); j < pk[k].i; j++) if (sig[j] < mv) { mv = sig[j]; mi = j; }
+        if (ibi > 0) r.push((pk[k].i - mi) / ibi); }
+      return median(r); };
+    const a = one(x), b = one(Array.from(x, v => -v));
+    return Math.min(isNaN(a) ? 1 : a, isNaN(b) ? 1 : b);
+  }
+  function lagMs(x, y, fs, maxS = 0.12) {
+    const n = Math.min(x.length, y.length), sx = std(x) || 1, sy = std(y) || 1; let best = -Infinity, bl = 0;
+    for (let l = -maxS; l <= maxS + 1e-9; l += 1 / 400) {
+      const sh = l * fs; let s = 0, c = 0;
+      for (let i = 0; i < n; i++) { const p = i + sh, j = Math.floor(p); if (j < 0 || j + 1 >= n) continue; const f = p - j; s += x[i] * (y[j] * (1 - f) + y[j + 1] * f); c++; }
+      const r = c ? s / c / (sx * sy) : -1; if (r > best) { best = r; bl = l; }
+    }
+    return { ms: bl * 1000, r: best };
+  }
+  // amplitude of a sinusoid at frequency f fitted to (t, v) samples
+  function sineAmp(ts, vs, f) {
+    const m = mean(vs); let a = 0, b = 0;
+    ts.forEach((t, i) => { a += (vs[i] - m) * Math.cos(2 * Math.PI * f * t); b += (vs[i] - m) * Math.sin(2 * Math.PI * f * t); });
+    return 2 * Math.hypot(a, b) / ts.length;
+  }
+  return { mean, std, median, resample, bandpass, pos, spectrum, spectrumPeak, findPeaks, ibis, hrv, ita, riseRatio, lagMs, sineAmp };
+})();
+
+/* ===== Face localisation without an ML model =====
+   skin mask -> largest central skin blob -> cut at the neck -> eye line from the darkest row band
+   -> forehead / cheek regions placed relative to the eye line. */
+const Face = (() => {
+  function isSkin(r, g, b) {
+    const cb = 128 - 0.168736 * r - 0.331264 * g + 0.5 * b, cr = 128 + 0.5 * r - 0.418688 * g - 0.081312 * b;
+    return r > 60 && r > g && r > b && r - Math.min(g, b) > 12 && cr > 133 && cr < 178 && cb > 77 && cb < 130;
+  }
+  function locate(d, W, H, prev) {
+    const N = W * H, m = new Uint8Array(N);
+    for (let i = 0; i < N; i++) { const k = i * 4; m[i] = isSkin(d[k], d[k + 1], d[k + 2]) ? 1 : 0; }
+    // connected components (4-neighbour), pick the blob with most pixels weighted by closeness to the expected face spot
+    const lab = new Int32Array(N), stack = new Int32Array(N); let nl = 0, best = null;
+    const ex = prev ? prev.cx : W / 2, ey = prev ? prev.cy : H * 0.4;
+    for (let s = 0; s < N; s++) {
+      if (!m[s] || lab[s]) continue;
+      nl++; let sp = 0, cnt = 0, sx = 0, sy = 0; stack[sp++] = s; lab[s] = nl;
+      while (sp) { const p = stack[--sp], x = p % W, y = (p - x) / W; cnt++; sx += x; sy += y;
+        if (x > 0 && m[p - 1] && !lab[p - 1]) { lab[p - 1] = nl; stack[sp++] = p - 1; }
+        if (x < W - 1 && m[p + 1] && !lab[p + 1]) { lab[p + 1] = nl; stack[sp++] = p + 1; }
+        if (y > 0 && m[p - W] && !lab[p - W]) { lab[p - W] = nl; stack[sp++] = p - W; }
+        if (y < H - 1 && m[p + W] && !lab[p + W]) { lab[p + W] = nl; stack[sp++] = p + W; } }
+      if (cnt < N * 0.02) continue;
+      const cx = sx / cnt, cy = sy / cnt, dist = Math.hypot((cx - ex) / W, (cy - ey) / H);
+      const score = cnt * Math.exp(-dist * dist / 0.08);
+      if (!best || score > best.score) best = { id: nl, score, cnt };
+    }
+    if (!best) return null;
+    // per-row extent of the chosen blob
+    const rows = []; let maxW = 0;
+    for (let y = 0; y < H; y++) { let x0 = -1, x1 = -1, c = 0; for (let x = 0; x < W; x++) if (lab[y * W + x] === best.id) { if (x0 < 0) x0 = x; x1 = x; c++; } rows.push({ x0, x1, c }); }
+    let top = rows.findIndex(r => r.c > 3); if (top < 0) return null;
+    let fw = 0, bottom = H - 1;
+    for (let y = top; y < H; y++) {
+      const r = rows[y]; fw = Math.max(fw, r.c);
+      if (y > top + 0.9 * fw && r.c < 0.62 * fw) { bottom = y; break; }
+      if (y > top + 1.55 * fw) { bottom = y; break; }
+    }
+    // the first rows can be a thin hair-line; start where the blob is reasonably wide
+    while (top < bottom && rows[top].c < 0.35 * fw) top++;
+    const xs = []; for (let y = top; y < bottom; y++) if (rows[y].c) { xs.push(rows[y].x0, rows[y].x1); }
+    xs.sort((a, b) => a - b);
+    const x0 = xs[Math.floor(xs.length * 0.1)], x1 = xs[Math.floor(xs.length * 0.9)], w = x1 - x0, h = bottom - top;
+    if (w < W * 0.12 || h < w * 0.7) return null;
+    // eye line: darkest smoothed row band in the central strip of the upper face
+    const lum = []; for (let y = top; y < bottom; y++) { let s = 0, c = 0; for (let x = Math.round(x0 + w * 0.15); x < x1 - w * 0.15; x++) { const k = (y * W + x) * 4; s += 0.299 * d[k] + 0.587 * d[k + 1] + 0.114 * d[k + 2]; c++; } lum.push(c ? s / c : 255); }
+    let eye = top + Math.round(h * 0.38), bl = Infinity;
+    for (let i = Math.round(h * 0.22); i < Math.round(h * 0.55); i++) { const v = (lum[i - 1] + 2 * lum[i] + lum[i + 1]) / 4; if (v < bl) { bl = v; eye = top + i; } }
+    return { x: x0, y: top, w, h, eye, cx: (x0 + x1) / 2, cy: (top + bottom) / 2, lab, id: best.id };
+  }
+  function regions(f) {
+    const brow = f.eye - 0.09 * f.h;
+    const r = (fx0, fx1, y0, y1) => ({ x0: Math.round(f.x + f.w * fx0), x1: Math.round(f.x + f.w * fx1), y0: Math.round(y0), y1: Math.round(y1) });
+    return {
+      fh: [r(0.3, 0.7, f.y + (brow - f.y) * 0.25, brow - 0.03 * f.h)],
+      ck: [r(0.14, 0.36, f.eye + 0.1 * f.h, f.eye + 0.27 * f.h), r(0.64, 0.86, f.eye + 0.1 * f.h, f.eye + 0.27 * f.h)],
+      eye: r(0.18, 0.82, f.eye - 0.04 * f.h, f.eye + 0.04 * f.h),
+    };
+  }
+  // one frame -> features
+  function frameFeatures(d, W, H, state) {
+    const f = locate(d, W, H, state.prev);
+    if (!f) return { ok: false };
+    const sm = state.box;
+    const k = sm ? 0.35 : 1;
+    state.box = sm ? { x: sm.x + (f.x - sm.x) * k, y: sm.y + (f.y - sm.y) * k, w: sm.w + (f.w - sm.w) * k, h: sm.h + (f.h - sm.h) * k, eye: sm.eye + (f.eye - sm.eye) * k } : { x: f.x, y: f.y, w: f.w, h: f.h, eye: f.eye };
+    const motion = state.prev ? Math.hypot(f.cx - state.prev.cx, f.cy - state.prev.cy) / f.w * 100 : 0;
+    state.prev = { cx: f.cx, cy: f.cy };
+    const R = regions(state.box);
+    const avg = list => { let r = 0, g = 0, b = 0, c = 0;
+      for (const q of list) for (let y = Math.max(0, q.y0); y < Math.min(H, q.y1); y++) for (let x = Math.max(0, q.x0); x < Math.min(W, q.x1); x++) {
+        const p = y * W + x; if (f.lab[p] !== f.id) continue; const k4 = p * 4; r += d[k4]; g += d[k4 + 1]; b += d[k4 + 2]; c++; }
+      return c > 8 ? [r / c, g / c, b / c, c] : null; };
+    const fh = avg(R.fh), ck = avg(R.ck);
+    if (!fh && !ck) return { ok: false };
+    const parts = [fh, ck].filter(Boolean), tot = parts.reduce((s, p) => s + p[3], 0);
+    const all = [0, 1, 2].map(c => parts.reduce((s, p) => s + p[c] * p[3], 0) / tot);
+    let ey = 0, ec = 0; const e = R.eye;
+    for (let y = Math.max(0, e.y0); y < Math.min(H, e.y1); y++) for (let x = Math.max(0, e.x0); x < Math.min(W, e.x1); x++) { const k4 = (y * W + x) * 4; ey += d[k4] + d[k4 + 1] + d[k4 + 2]; ec++; }
+    return { ok: true, all, fh: (fh || ck).slice(0, 3), ck: (ck || fh).slice(0, 3), cy: f.cy / H, motion, eye: ec ? ey / ec / 3 : 0,
+      lum: 0.299 * all[0] + 0.587 * all[1] + 0.114 * all[2], box: { ...state.box }, R };
+  }
+  return { locate, regions, frameFeatures, isSkin };
+})();
+
+/* ===== Recording analysis ===== */
+function pulseOf(frames, FS = 30) {
+  const ts = frames.map(f => f.t);
+  const [R, G, B] = [0, 1, 2].map(c => DSP.resample(ts, frames.map(f => f.all[c]), FS));
+  return { R, G, B, p: DSP.bandpass(DSP.pos(R, G, B, FS), FS, 0.7, 3.2), FS };
+}
+function cleanFrames(F) {
+  const n = F.length, bad = new Uint8Array(n);
+  F.forEach((f, i) => { if (f.motion > 2.5) for (let k = Math.max(0, i - 3); k <= Math.min(n - 1, i + 3); k++) bad[k] = 1; });
+  let blinks = 0, inBlink = false;
+  for (let i = 0; i < n; i++) {
+    const w = F.slice(Math.max(0, i - 15), Math.min(n, i + 16)).map(f => f.eye), med = DSP.median(w);
+    if (Math.abs(F[i].eye - med) / (med || 1) > 0.07) { if (!inBlink) blinks++; inBlink = true; for (let k = Math.max(0, i - 2); k <= Math.min(n - 1, i + 2); k++) bad[k] = 1; } else inBlink = false;
+  }
+  const keep = F.filter((_, i) => !bad[i]);
+  return { use: keep.length > n * 0.6 ? keep : F, excl: bad.reduce((a, b) => a + b, 0), blinks };
+}
+// instantaneous heart rate track (sliding 8 s windows)
+function hrTrack(frames, win = 8, step = 1) {
+  const { p, FS } = pulseOf(frames), out = [], t0 = frames[0].t;
+  for (let s = 0; s + win * FS <= p.length; s += step * FS) {
+    const pk = DSP.spectrumPeak(p.slice(s, s + win * FS), FS, 0.7, 3.2, 0.02, 0.08);
+    out.push({ t: t0 + (s / FS) + win / 2, hr: pk.f * 60, snr: pk.snr });
+  }
+  return out;
+}
+function analyzeBasic(frames) {
+  const F = frames.filter(f => f.ok);
+  if (F.length < 30 * 8) return { error: '얼굴이 8초 이상 잡히지 않았어요. 얼굴이 화면 가운데에 크게 오도록 하고 다시 측정해 주세요.' };
+  const { use, excl, blinks } = cleanFrames(F);
+  const { R, G, B, p, FS } = pulseOf(use);
+  const dur = use[use.length - 1].t - use[0].t;
+  const pk = DSP.spectrumPeak(p, FS, 0.7, 3.2, 0.01, 0.08);
+  // harmonic check: if half the peak frequency is also strong and plausible, prefer it (common rPPG error)
+  let hr = pk.f * 60;
+  const peaks = DSP.findPeaks(p, FS, hr), v = DSP.hrv(peaks);
+  let stress = NaN;
+  if (dur >= 25 && !isNaN(v.rmssd) && v.rmssd > 5 && v.rmssd < 150) stress = Math.max(0, Math.min(100, Math.round(100 * (4.5 - Math.log(v.rmssd)) / 2)));
+  const RFS = 10, rts = use.map(f => f.t);
+  let rr = NaN, rrSnr = -99;
+  if (dur >= 20) {
+    const cy = DSP.bandpass(DSP.resample(rts, use.map(f => f.cy), RFS), RFS, 0.1, 0.6);
+    const gi = DSP.bandpass(DSP.resample(rts, use.map(f => f.all[1]), RFS), RFS, 0.1, 0.6);
+    const ra = DSP.spectrumPeak(cy, RFS, 0.1, 0.6, 0.005, 0.03), rb = DSP.spectrumPeak(gi, RFS, 0.1, 0.6, 0.005, 0.03);
+    const r = ra.snr >= rb.snr ? ra : rb; rr = r.f * 60; rrSnr = r.snr;
+  }
+  const rt = DSP.riseRatio(DSP.bandpass(DSP.pos(R, G, B, FS), FS, 0.5, 8), FS, hr);
+  const ts2 = use.map(f => f.t);
+  const pf = DSP.bandpass(DSP.pos(...[0, 1, 2].map(c => DSP.resample(ts2, use.map(f => f.fh[c]), FS)), FS), FS, 0.7, 3.2);
+  const pc = DSP.bandpass(DSP.pos(...[0, 1, 2].map(c => DSP.resample(ts2, use.map(f => f.ck[c]), FS)), FS), FS, 0.7, 3.2);
+  const lag = DSP.lagMs(pf, pc, FS);
+  const acR = DSP.std(DSP.bandpass(R, FS, 0.7, 3.2)), acB = DSP.std(DSP.bandpass(B, FS, 0.7, 3.2));
+  const ror = (acR / DSP.mean(R)) / ((acB / DSP.mean(B)) || 1e-9);
+  const track = dur >= 12 ? hrTrack(use) : [];
+  const spread = track.length > 2 ? DSP.std(track.map(x => x.hr)) : NaN;
+  const lum = DSP.mean(use.map(f => f.lum)), mot = DSP.median(F.map(f => f.motion));
+  const itaDeg = DSP.ita(DSP.mean(R), DSP.mean(G), DSP.mean(B));
+  let q = 0;
+  if (pk.snr > -1) q++; if (pk.snr > 2.5) q++;
+  if (lum > 70 && lum < 225) q++;
+  if (dur >= 25) q++;
+  if (!isNaN(spread) && spread < 6) q++;
+  return { hr, snr: pk.snr, beats: v.n, sdnn: v.sdnn, rmssd: v.rmssd, stress, rr, rrSnr, dur, ror, rt, ptt: lag.ms, pttR: lag.r, lum, mot, blinks,
+    blinkRate: dur > 0 ? blinks / dur * 60 : NaN, excl, n: F.length, ita: itaDeg, q, spread, track, peaks, use };
+}
+// paced breathing: how much the heart rate swings with each breath (respiratory sinus arrhythmia)
+function analyzeBreath(frames) {
+  const r = analyzeBasic(frames); if (r.error) return r;
+  if (r.dur < 40) return { ...r, error: '호흡 리듬 테스트는 40초 이상 필요해요. 60초 동안 촬영해 주세요.' };
+  const ib = DSP.ibis(r.peaks).filter(o => o.ok);
+  const f = r.rr >= 4 && r.rr <= 9 ? r.rr / 60 : 0.1;
+  const amp = ib.length > 20 ? DSP.sineAmp(ib.map(o => o.t), ib.map(o => 60000 / o.ms), f) : NaN;
+  return { ...r, rsa: 2 * amp, paced: r.rr >= 4.5 && r.rr <= 7.5, ibN: ib.length };
+}
+// breath hold: hold window from taps (live) or from the two spoken cues (video audio)
+function analyzeHold(frames, holdStart, holdEnd) {
+  const F = frames.filter(f => f.ok);
+  if (F.length < 30 * 15) return { error: '얼굴이 충분히 잡히지 않았어요.' };
+  if (!(holdEnd > holdStart)) return { error: '숨 참기 시작과 끝을 찾지 못했어요. "시작"과 "끝"을 또렷하게 말해 주세요.' };
+  const tr = hrTrack(cleanFrames(F).use, 6, 1);
+  const avg = (a, b) => { const v = tr.filter(x => x.t >= a && x.t <= b).map(x => x.hr); return v.length ? DSP.mean(v) : NaN; };
+  return { hold: holdEnd - holdStart, hrStart: avg(holdStart + 3, holdStart + 8), hrEnd: avg(holdEnd - 8, holdEnd - 3), hrAfter: avg(holdEnd + 4, holdEnd + 12), track: tr };
+}
+function analyzeRecovery(frames) {
+  const F = frames.filter(f => f.ok);
+  if (F.length < 30 * 30) return { error: '30초 이상 얼굴이 잡혀야 해요. 운동 직후 60초 동안 촬영해 주세요.' };
+  const tr = hrTrack(cleanFrames(F).use, 8, 1);
+  const first = DSP.mean(tr.slice(0, 3).map(x => x.hr)), last = DSP.mean(tr.slice(-3).map(x => x.hr));
+  const span = tr[tr.length - 1].t - tr[0].t;
+  return { hr0: first, hr1: last, span, perMin: (first - last) * 60 / Math.max(20, span), track: tr };
+}
+
+/* ===== Audio (voice tasks) ===== */
+const Voice = (() => {
+  // RMS envelope in 20 ms frames, then voiced segments above an adaptive threshold
+  function envelope(samples, sr) {
+    const hop = Math.round(sr * 0.02), env = [];
+    for (let i = 0; i + hop <= samples.length; i += hop) { let s = 0; for (let k = 0; k < hop; k++) s += samples[i + k] ** 2; env.push(Math.sqrt(s / hop)); }
+    return { env, dt: 0.02 };
+  }
+  function segments(env, dt, gapMax = 0.25, minLen = 0.15) {
+    const sorted = Array.from(env).sort((a, b) => a - b);
+    const floor = sorted[Math.floor(sorted.length * 0.1)] || 0, peak = sorted[Math.floor(sorted.length * 0.98)] || 0;
+    const th = floor + (peak - floor) * 0.18;
+    const segs = []; let st = -1, last = -1;
+    env.forEach((v, i) => { if (v > th) { if (st < 0) st = i; last = i; } else if (st >= 0 && (i - last) * dt > gapMax) { segs.push([st * dt, (last + 1) * dt]); st = -1; } });
+    if (st >= 0) segs.push([st * dt, (last + 1) * dt]);
+    return { segs: segs.filter(s => s[1] - s[0] >= minLen), th, floor, peak, snrDb: 20 * Math.log10((peak || 1e-9) / (floor || 1e-9)) };
+  }
+  function syllablePeaks(env, dt, a, b, th) {
+    // count energy bumps (syllable nuclei) inside [a,b]
+    const i0 = Math.floor(a / dt), i1 = Math.ceil(b / dt), sm = [];
+    for (let i = i0; i < i1; i++) sm.push(((env[i - 1] || 0) + 2 * (env[i] || 0) + (env[i + 1] || 0)) / 4);
+    let c = 0, lastPk = -99;
+    for (let i = 1; i < sm.length - 1; i++) if (sm[i] > sm[i - 1] && sm[i] >= sm[i + 1] && sm[i] > th && (i - lastPk) * dt > 0.09) { c++; lastPk = i; }
+    return c;
+  }
+  // sustained "아~" (maximum phonation time) followed by reading a fixed sentence
+  function analyzeVoice(env, dt, syllables, splitAt) {
+    const S = segments(env, dt);
+    if (!S.segs.length || S.snrDb < 10) return { error: '목소리를 찾지 못했어요. 조용한 곳에서 휴대폰 가까이 대고 다시 녹음해 주세요.' };
+    const pool = splitAt != null ? S.segs.filter(s => s[0] < splitAt) : S.segs;
+    const ah = pool.reduce((a, s) => (!a || s[1] - s[0] > a[1] - a[0] ? s : a), null);
+    const mpt = ah ? ah[1] - ah[0] : NaN;
+    let stab = NaN;
+    if (ah && mpt > 2) { const i0 = Math.floor((ah[0] + mpt * 0.2) / dt), i1 = Math.floor((ah[1] - mpt * 0.2) / dt), v = env.slice(i0, i1); stab = Math.max(0, Math.min(100, 100 * (1 - DSP.std(v) / (DSP.mean(v) || 1)))); }
+    const after = S.segs.filter(s => s[0] >= Math.max(ah ? ah[1] + 0.3 : 0, splitAt ?? 0));
+    let rate = NaN, span = NaN, pauses = 0;
+    if (after.length) {
+      span = after[after.length - 1][1] - after[0][0];
+      for (let k = 1; k < after.length; k++) if (after[k][0] - after[k - 1][1] > 0.35) pauses++;
+      if (span > 2) rate = syllables / span;
+    }
+    return { mpt, stab, rate, span, pauses, snrDb: S.snrDb, segs: S.segs };
+  }
+  return { envelope, segments, syllablePeaks, analyzeVoice };
+})();
+
+if (typeof module !== 'undefined') module.exports = { DSP, Face, analyzeBasic, analyzeBreath, analyzeHold, analyzeRecovery, hrTrack, pulseOf, cleanFrames, Voice };
+
+</script>
+<script>
+/* ===== Still-photo appearance metrics (raw, explainable numbers) ===== */
+const Photo = (() => {
+  const lin = v => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+  const fL = t => t > 0.008856 ? Math.cbrt(t) : 7.787 * t + 16 / 116;
+  function lab(r, g, b) {
+    const R = lin(r), G = lin(g), B = lin(b);
+    const X = (0.4124 * R + 0.3576 * G + 0.1805 * B) / 0.95047, Y = 0.2126 * R + 0.7152 * G + 0.0722 * B, Z = (0.0193 * R + 0.1192 * G + 0.9505 * B) / 1.08883;
+    const fx = fL(X), fy = fL(Y), fz = fL(Z);
+    return [116 * fy - 16, 500 * (fx - fy), 200 * (fy - fz)];
+  }
+  const mean = a => a.length ? a.reduce((s, v) => s + v, 0) / a.length : NaN;
+  const std = a => { const m = mean(a); return a.length ? Math.sqrt(a.reduce((s, v) => s + (v - m) ** 2, 0) / a.length) : NaN; };
+
+  // small: RGBA of the face-finding image (Ws x Hs); big: RGBA of the detail image (Wb x Hb)
+  function analyze(small, Ws, Hs, big, Wb, Hb) {
+    const f = Face.locate(small, Ws, Hs, null);
+    if (!f) return { error: '얼굴을 찾지 못했어요. 밝은 곳에서 얼굴 정면이 화면 가운데에 크게 나오도록 다시 찍어 주세요.' };
+    const k = Wb / Ws;
+    const box = { x: f.x * k, y: f.y * k, w: f.w * k, h: f.h * k, eye: f.eye * k };
+    const brow = box.eye - 0.09 * box.h;
+    const R = (fx0, fx1, y0, y1) => ({ x0: Math.max(0, Math.round(box.x + box.w * fx0)), x1: Math.min(Wb, Math.round(box.x + box.w * fx1)), y0: Math.max(0, Math.round(y0)), y1: Math.min(Hb, Math.round(y1)) });
+    const reg = {
+      forehead: R(0.28, 0.72, box.y + (brow - box.y) * 0.25, brow - 0.03 * box.h),
+      cheekL: R(0.14, 0.36, box.eye + 0.1 * box.h, box.eye + 0.27 * box.h),
+      cheekR: R(0.64, 0.86, box.eye + 0.1 * box.h, box.eye + 0.27 * box.h),
+      underL: R(0.2, 0.4, box.eye + 0.06 * box.h, box.eye + 0.105 * box.h),
+      underR: R(0.6, 0.8, box.eye + 0.06 * box.h, box.eye + 0.105 * box.h),
+      nose: R(0.43, 0.57, box.eye + 0.08 * box.h, box.eye + 0.26 * box.h),
+      crowL: R(0.07, 0.19, box.eye - 0.04 * box.h, box.eye + 0.07 * box.h),
+      crowR: R(0.81, 0.93, box.eye - 0.04 * box.h, box.eye + 0.07 * box.h),
+    };
+    // per-pixel L* map of the detail image
+    const N = Wb * Hb, Lm = new Float32Array(N), A = new Float32Array(N), Bm = new Float32Array(N), skin = new Uint8Array(N);
+    for (let i = 0; i < N; i++) { const q = i * 4, v = lab(big[q], big[q + 1], big[q + 2]); Lm[i] = v[0]; A[i] = v[1]; Bm[i] = v[2]; skin[i] = Face.isSkin(big[q], big[q + 1], big[q + 2]) ? 1 : 0; }
+    const pix = (r, needSkin = true) => { const out = []; for (let y = r.y0; y < r.y1; y++) for (let x = r.x0; x < r.x1; x++) { const i = y * Wb + x; if (!needSkin || skin[i]) out.push(i); } return out; };
+    const cheeks = [...pix(reg.cheekL), ...pix(reg.cheekR)], under = [...pix(reg.underL, false), ...pix(reg.underR, false)];
+    const fore = pix(reg.forehead), nose = pix(reg.nose);
+    if (cheeks.length < 50) return { error: '볼 부위가 잘 보이지 않아요. 머리카락이나 손이 얼굴을 가리지 않게 다시 찍어 주세요.' };
+    const Lc = mean(cheeks.map(i => Lm[i])), ac = mean(cheeks.map(i => A[i])), bc = mean(cheeks.map(i => Bm[i]));
+    const ita = Math.atan2(Lc - 50, bc) * 180 / Math.PI;
+    // dark circles: lightness drop under the eyes vs cheeks
+    const darkCircle = Lc - mean(under.map(i => Lm[i]));
+    // evenness: spread of 6px block means across the cheeks
+    // (a plane is removed per cheek first, so side lighting does not count as unevenness)
+    const resid = [];
+    for (const r of [reg.cheekL, reg.cheekR]) {
+      const bl = [];
+      for (let y = r.y0; y + 6 <= r.y1; y += 6) for (let x = r.x0; x + 6 <= r.x1; x += 6) {
+        let s = 0, c = 0; for (let yy = y; yy < y + 6; yy++) for (let xx = x; xx < x + 6; xx++) { const i = yy * Wb + xx; if (skin[i]) { s += Lm[i]; c++; } } if (c > 24) bl.push([x, y, s / c]); }
+      if (bl.length < 4) continue;
+      const mx = mean(bl.map(b => b[0])), my = mean(bl.map(b => b[1])), mz = mean(bl.map(b => b[2]));
+      let sxx = 0, syy = 0, sxy = 0, sxz = 0, syz = 0;
+      bl.forEach(([x, y, z]) => { const dx = x - mx, dy = y - my, dz = z - mz; sxx += dx * dx; syy += dy * dy; sxy += dx * dy; sxz += dx * dz; syz += dy * dz; });
+      const det = sxx * syy - sxy * sxy || 1, gx = (sxz * syy - syz * sxy) / det, gyy = (syz * sxx - sxz * sxy) / det;
+      bl.forEach(([x, y, z]) => resid.push(z - mz - gx * (x - mx) - gyy * (y - my)));
+    }
+    const evenness = std(resid);
+    // shine: share of near-specular pixels on forehead + nose (bright and low chroma)
+    const tz = [...fore, ...nose], Lt = tz.map(i => Lm[i]), mt = mean(Lt), st = std(Lt);
+    const shine = tz.length ? 100 * tz.filter(i => Lm[i] > mt + 1.8 * st && Math.hypot(A[i], Bm[i]) < 22).length / tz.length : NaN;
+    // texture: fine detail energy (|Laplacian| of L*) on the cheeks, relative to lightness
+    const lap = list => mean(list.filter(i => { const x = i % Wb, y = (i - x) / Wb; return x > 0 && y > 0 && x < Wb - 1 && y < Hb - 1; })
+      .map(i => Math.abs(4 * Lm[i] - Lm[i - 1] - Lm[i + 1] - Lm[i - Wb] - Lm[i + Wb])));
+    const texture = lap(cheeks);
+    // lines: horizontal-edge energy on the forehead, all-direction edge energy at the outer eye corners
+    const gy = list => mean(list.filter(i => i > Wb && i < N - Wb).map(i => Math.abs(Lm[i + Wb] - Lm[i - Wb])));
+    const gm = list => mean(list.filter(i => i > Wb && i < N - Wb && i % Wb > 0 && i % Wb < Wb - 1).map(i => Math.hypot(Lm[i + 1] - Lm[i - 1], Lm[i + Wb] - Lm[i - Wb])));
+    const foreLines = fore.length > 30 ? gy(fore) : NaN;
+    const crow = [...pix(reg.crowL), ...pix(reg.crowR)], crowLines = crow.length > 30 ? gm(crow) : NaN;
+    // hairline: forehead height share of the face (hairline -> brow) / (hairline -> chin)
+    const hairline = (brow - box.y) / box.h;
+    // sharpness of the whole face crop (to warn about blurry photos)
+    const faceAll = pix(R(0.1, 0.9, box.y, box.y + box.h), false), sharp = lap(faceAll);
+    const lum = mean(faceAll.map(i => Lm[i]));
+    // ---------- health-related visual signals ----------
+    const pct = (arr, q) => { const s = [...arr].sort((a, b) => a - b); return s.length ? s[Math.min(s.length - 1, Math.floor(q * s.length))] : NaN; };
+    const iris = (fx0, fx1) => { const r = R(fx0, fx1, box.eye - 0.05 * box.h, box.eye + 0.05 * box.h), ids = pix(r, false);
+      if (ids.length < 40) return null; const th = pct(ids.map(i => Lm[i]), 0.04); let sx = 0, sy = 0, c = 0;
+      ids.forEach(i => { if (Lm[i] <= th) { sx += i % Wb; sy += Math.floor(i / Wb); c++; } }); return c ? { x: sx / c, y: sy / c } : null; };
+    const irL = iris(0.18, 0.45), irR = iris(0.55, 0.82);
+    const ipd = irL && irR ? Math.hypot(irR.x - irL.x, irR.y - irL.y) : NaN;
+    // sclera: bright, low-chroma pixels beside each iris
+    const scl = [];
+    for (const ir of [irL, irR]) { if (!ir || !ipd) continue;
+      const rr = { x0: Math.max(0, Math.round(ir.x - ipd * 0.28)), x1: Math.min(Wb, Math.round(ir.x + ipd * 0.28)), y0: Math.max(0, Math.round(ir.y - ipd * 0.06)), y1: Math.min(Hb, Math.round(ir.y + ipd * 0.06)) };
+      const ids = pix(rr, false).filter(i => Math.hypot(i % Wb - ir.x, Math.floor(i / Wb) - ir.y) > ipd * 0.1);
+      if (ids.length < 20) continue; const th = pct(ids.map(i => Lm[i]), 0.85);
+      ids.forEach(i => { if (Lm[i] >= th && Math.hypot(A[i], Bm[i]) < 35) scl.push(i); }); }
+    // colour cast of the scene: b* of the brightest 2% of the whole frame
+    const allL = []; for (let i = 0; i < N; i += 7) allL.push(i); const topTh = pct(allL.map(i => Lm[i]), 0.98);
+    const cast = mean(allL.filter(i => Lm[i] >= topTh).map(i => Bm[i]));
+    const scleraB = scl.length >= 12 ? mean(scl.map(i => Bm[i])) : NaN, scleraA = scl.length >= 12 ? mean(scl.map(i => A[i])) : NaN;
+    const scleraYellow = scleraB - 0.5 * Math.max(0, cast || 0);
+    // face width at cheek level relative to the distance between the irises (swelling vs. personal baseline)
+    let faceRatio = NaN;
+    if (ipd) { const y = Math.round(box.eye + 0.18 * box.h), cx = Math.round(box.x + box.w / 2); let l = cx, r = cx, gap = 0;
+      for (let x = cx; x > 0; x--) { if (skin[y * Wb + x]) { l = x; gap = 0; } else if (++gap > 4) break; } gap = 0;
+      for (let x = cx; x < Wb - 1; x++) { if (skin[y * Wb + x]) { r = x; gap = 0; } else if (++gap > 4) break; }
+      faceRatio = (r - l) / ipd; }
+    // under-eye bag shading: contrast of the vertical lightness profile just below the eyes
+    const bagProfile = []; for (let y = Math.round(box.eye + 0.03 * box.h); y < box.eye + 0.16 * box.h; y++) { let s = 0, c = 0;
+      for (const [a, b] of [[0.22, 0.4], [0.6, 0.78]]) for (let x = Math.round(box.x + box.w * a); x < box.x + box.w * b; x++) { s += Lm[y * Wb + x]; c++; } bagProfile.push(s / c); }
+    const sm = bagProfile.map((v, i) => mean(bagProfile.slice(Math.max(0, i - 2), i + 3)));
+    const bagContrast = sm.length ? Math.max(...sm) - Math.min(...sm) : NaN;
+    // lips: pixels clearly redder than the cheeks in the mouth area
+    const mouth = pix(R(0.3, 0.7, box.eye + 0.3 * box.h, box.eye + 0.55 * box.h), false).filter(i => A[i] > ac + 6);
+    const lipA = mouth.length > 30 ? mean(mouth.map(i => A[i])) : NaN, lipB = mouth.length > 30 ? mean(mouth.map(i => Bm[i])) : NaN, lipL = mouth.length > 30 ? mean(mouth.map(i => Lm[i])) : NaN;
+    // butterfly pattern: redness of cheeks + nose bridge relative to the forehead
+    const aFore = mean(fore.map(i => A[i])), malar = mean([...cheeks, ...nose].map(i => A[i])) - aFore;
+    // yellowish spots on the inner upper eyelids: high b* tail vs cheek b*
+    const lid = [...pix(R(0.2, 0.42, box.eye - 0.08 * box.h, box.eye - 0.03 * box.h)), ...pix(R(0.58, 0.8, box.eye - 0.08 * box.h, box.eye - 0.03 * box.h))];
+    const lidYellow = lid.length > 30 ? pct(lid.map(i => Bm[i]), 0.95) - bc : NaN;
+    reg.irisL = irL ? { x0: Math.round(irL.x - 4), x1: Math.round(irL.x + 4), y0: Math.round(irL.y - 4), y1: Math.round(irL.y + 4) } : undefined;
+    reg.irisR = irR ? { x0: Math.round(irR.x - 4), x1: Math.round(irR.x + 4), y0: Math.round(irR.y - 4), y1: Math.round(irR.y + 4) } : undefined;
+    if (!reg.irisL) delete reg.irisL; if (!reg.irisR) delete reg.irisR;
+    const health = { scleraYellow, scleraB, scleraRed: scleraA, scleraPx: scl.length, cast, ipd, faceRatio, bagContrast, lipA, lipB, lipL, malar, lidYellow, skinYellow: bc, cheekRed: ac };
+    return {
+      box, reg, raw: {
+        lightness: Lc, ita, redness: ac, yellowness: bc, darkCircle, evenness, shine, texture, foreLines, crowLines, hairline, sharp, lum,
+      }, health,
+    };
+  }
+
+  // crown / parting photo: share of scalp-coloured pixels among hair + scalp in the centre of the frame
+  function scalp(d, W, H) {
+    let hair = 0, sc = 0, gray = 0;
+    for (let y = Math.round(H * 0.2); y < H * 0.8; y++) for (let x = Math.round(W * 0.2); x < W * 0.8; x++) {
+      const q = (y * W + x) * 4, r = d[q], g = d[q + 1], b = d[q + 2], L = lab(r, g, b)[0];
+      const v = lab(r, g, b);
+      if (Face.isSkin(r, g, b) && L > 45) sc++; else if (L < 42) hair++; else if (L > 55 && Math.hypot(v[1], v[2]) < 9) gray++;
+    }
+    const tot = hair + sc;
+    if (tot < W * H * 0.15) return { error: '머리카락과 두피가 잘 보이지 않아요. 정수리나 가르마가 화면 가운데에 오도록 가까이 찍어 주세요.' };
+    return { raw: { scalpRatio: 100 * sc / tot, grayRatio: 100 * gray / Math.max(1, gray + hair) } };
+  }
+
+  // inner lower eyelid (conjunctiva) close-up: redness of the reddest half of the reddish pixels
+  function conjunctiva(d, W, H) {
+    const vals = [];
+    for (let y = Math.round(H * 0.25); y < H * 0.75; y++) for (let x = Math.round(W * 0.2); x < W * 0.8; x++) {
+      const q = (y * W + x) * 4, v = lab(d[q], d[q + 1], d[q + 2]); if (v[1] > 10 && v[0] > 25 && v[0] < 85) vals.push(v[1]); }
+    if (vals.length < W * H * 0.03) return { error: '눈꺼풀 안쪽의 붉은 부분이 잘 보이지 않아요. 아래 눈꺼풀을 살짝 내리고 가까이 찍어 주세요.' };
+    vals.sort((a, b) => b - a); const top = vals.slice(0, Math.max(1, vals.length >> 1));
+    return { raw: { conjRed: top.reduce((s, v) => s + v, 0) / top.length } };
+  }
+  // reference bands for the raw numbers (heuristic, for display only)
+  const BANDS = {
+    darkCircle: [[4, '옅음'], [8, '보통'], [Infinity, '진한 편']],
+    redness: [[9, '맑음'], [13, '보통'], [Infinity, '붉은 편']],
+    evenness: [[3, '고름'], [5.5, '보통'], [Infinity, '고르지 않음']],
+    shine: [[2, '보송'], [6, '보통'], [Infinity, '번들']],
+    texture: [[3.2, '매끈'], [5, '보통'], [Infinity, '거친 편']],
+    foreLines: [[1.6, '적음'], [2.6, '보통'], [Infinity, '보이는 편']],
+    crowLines: [[3, '적음'], [5, '보통'], [Infinity, '보이는 편']],
+    hairline: [[0.3, '낮은 편'], [0.38, '보통'], [Infinity, '넓은 이마']],
+    scalpRatio: [[15, '촘촘'], [30, '보통'], [Infinity, '두피가 잘 보임']],
+  };
+  const band = (key, v) => { if (v == null || isNaN(v)) return '—'; for (const [lim, lbl] of BANDS[key]) if (v < lim) return lbl; return '—'; };
+  // 0..100, higher = better condition (for bars)
+  const score = (v, good, bad) => (v == null || isNaN(v)) ? NaN : Math.round(Math.max(0, Math.min(100, 100 * (bad - v) / (bad - good))));
+  return { analyze, scalp, conjunctiva, band, score, lab };
+})();
+if (typeof module !== 'undefined') module.exports = { Photo };
+
+</script>
+<script>
+const $ = id => document.getElementById(id);
+const fmt = (v, d = 0) => (v == null || (typeof v === 'number' && isNaN(v))) ? '—' : Number(v).toFixed(d);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const S = { face: null, faceBlob: null, hair: null, hairBlob: null, conj: null, conjBlob: null, vital: null, ai: null, history: [] };
+let sampleFn = null, db = null, user = null, uid = null;
+
+/* ---------- literature behind each visual signal ---------- */
+const REF = {
+  bili: { t: 'BiliScreen, 워싱턴대 (2017): 스마트폰 공막 사진, 70명, 보정 상자 사용 시 민감도 89.7%·특이도 96.8%', u: 'https://ubicomplab.cs.washington.edu/publications/biliscreen' },
+  ajou: { t: 'Park 외, 아주대병원 (J Pers Med 2021): 갤럭시 S8 공막 사진, 130명, 빌리루빈 ≥1.5 기준 민감도 80%·특이도 92.6% (색 보정 패치 사용)', u: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC8466674/' },
+  conj: { t: 'Zhao 외 (PLOS ONE 2024): 스마트폰 결막 사진, 응급실 426명, Hb<9 기준 민감도 58%·특이도 96.5%', u: 'https://journals.plos.org/plosone/article?id=10.1371%2Fjournal.pone.0302883' },
+  xan: { t: 'Christoffersen 외 (BMJ 2011): 코펜하겐 12,745명 22년 추적, 눈꺼풀 황색판종이 있으면 심근경색 위험 1.48배. 각막환은 독립 위험인자 아님', u: 'https://read.qxmd.com/read/21920887/xanthelasmata-arcus-corneae-and-ischaemic-vascular-disease-and-death-in-general-population-prospective-cohort-study' },
+  cad: { t: 'Lin 외 (Eur Heart J 2020): 얼굴 사진 딥러닝, 5,796명, 관상동맥질환 민감도 80%·특이도 54% (오탐 많음)', u: 'https://www.sciencedaily.com/releases/2020/08/200821103853.htm' },
+  edema: { t: 'Akamatsu 외, NEC (IEEE JBHI 2023): 투석 전후 얼굴 사진으로 부종·체중 변화 추정, 개인별 모델 필요', u: 'https://arxiv.org/abs/2212.07582' },
+  malar: { t: 'StatPearls, Malar Rash: 볼과 콧등의 나비 모양 홍반은 루푸스의 대표 징후지만 주사·지루피부염·햇빛 등 흔한 원인도 많음', u: 'https://www.ncbi.nlm.nih.gov/sites/books/NBK555981/' },
+  stroke: { t: 'UCLA·ISC 2024: 스마트폰 얼굴 비대칭+팔+음성 결합 앱, 400명, 뇌졸중 증상 민감도 0.99 (학회 발표, 의료진 보조 환경)', u: 'https://www.healio.com/news/cardiology/20240214/smartphone-app-uses-ai-to-potentially-detect-symptoms-of-stroke' },
+  eye: { t: 'Babenko 외, Google (Lancet Digit Health 2023): 외안부 사진으로 Hb<11 AUC 0.82, eGFR<60 AUC 0.80, AST AUC 0.62 (안과 카메라, 스마트폰 미검증)', u: 'https://arxiv.org/abs/2207.08998' },
+  endo: { t: '얼굴 사진 기반 말단비대증·쿠싱 판별 머신러닝 연구 (J Endocr Soc 2025 등): 전문의 수준 보고, 소규모·특수 환자군', u: 'https://academic.oup.com/jes/article/10/2/bvaf203/8376781' },
+};
+
+/* ---------- image helpers ---------- */
+async function loadBitmap(file) {
+  try { return await createImageBitmap(file, { imageOrientation: 'from-image' }); }
+  catch { return await new Promise((ok, no) => { const im = new Image(); im.onload = () => ok(im); im.onerror = no; im.src = URL.createObjectURL(file); }); }
+}
+function draw(bm, w) { const h = Math.round(w * bm.height / bm.width), c = document.createElement('canvas'); c.width = w; c.height = h; c.getContext('2d').drawImage(bm, 0, 0, w, h); return c; }
+const px = c => c.getContext('2d').getImageData(0, 0, c.width, c.height).data;
+const toBlob = (bm, w) => new Promise(ok => draw(bm, Math.min(w, bm.width)).toBlob(ok, 'image/jpeg', 0.9));
+const setSt = (id, t, cls) => { $(id).className = 'status ' + (cls || ''); $(id).textContent = t; };
+/* ---------- beauty metrics: raw value -> band -> 0..100 ---------- */
+function metrics() {
+  const r = S.face.raw, out = [];
+  const add = (key, name, how, value, unit, sc, band, d = 1) => out.push({ key, name, how, value, unit, score: sc, band, d });
+  const hyd = Math.round(0.75 * Photo.score(r.texture, 2, 7) + 0.25 * Math.min(100, (r.shine || 0) * 25));
+  add('hydration', '수분·피부결', '볼의 미세한 결(거칠기)과 이마·코의 윤기', r.texture, '결 지수', hyd, hyd >= 65 ? '촉촉한 편' : hyd >= 40 ? '보통' : '건조 신호', 2);
+  add('oil', '유분 (T존 광택)', '이마·코에서 빛이 반사되는 면적', r.shine, '%', Math.round(Math.max(0, 100 - Math.abs((r.shine || 0) - 3) * 14)), Photo.band('shine', r.shine));
+  add('redness', '홍조', '볼의 붉은기 (a*)', r.redness, 'a*', Photo.score(r.redness, 6, 18), Photo.band('redness', r.redness));
+  add('darkCircle', '다크서클', '볼 대비 눈 밑이 어두운 정도', r.darkCircle, 'ΔL*', Photo.score(r.darkCircle, 0, 12), Photo.band('darkCircle', r.darkCircle));
+  add('evenness', '피부톤 균일도', '볼 안 밝기 편차 (조명 기울기 제거)', r.evenness, 'σL*', Photo.score(r.evenness, 2, 8), Photo.band('evenness', r.evenness));
+  const wr = Math.round((Photo.score(r.foreLines, 1, 4) + Photo.score(r.crowLines, 2, 7)) / 2);
+  add('wrinkle', '잔주름', '이마 가로선 + 눈가 선 성분', r.crowLines, '눈가 선 지수', wr, wr >= 65 ? '적음' : wr >= 40 ? '보통' : '보이는 편', 2);
+  if (S.hair) add('hair', '모발 밀도 (정수리)', '정수리·가르마에서 두피가 보이는 면적', S.hair.raw.scalpRatio, '% 두피 노출', Photo.score(S.hair.raw.scalpRatio, 10, 45), Photo.band('scalpRatio', S.hair.raw.scalpRatio), 0);
+  else add('hair', '헤어라인', '얼굴 길이 대비 이마 높이', r.hairline * 100, '% 이마 비율', Photo.score(r.hairline, 0.3, 0.46), Photo.band('hairline', r.hairline), 0);
+  return out;
+}
+const tone = s => isNaN(s) ? 'm' : s >= 65 ? 'g' : s >= 40 ? 'm' : 'c';
+
+/* ---------- visual health signals ---------- */
+const TIER = { ok: ['정상 범위', 'g'], watch: ['관찰 필요', 'm'], check: ['검사 권장', 'c'], urgent: ['즉시 확인', 'u'], na: ['판단 불가', 'n'], base: ['기준 쌓는 중', 'n'] };
+const worse = (a, b) => { const o = ['na', 'base', 'ok', 'watch', 'check', 'urgent']; return o.indexOf(a) >= o.indexOf(b) ? a : b; };
+const aiTier = st => st === '보임' ? 'check' : st === '약간 보임' ? 'watch' : st === '안 보임' ? 'ok' : 'na';
+function baselineRatio() { const v = S.history.map(h => h?.health?.faceRatio).filter(x => typeof x === 'number' && isFinite(x)); return v.length >= 2 ? v.reduce((a, b) => a + b, 0) / v.length : null; }
+function signals(ai) {
+  const h = S.face.health, A = ai?.signs || {}, out = [];
+  const push = (o) => out.push(o);
+  // liver / bile: sclera yellow
+  let t = !(h.scleraPx >= 12) ? 'na' : h.scleraYellow >= 15 ? 'check' : h.scleraYellow >= 10 ? 'watch' : 'ok';
+  if (A.scleraYellow) t = worse(t, aiTier(A.scleraYellow));
+  push({ id: 'sclera', name: '눈 흰자 노란기', org: '간·담도', tier: t, value: `b* ${fmt(h.scleraYellow, 1)} (조명 보정, 측정 화소 ${h.scleraPx})`,
+    text: { ok: '눈 흰자 색이 일반 범위로 보여요.', watch: '눈 흰자가 약간 노랗게 측정됐어요. 실내등 영향일 수 있으니 자연광에서 다시 찍어 보세요.', check: '눈 흰자가 노랗게 보이는 정도가 높아요. 자연광에서 다시 찍어도 같다면 간 기능·빌리루빈 검사를 받아 보세요.', na: '눈 흰자가 충분히 보이지 않았어요. 눈을 크게 뜨고 자연광에서 찍어 주세요.' }[t],
+    ai: A.scleraYellow, refs: ['bili', 'ajou'] });
+  // skin yellow (carotene vs jaundice)
+  t = h.skinYellow >= 26 ? 'watch' : 'ok';
+  push({ id: 'skinY', name: '피부 노란기', org: '간·담도 / 식습관', tier: t, value: `볼 b* ${fmt(h.skinYellow, 1)}`,
+    text: t === 'ok' ? '피부 노란기는 일반 범위예요.' : '피부가 노란 편으로 측정됐어요. 귤·당근 등을 많이 먹어도 생길 수 있어요. 눈 흰자까지 노랗다면 검사를 권해요.', refs: [] });
+  // anemia: conjunctiva + lips
+  if (S.conj) { const c = S.conj.raw.conjRed; t = c < 16 ? 'check' : c < 22 ? 'watch' : 'ok'; }
+  else t = 'na';
+  if (A.conjPale) t = worse(t, aiTier(A.conjPale));
+  push({ id: 'conj', name: '눈꺼풀 안쪽 창백함', org: '혈액 (빈혈)', tier: t, value: S.conj ? `결막 a* ${fmt(S.conj.raw.conjRed, 1)}` : '사진 없음',
+    text: { ok: '눈꺼풀 안쪽 붉은기가 충분해 보여요.', watch: '눈꺼풀 안쪽이 다소 옅게 보여요. 어지럼·피로가 잦다면 혈색소 검사를 고려해 보세요.', check: '눈꺼풀 안쪽이 창백하게 보여요. 혈액검사(혈색소)를 권해요.', na: '3번 눈꺼풀 안쪽 사진을 올리면 볼 수 있어요.' }[t], ai: A.conjPale, refs: ['conj', 'eye'] });
+  t = isNaN(h.lipA) ? 'na' : (h.lipA < 12 && h.lipB < 4) ? 'watch' : 'ok';
+  if (A.lipColor) t = worse(t, aiTier(A.lipColor));
+  push({ id: 'lip', name: '입술 색 (창백·푸른기)', org: '혈액·호흡', tier: t, value: isNaN(h.lipA) ? '입술 미검출' : `a* ${fmt(h.lipA, 1)} · b* ${fmt(h.lipB, 1)}`,
+    text: { ok: '입술 혈색이 일반 범위예요.', watch: '입술이 창백하거나 푸르게 측정됐어요. 립 제품·조명 영향이 없는데도 그렇다면 확인해 보세요.', check: '입술 색이 창백하거나 푸르게 보여요. 숨참·흉통이 함께 있으면 바로 진료를 받으세요.', na: '입술이 잘 보이지 않았어요.' }[t], ai: A.lipColor, refs: [] });
+  // cardiovascular
+  t = isNaN(h.lidYellow) ? 'na' : h.lidYellow >= 15 ? 'check' : h.lidYellow >= 10 ? 'watch' : 'ok';
+  if (A.xanthelasma) t = worse(t, aiTier(A.xanthelasma));
+  push({ id: 'xan', name: '눈꺼풀 노란 반점 (황색판종)', org: '심혈관·지질', tier: t, value: `눈꺼풀 b* 초과분 ${fmt(h.lidYellow, 1)}`,
+    text: { ok: '눈꺼풀 안쪽에 노란 반점이 보이지 않아요.', watch: '눈꺼풀 안쪽이 약간 노랗게 측정됐어요. 조명 때문일 수 있어요.', check: '눈꺼풀 안쪽에 노란 반점처럼 보이는 부분이 있어요. 콜레스테롤(지질) 검사를 받아 보세요.', na: '눈꺼풀이 잘 보이지 않았어요.' }[t], ai: A.xanthelasma, refs: ['xan'] });
+  const cv = ['earlobeCrease', 'arcus', 'grayHair'].map(k => A[k]).filter(Boolean), cvSeen = cv.filter(s => s === '보임').length;
+  push({ id: 'cvface', name: '심혈관 관련 얼굴 특징 (귓불 주름·각막 고리·백발)', org: '심혈관 (참고)', tier: !cv.length ? 'na' : cvSeen >= 2 ? 'watch' : 'ok', value: cv.length ? `AI 관찰 ${cvSeen}/3개` : 'AI 판독 필요',
+    text: !cv.length ? 'AI 판독이 켜져 있어야 볼 수 있어요.' : cvSeen >= 2 ? '연구에서 심혈관 위험과 관련이 보고된 얼굴 특징이 여러 개 보여요. 오탐이 많은 지표이니, 혈압·콜레스테롤 검진 결과를 함께 확인해 보세요.' : '눈에 띄는 특징은 적어요.', ai: cv.join(' / '), refs: ['cad', 'xan'] });
+  // kidney / fluid: swelling vs personal baseline
+  const base = baselineRatio();
+  if (!base || isNaN(h.faceRatio)) t = 'base';
+  else { const ch = 100 * (h.faceRatio - base) / base; t = ch >= 6 ? 'check' : ch >= 3 ? 'watch' : 'ok'; S.swellPct = ch; }
+  if (A.puffiness) t = t === 'base' ? (aiTier(A.puffiness) === 'check' ? 'watch' : 'base') : worse(t, aiTier(A.puffiness) === 'check' ? 'watch' : 'ok');
+  push({ id: 'swell', name: '얼굴 붓기 (평소 대비)', org: '신장·체액', tier: t,
+    value: base ? `얼굴 폭/눈 사이 ${fmt(h.faceRatio, 2)} (평소 ${fmt(base, 2)}, ${S.swellPct >= 0 ? '+' : ''}${fmt(S.swellPct, 1)}%) · 눈밑 그림자 ${fmt(h.bagContrast, 1)}` : `얼굴 폭/눈 사이 ${fmt(h.faceRatio, 2)} · 눈밑 그림자 ${fmt(h.bagContrast, 1)}`,
+    text: t === 'base' ? '붓기는 내 평소 얼굴과 비교해야 정확해요. 다른 날 2번 더 측정하면 비교가 시작돼요.' : t === 'ok' ? '평소와 비슷한 얼굴 폭이에요.' : t === 'watch' ? '평소보다 얼굴이 조금 부어 보여요. 수면 부족·짠 음식·음주로도 흔히 생겨요.' : '평소보다 얼굴 폭이 뚜렷이 늘었어요. 며칠 계속되거나 다리 붓기·소변 거품이 함께 있으면 신장 검사를 받아 보세요.',
+    ai: A.puffiness, refs: ['edema'] });
+  // skin / immune: butterfly redness
+  t = isNaN(h.malar) ? 'na' : h.malar >= 7 ? 'check' : h.malar >= 4 ? 'watch' : 'ok';
+  if (A.malarRash) t = worse(t, aiTier(A.malarRash));
+  push({ id: 'malar', name: '볼·콧등 나비 모양 붉은기', org: '피부·면역', tier: t, value: `이마 대비 a* +${fmt(h.malar, 1)}`,
+    text: { ok: '볼·콧등의 붉은기가 이마와 비슷해요.', watch: '볼과 콧등이 이마보다 붉게 측정됐어요. 햇빛·온도·피부 자극으로도 흔해요.', check: '볼과 콧등에 나비 모양 붉은기가 보여요. 관절통·미열·햇빛 과민이 함께 있다면 류마티스내과 상담을 권해요.', na: '측정되지 않았어요.' }[t], ai: A.malarRash, refs: ['malar'] });
+  // eye fatigue
+  t = isNaN(h.scleraRed) ? 'na' : h.scleraRed >= 10 ? 'watch' : 'ok';
+  push({ id: 'red', name: '눈 충혈', org: '눈 피로', tier: t, value: `공막 a* ${fmt(h.scleraRed, 1)}`, text: t === 'watch' ? '눈이 충혈돼 보여요. 수면·화면 사용 시간을 점검해 보세요.' : t === 'ok' ? '눈 흰자 붉은기는 일반 범위예요.' : '측정되지 않았어요.', refs: [] });
+  // neuro: facial droop (AI only, emergency messaging)
+  t = A.facialDroop ? (A.facialDroop === '보임' ? 'urgent' : A.facialDroop === '약간 보임' ? 'watch' : aiTier(A.facialDroop)) : 'na';
+  push({ id: 'droop', name: '얼굴 한쪽 처짐', org: '신경', tier: t, value: A.facialDroop ? `AI: ${A.facialDroop}` : 'AI 판독 필요',
+    text: t === 'urgent' ? '입꼬리나 눈꺼풀 한쪽이 처져 보여요. 갑자기 생겼거나 말이 어눌하고 팔다리에 힘이 빠지면 지체 없이 119에 연락하세요. 원래 얼굴형이라면 걱정하지 않으셔도 됩니다.' : t === 'watch' ? '얼굴 좌우가 약간 달라 보여요. 사진 각도 때문일 수 있어요. 새로 생긴 변화라면 진료를 받아 보세요.' : t === 'ok' ? '좌우 처짐은 보이지 않아요.' : 'AI 판독이 켜져 있어야 볼 수 있어요.', ai: A.facialDroop, refs: ['stroke'] });
+  // endocrine features (AI only, reference)
+  const en = ['moonFace', 'eyeBulging'].map(k => A[k]).filter(Boolean);
+  push({ id: 'endo', name: '내분비 관련 얼굴 특징 (둥근 얼굴·눈 돌출)', org: '내분비 (참고)', tier: !en.length ? 'na' : en.includes('보임') ? 'watch' : 'ok', value: en.length ? `AI: ${en.join(' / ')}` : 'AI 판독 필요',
+    text: !en.length ? 'AI 판독이 켜져 있어야 볼 수 있어요.' : en.includes('보임') ? '연구에서 호르몬 질환과 관련이 보고된 얼굴 특징이 보여요. 체중 변화·피로·두근거림이 함께 있으면 내분비내과 상담을 권해요.' : '눈에 띄는 특징은 보이지 않아요.', refs: ['endo'] });
+  // hair greying
+  if (S.hair) { const g = S.hair.raw.grayRatio; push({ id: 'gray', name: '흰머리 비율', org: '모발', tier: g >= 30 ? 'watch' : 'ok', value: `${fmt(g)}%`, text: g >= 30 ? '흰머리 비율이 높은 편이에요. 나이·유전 영향이 크며, 갑자기 늘었다면 스트레스·영양 상태를 점검해 보세요.' : '흰머리 비율은 낮은 편이에요.', refs: ['cad'] }); }
+  return out;
+}
+
+/* ---------- AI interpretation ---------- */
+async function askAI(ms, age, sex) {
+  const h = S.face.health, imgs = [S.faceBlob], names = ['이미지 1: 정면 셀피'];
+  if (S.conjBlob) { imgs.push(S.conjBlob); names.push(`이미지 ${imgs.length}: 아래 눈꺼풀 안쪽(결막) 근접 사진`); }
+  if (S.hairBlob) { imgs.push(S.hairBlob); names.push(`이미지 ${imgs.length}: 정수리/가르마 사진`); }
+  const prompt = `당신은 건강·미용 리포트를 쓰는 의학 에디터입니다. ${names.join(', ')}.
+사용자 실제 나이 ${age}세${sex ? ', ' + sex : ''}.
+사진에서 픽셀 단위로 계산한 원본 측정값:
+${ms.map(m => `- ${m.name}: ${fmt(m.value, m.d)} ${m.unit} (점수 ${fmt(m.score)}/100, ${m.band})`).join('\n')}
+- 눈 흰자 노란기 b*(조명 보정) ${fmt(h.scleraYellow, 1)}, 눈 흰자 붉은기 a* ${fmt(h.scleraRed, 1)}, 장면 색온도 b* ${fmt(h.cast, 1)}
+- 볼 b* ${fmt(h.skinYellow, 1)}, 입술 a* ${fmt(h.lipA, 1)} b* ${fmt(h.lipB, 1)}, 볼·콧등−이마 a* ${fmt(h.malar, 1)}, 눈꺼풀 b* 초과분 ${fmt(h.lidYellow, 1)}
+${S.conj ? `- 결막 붉은기 a* ${fmt(S.conj.raw.conjRed, 1)}` : ''}${S.vital ? `\n- 영상: 심박 ${fmt(S.vital.hr)}bpm, 호흡 ${fmt(S.vital.rr)}회/분, 스트레스 ${fmt(S.vital.stress)}/100` : ''}
+
+할 일:
+1) 보이는 나이(얼굴 나이)를 정수로 추정하고, 나이를 올리거나 내린 요인 3~4개를 "+1", "-2" 형식과 함께 쓰세요.
+2) 아래 시각 징후를 사진에서 직접 관찰해 각각 "보임" / "약간 보임" / "안 보임" / "판단 불가" 중 하나로 답하세요. 조명·화장·필터·각도 때문에 확신할 수 없으면 "판단 불가"를 쓰세요. 측정값은 참고만 하고 사진 관찰을 우선하세요.
+   scleraYellow(눈 흰자 노란기), conjPale(눈꺼풀 안쪽 창백, 결막 사진이 없으면 판단 불가), lipColor(입술 창백·푸른기), xanthelasma(눈꺼풀 안쪽 노란 반점), arcus(각막 주변 흰 고리), earlobeCrease(귓불 대각선 주름, 귀가 안 보이면 판단 불가), grayHair(흰머리가 눈에 띔), puffiness(얼굴·눈 주변 붓기), malarRash(볼·콧등 나비 모양 붉은기), facialDroop(입꼬리·눈꺼풀 한쪽 처짐), moonFace(둥글고 꽉 찬 얼굴), eyeBulging(눈 돌출)
+3) 피부·모발 지표 해설 한 줄씩 (key: hydration, oil, redness, darkCircle, evenness, wrinkle, hair).
+4) 오늘부터 할 수 있는 구체적인 관리 팁 3개.
+5) 결과 요약 제목(20자 이내)과 2문장 요약.
+
+규칙: 질병 이름을 진단처럼 말하지 마세요. "~해 보여요", "검사를 권해요" 같은 표현만 쓰세요. 외모를 깎아내리지 말고 따뜻하게 쓰세요. 사진이 흐리거나 필터·화장이 강하면 photoQuality를 "poor"로 하세요. 한국어로 쓰세요.
+
+다음 JSON 하나로만 답하세요:
+{"apparentAge":34,"ageFactors":[{"feature":"눈가 잔주름","years":"+1","note":"..."}],"signs":{"scleraYellow":"안 보임","conjPale":"판단 불가","lipColor":"안 보임","xanthelasma":"안 보임","arcus":"안 보임","earlobeCrease":"판단 불가","grayHair":"안 보임","puffiness":"안 보임","malarRash":"안 보임","facialDroop":"안 보임","moonFace":"안 보임","eyeBulging":"안 보임"},"headline":"...","summary":"...","comments":{"hydration":"...","oil":"...","redness":"...","darkCircle":"...","evenness":"...","wrinkle":"...","hair":"..."},"tips":["...","...","..."],"photoQuality":"good","qualityNote":""}`;
+  return sampleFn.json(prompt, { images: imgs });
+}
+
+/* ---------- pilot data store ---------- */
+async function saveRun(rec) {
+  if (!db || !uid) return 'nostore';
+  try {
+    await db.collection(`pilot/${uid}/runs`).add(rec);
+    await db.doc(`pilot/${uid}`).set({ lastAt: rec.at, age: rec.age, sex: rec.sex, runs: S.history.length + 1 });
+    S.history.unshift(rec); return 'saved';
+  } catch (e) { return e?.code === 'invalid_argument' ? 'denied' : 'failed'; }
+}
+
+/* ---------- share card ---------- */
+async function shareCard({ age, ms, ai, example }) {
+  try { await document.fonts.ready; } catch {}
+  const c = document.createElement('canvas'); c.width = 1080; c.height = 1350; const g = c.getContext('2d');
+  g.fillStyle = '#f4f6f5'; g.fillRect(0, 0, 1080, 1350); g.fillStyle = '#16825a'; g.fillRect(0, 0, 1080, 14);
+  g.fillStyle = '#14201b'; g.font = '700 44px "Nanum Myeongjo", serif'; g.fillText('나의 페이스 리포트', 80, 130);
+  g.fillStyle = '#5b6b65'; g.font = '500 30px "IBM Plex Sans KR", sans-serif'; g.fillText(new Date().toLocaleDateString('ko-KR') + (example ? ' · 예시' : ''), 80, 180);
+  const ap = ai?.apparentAge, s = ap != null ? String(ap) : '—';
+  g.fillStyle = '#16825a'; g.font = '800 260px "Nanum Myeongjo", serif'; g.fillText(s, 70, 470);
+  const w = g.measureText(s).width; g.fillStyle = '#14201b'; g.font = '700 54px "Nanum Myeongjo", serif'; g.fillText('세', 80 + w, 470);
+  g.fillStyle = '#5b6b65'; g.font = '500 34px "IBM Plex Sans KR", sans-serif'; g.fillText(`얼굴 나이 · 실제 ${age}세`, 84, 530);
+  if (ap != null) { const d = age - ap; g.fillStyle = d >= 0 ? '#16825a' : '#d0533e'; g.font = '700 40px "IBM Plex Sans KR", sans-serif'; g.fillText(d > 0 ? `실제보다 ${d}살 어려 보여요` : d < 0 ? `실제보다 ${-d}살 많아 보여요` : '나이 그대로 보여요', 84, 600); }
+  g.fillStyle = '#14201b'; g.font = '700 46px "Nanum Myeongjo", serif'; g.fillText((ai?.headline || '원본 측정값 리포트').slice(0, 22), 84, 700);
+  ms.slice(0, 7).forEach((m, i) => { const y = 770 + i * 70; g.fillStyle = '#14201b'; g.font = '600 32px "IBM Plex Sans KR", sans-serif'; g.fillText(m.name, 84, y + 26);
+    g.fillStyle = '#e3ebe7'; g.fillRect(480, y + 6, 360, 20); const t = tone(m.score); g.fillStyle = t === 'g' ? '#16825a' : t === 'm' ? '#c98a12' : '#d0533e'; g.fillRect(480, y + 6, 3.6 * (m.score || 0), 20);
+    g.fillStyle = '#5b6b65'; g.font = '500 28px "IBM Plex Sans KR", sans-serif'; g.fillText(m.band, 870, y + 26); });
+  g.fillStyle = '#5b6b65'; g.font = '400 24px "IBM Plex Sans KR", sans-serif'; g.fillText('사진 측정값 + AI 해석 · 건강관리 참고용 · GreenRibbon', 84, 1300);
+  return c;
+}
+
+/* ---------- report ---------- */
+async function renderReport({ age, ms, ai, sig, loading, err, example, saved, rec }) {
+  const R = $('report'), ap = ai?.apparentAge, diff = ap != null ? age - ap : null;
+  const cm = k => ai?.comments?.[k] ? `<small>${esc(ai.comments[k])}</small>` : '';
+  const flagged = sig.filter(s => ['watch', 'check', 'urgent'].includes(s.tier));
+  const order = { urgent: 0, check: 1, watch: 2, ok: 3, base: 4, na: 5 };
+  const sorted = [...sig].sort((a, b) => order[a.tier] - order[b.tier]);
+  R.innerHTML = `
+    <div class="reportHead"><p class="eyebrow" style="margin:0">${example ? '예시 리포트' : '나의 페이스 리포트'}</p>${example ? '<span class="pill ex">예시 데이터 · 실제 측정 아님</span>' : `<span class="pill">${new Date().toLocaleString('ko-KR')}</span>`}</div>
+    <div class="hero" style="margin-top:10px"><div>
+      <div class="age"><div class="big">${loading ? '…' : ap != null ? ap : '—'}<small>세</small></div><div class="real">얼굴 나이<br>실제 <b>${age}</b>세</div></div>
+      ${loading ? '<div class="thinking" style="margin-top:14px"><span class="dot"></span>AI가 사진과 측정값을 판독하고 있어요 (보통 20~60초)</div>' : ''}
+      ${diff != null ? `<p class="headline">${diff > 0 ? `실제보다 ${diff}살 어려 보여요` : diff < 0 ? `실제보다 ${-diff}살 많아 보여요` : '나이 그대로 보여요'}${ai.headline ? ' · ' + esc(ai.headline) : ''}</p>` : ''}
+      ${ai?.summary ? `<p class="summary">${esc(ai.summary)}</p>` : ''}
+      ${err ? `<p class="status warn">${err}</p>` : ''}
+      ${ai?.ageFactors?.length ? `<ul class="factors">${ai.ageFactors.map(f => { const y = String(f.years || ''); return `<li><span class="d ${y.startsWith('+') ? 'up' : 'dn'}">${esc(y)}세</span><span><b>${esc(f.feature)}</b> ${esc(f.note || '')}</span></li>`; }).join('')}</ul>` : ''}
+      ${ai?.photoQuality === 'poor' ? `<p class="status warn">${esc(ai.qualityNote || '사진 상태 때문에 정확도가 낮을 수 있어요.')}</p>` : ''}
+    </div><div class="share" id="shareBox"></div></div>
+
+    <div class="sec"><p class="eyebrow">얼굴로 본 건강 신호 · ${flagged.length ? `확인해 볼 신호 ${flagged.length}개` : '눈에 띄는 신호 없음'}</p>
+      <div class="legend">${['ok', 'watch', 'check', 'urgent', 'base', 'na'].map(k => `<span class="chip ${TIER[k][1]}">${TIER[k][0]}</span>`).join('')}</div>
+      <div class="signals">${sorted.map(s => `<div class="sig ${TIER[s.tier][1]}">
+        <div class="top"><span><span class="t">${s.name}</span><span class="org">${s.org}</span></span><span class="chip ${TIER[s.tier][1]}">${TIER[s.tier][0]}</span></div>
+        <p>${esc(s.text)}</p>
+        <span class="raw">측정값 ${esc(s.value)}${s.ai ? ` · AI 판독: ${esc(s.ai)}` : ''}</span>
+        ${s.refs.length ? `<div class="ev">근거: ${s.refs.map(k => `<a href="${REF[k].u}" target="_blank" rel="noopener">${esc(REF[k].t)}</a>`).join(' / ')}</div>` : ''}
+      </div>`).join('')}</div></div>
+
+    <div class="sec"><p class="eyebrow">피부·모발 지표</p><div class="metrics">${ms.map(m => `<div class="m">
+      <div class="name">${m.name}${cm(m.key) || `<small>${m.how}</small>`}<span class="raw">원본값 ${fmt(m.value, m.d)} ${m.unit}</span></div>
+      <div class="bar" role="img" aria-label="${m.name} ${fmt(m.score)}점"><i style="width:${m.score || 0}%;background:var(--${tone(m.score) === 'g' ? 'good' : tone(m.score) === 'm' ? 'mid' : 'care'})"></i></div>
+      <span class="chip ${tone(m.score)}">${m.band}</span></div>`).join('')}</div></div>
+
+    ${S.vital && !example ? `<div class="sec"><p class="eyebrow">영상으로 본 오늘의 컨디션</p><div class="vit"><div><b>${fmt(S.vital.hr)}</b><span>심박수 bpm</span></div><div><b>${fmt(S.vital.rr)}</b><span>호흡수 회/분</span></div><div><b>${fmt(S.vital.stress)}</b><span>스트레스 /100</span></div></div></div>` : ''}
+
+    <div class="grid2 sec">
+      <div><p class="eyebrow">오늘부터 해 볼 관리</p>${ai?.tips?.length ? `<ol class="tips">${ai.tips.map(t => `<li>${esc(t)}</li>`).join('')}</ol>` : `<p class="summary">${loading ? 'AI 판독을 기다리는 중이에요.' : '관찰 필요·검사 권장 신호부터 확인해 보세요.'}</p>`}</div>
+      <div><p class="eyebrow">파일럿 데이터</p>
+        <p class="summary">${example ? '측정하면 원본 수치와 설문이 익명 ID로 저장되고, 내 기록이 쌓일수록 붓기처럼 "평소 대비" 지표가 정확해져요.' : saved === 'saved' ? `저장했어요. 내 측정 기록 ${S.history.length}회.` : saved === 'local' ? `이 휴대폰에 저장했어요 (기록 ${S.history.length}회). 파일럿 제출은 아래 "원본 데이터 저장"으로 받은 파일을 담당자에게 보내 주세요.` : saved === 'denied' ? '이 계정은 데이터 저장 권한이 없어요 (공유 설정에서 참여자 권한이 필요해요).' : saved === 'nostore' ? '이 화면에서는 데이터를 저장할 수 없어요. 아래 버튼으로 파일을 받아 담당자에게 보내 주세요.' : saved === 'failed' ? '저장에 실패했어요. 아래 버튼으로 파일을 받아 담당자에게 보내 주세요.' : ''}</p>
+        ${example ? '' : '<div class="row" style="margin-top:10px"><button class="btn" id="saveCard">리포트 이미지 저장</button><button class="btn" id="saveJson">원본 데이터 저장 (JSON)</button></div><p class="status" id="saveMsg"></p>'}
+      </div>
+    </div>`;
+  const card = await shareCard({ age, ms, ai, example });
+  const img = new Image(); img.alt = '공유용 리포트 카드'; img.src = card.toDataURL('image/png'); $('shareBox').append(img);
+  if (!example) {
+    const dl = window.claude?.use ? await window.claude.use('downloads').catch(() => null) : null;
+    const save = async (filename, data) => {
+      if (!dl) { try { const b = data instanceof Blob ? data : new Blob([data], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = filename; document.body.append(a); a.click(); a.remove(); $('saveMsg').textContent = '내려받았어요.'; } catch { $('saveMsg').textContent = '저장하지 못했어요. 카드 이미지를 길게 눌러 저장해 주세요.'; } return; }
+      try { await dl.save({ filename, data }); $('saveMsg').textContent = '저장했어요.'; } catch (e) { $('saveMsg').textContent = e.code === 'declined' ? '저장을 취소했어요.' : '저장하지 못했어요.'; } };
+    $('saveCard').onclick = () => card.toBlob(b => save('face-report.png', b), 'image/png');
+    $('saveJson').onclick = () => save('face-report-raw.json', JSON.stringify(rec || {}, null, 2));
+  }
+}
+
+/* ---------- owner view: pilot data ---------- */
+async function renderAdmin() {
+  const A = $('admin'); A.hidden = false;
+  A.innerHTML = '<p class="eyebrow">파일럿 데이터 현황 (소유자만 보임)</p><p class="summary">불러오는 중…</p>';
+  try {
+    const people = (await db.collection('pilot').get()).docs;
+    const runs = [];
+    for (const p of people) { const q = await db.collection(`pilot/${p.id}/runs`).orderBy('at', 'desc').limit(50).get(); q.docs.forEach(d => runs.push({ pid: p.id, ...d.data() })); }
+    runs.sort((a, b) => String(b.at).localeCompare(String(a.at)));
+    const flag = r => (r.signals || []).filter(s => ['watch', 'check', 'urgent'].includes(s.tier)).map(s => s.id).join(', ');
+    const ages = runs.filter(r => r.ai?.apparentAge != null).map(r => r.ai.apparentAge - r.age);
+    const mae = ages.length ? ages.reduce((s, v) => s + Math.abs(v), 0) / ages.length : NaN;
+    A.innerHTML = `<p class="eyebrow">파일럿 데이터 현황 (소유자만 보임)</p>
+      <div class="kpis"><div><b>${people.length}</b><span>참여자</span></div><div><b>${runs.length}</b><span>측정 횟수</span></div><div><b>${fmt(mae, 1)}</b><span>얼굴 나이 − 실제 나이 평균 차 (세)</span></div></div>
+      ${runs.length ? `<div class="tablewrap"><table class="raw2"><thead><tr><th>측정 시각</th><th>참여자</th><th>나이 / 얼굴 나이</th><th>눈 흰자 b*</th><th>얼굴 폭비</th><th>결막 a*</th><th>관찰·검사 신호</th><th>수면·음주·붓기</th></tr></thead><tbody>
+      ${runs.slice(0, 100).map(r => `<tr><td class="n">${esc(new Date(r.at).toLocaleString('ko-KR'))}</td><td class="n">${esc(r.pid.slice(0, 6))}</td><td class="n">${r.age} / ${r.ai?.apparentAge ?? '—'}</td>
+        <td class="n">${fmt(r.health?.scleraYellow, 1)}</td><td class="n">${fmt(r.health?.faceRatio, 2)}</td><td class="n">${fmt(r.conj?.conjRed, 1)}</td><td>${esc(flag(r) || '—')}</td>
+        <td>${esc([r.survey?.sleep, r.survey?.alc, r.survey?.swell].filter(Boolean).join(' · ') || '—')}</td></tr>`).join('')}</tbody></table></div>
+      <div class="row" style="margin-top:12px"><button class="btn" id="csv">전체 데이터 CSV 저장</button><span class="status" id="csvMsg"></span></div>` : '<p class="summary">아직 저장된 측정이 없어요. 참여자에게 이 페이지를 공유(참여자 권한)해 주세요.</p>'}`;
+    if ($('csv')) $('csv').onclick = async () => {
+      const cols = ['at', 'pid', 'age', 'sex', 'ai.apparentAge', 'ai.photoQuality', 'raw.texture', 'raw.shine', 'raw.redness', 'raw.darkCircle', 'raw.evenness', 'raw.foreLines', 'raw.crowLines', 'raw.hairline', 'raw.ita', 'raw.sharp',
+        'health.scleraYellow', 'health.scleraRed', 'health.cast', 'health.faceRatio', 'health.bagContrast', 'health.lipA', 'health.lipB', 'health.malar', 'health.lidYellow', 'conj.conjRed', 'hair.scalpRatio', 'hair.grayRatio',
+        'vital.hr', 'vital.rr', 'vital.stress', 'survey.sleep', 'survey.alc', 'survey.swell', 'survey.cond', 'survey.liver', 'survey.anemia'];
+      const get = (o, p) => p.split('.').reduce((a, k) => a?.[k], o);
+      const lines = [cols.join(','), ...runs.map(r => cols.map(c => { const v = get(r, c); return v == null ? '' : typeof v === 'number' ? v.toFixed(3) : '"' + String(v).replace(/"/g, '""') + '"'; }).join(','))];
+      const dl = await window.claude.use('downloads').catch(() => null);
+      if (!dl) return $('csvMsg').textContent = '이 화면에서는 저장할 수 없어요.';
+      try { await dl.save({ filename: 'face-pilot-data.csv', data: '﻿' + lines.join('\n') }); $('csvMsg').textContent = '저장했어요.'; } catch { $('csvMsg').textContent = '저장하지 못했어요.'; }
+    };
+  } catch { A.innerHTML = '<p class="eyebrow">파일럿 데이터 현황</p><p class="summary">데이터를 불러오지 못했어요.</p>'; }
+}
+
+
+/* ================= app ================= */
+const STEPS = [
+  { key: 'face', title: '정면 얼굴', desc: '밝은 자연광에서 화장·필터 없이, 앞머리를 넘기고 눈을 크게 뜬 채 얼굴을 가이드에 맞춰 주세요.', facing: 'user', kind: 'photo', required: true },
+  { key: 'conj', title: '눈꺼풀 안쪽', desc: '아래 눈꺼풀을 손가락으로 살짝 내려 안쪽 붉은 부분이 화면 가운데에 크게 보이게 찍어 주세요.', facing: 'user', kind: 'photo' },
+  { key: 'hair', title: '정수리·가르마', desc: '거울 앞에서 가르마나 정수리를 가까이 찍어 주세요. 뒤 카메라가 편합니다.', facing: 'environment', kind: 'photo' },
+  { key: 'video', title: '40초 컨디션 측정', desc: '휴대폰을 컵이나 책에 기대 고정하고, 40초 동안 말하지 말고 가만히 화면을 봐 주세요. 심박·호흡·스트레스를 잽니다.', facing: 'user', kind: 'video' },
+];
+let stepIdx = 0, stream = null, liveOK = null, liveRun = null, tabsAdmin = false;
+
+/* ---------- navigation ---------- */
+let cur = 'home';
+function show(s, title) {
+  cur = s;
+  document.querySelectorAll('.screen').forEach(el => el.hidden = el.dataset.s !== s);
+  $('title').textContent = title || '페이스체크';
+  $('back').hidden = !['capture', 'survey'].includes(s);
+  document.querySelectorAll('#tabbar button').forEach(b => b.setAttribute('aria-current', b.dataset.t === s ? 'page' : 'false'));
+  $('tabbar').hidden = ['capture', 'survey'].includes(s);
+  if (s !== 'capture') stopCam();
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll('#tabbar button').forEach(b => b.onclick = () => { if (b.dataset.t === 'history') renderHistory(); if (b.dataset.t === 'admin') renderAdmin(); show(b.dataset.t, { home: '페이스체크', history: '내 기록', admin: '파일럿 데이터' }[b.dataset.t]); });
+$('back').onclick = () => { if (cur === 'capture' && stepIdx > 0) { stepIdx--; openStep(); } else if (cur === 'survey') { stepIdx = STEPS.length - 1; openStep(); } else { renderHome(); show('home'); } };
+$('home2').onclick = () => { renderHome(); show('home'); };
+
+/* ---------- profile (kept in this browser for convenience) ---------- */
+const PKEY = 'facecheck.profile.v1';
+try { const p = JSON.parse(localStorage.getItem(PKEY) || 'null'); if (p) { $('birth').value = p.birth || ''; $('sex').value = p.sex || ''; $('agree').checked = !!p.agree; } } catch {}
+const saveProfile = () => { try { localStorage.setItem(PKEY, JSON.stringify({ birth: $('birth').value, sex: $('sex').value, agree: $('agree').checked })); } catch {} };
+function realAge() { const y = +$('birth').value, now = new Date().getFullYear(); return y >= 1930 && y <= now - 14 ? now - y : null; }
+const gateStart = () => { $('start').disabled = !(realAge() && $('agree').checked); saveProfile(); };
+['birth', 'sex', 'agree'].forEach(id => $(id).addEventListener('input', gateStart)); $('agree').onchange = gateStart; gateStart();
+const survey = () => Object.fromEntries(['qSleep', 'qAlc', 'qSwell', 'qCond', 'qLiver', 'qAnemia'].map(id => [id.slice(1).toLowerCase(), $(id).value || null]));
+
+/* ---------- capabilities ---------- */
+(async () => {
+  const use = n => window.claude?.use ? window.claude.use(n).catch(() => null) : Promise.resolve(null);
+  try { const s = await use('sample'); const lim = s ? await s.limits().catch(() => null) : null; if (s && lim?.images) sampleFn = s; } catch {}
+  db = await use('db'); user = await use('user');
+  if (user) { try { uid = await user.id(); } catch {} }
+  if (db && uid) { try { const q = await db.collection(`pilot/${uid}/runs`).orderBy('at', 'desc').limit(30).get(); S.history = q.docs.map(d => d.data()); } catch {} }
+  if (!(db && uid)) S.history = loadLocal();
+  $('who').textContent = db && uid ? '파일럿 · 서버 저장' : '이 기기에 저장';
+  if (user && db) { try { if (await user.isOwner()) { tabsAdmin = true; document.querySelector('[data-t="admin"]').hidden = false; $('tabbar').style.setProperty('--tabs', 3); } } catch {} }
+  renderHome();
+})();
+$('tabbar').style.setProperty('--tabs', 2);
+
+/* ---------- local history when no shared store (e.g. hosted outside Claude) ---------- */
+const HKEY = 'facecheck.history.v1';
+function loadLocal() { try { return JSON.parse(localStorage.getItem(HKEY) || '[]'); } catch { return []; } }
+function saveLocal(rec) { S.history.unshift(rec); try { localStorage.setItem(HKEY, JSON.stringify(S.history.slice(0, 60))); return 'local'; } catch { return 'nostore'; } }
+
+/* ---------- home ---------- */
+function renderHome() {
+  $('today').textContent = new Date().toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'long' });
+  const h = S.history[0];
+  if (!h) { $('lastBox').innerHTML = '<p class="eyebrow">최근 결과</p><p class="summary">아직 기록이 없어요. 첫 체크를 시작해 보세요. 3번 이상 측정하면 붓기처럼 "평소 대비" 지표가 켜져요.</p>'; return; }
+  const flags = (h.signals || []).filter(s => ['watch', 'check', 'urgent'].includes(s.tier)).length;
+  $('lastBox').innerHTML = `<p class="eyebrow">최근 결과 · ${esc(new Date(h.at).toLocaleDateString('ko-KR'))}</p>
+    <div class="lastcard"><div class="num">${h.ai?.apparentAge ?? '—'}<small>세</small></div>
+    <div><b>얼굴 나이</b> · 실제 ${h.age}세<br><span class="note2">확인해 볼 건강 신호 ${flags}개 · 누적 ${S.history.length}회 측정</span></div></div>`;
+}
+$('start').onclick = () => { S.face = S.faceBlob = S.hair = S.hairBlob = S.conj = S.conjBlob = S.vital = S.ai = null; stepIdx = 0; openStep(); };
+
+/* ---------- camera ---------- */
+var startCam = async function (facing) {
+  stopCam();
+  if (liveOK === false || !navigator.mediaDevices?.getUserMedia) { liveOK = false; return false; }
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: facing, width: { ideal: 1280 }, height: { ideal: 960 }, frameRate: { ideal: 30 } }, audio: false });
+    $('live').srcObject = stream; await $('live').play(); liveOK = true; return true;
+  } catch (e) { liveOK = false; DIAG.cam = '실패: ' + (e?.name || e?.message || ''); return false; }
+};
+function stopCam() { if (liveRun) liveRun.stop = true; if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; } try { $('live').pause(); $('live').srcObject = null; } catch {} }
+function drawGuide(kind) {
+  const c = $('guide'), r = c.getBoundingClientRect(), dpr = devicePixelRatio || 1; c.width = r.width * dpr; c.height = r.height * dpr;
+  const g = c.getContext('2d'); g.clearRect(0, 0, c.width, c.height); g.strokeStyle = 'rgba(255,255,255,.85)'; g.lineWidth = 3 * dpr; g.setLineDash([10 * dpr, 8 * dpr]);
+  if (kind === 'face' || kind === 'video') { g.beginPath(); g.ellipse(c.width / 2, c.height * 0.44, c.width * 0.3, c.height * 0.3, 0, 0, 7); g.stroke(); }
+  else { g.strokeRect(c.width * 0.2, c.height * 0.3, c.width * 0.6, c.height * 0.4); }
+}
+
+/* ---------- steps ---------- */
+function clearGuide() { const c = $('guide'); c.getContext('2d').clearRect(0, 0, c.width, c.height); $('stageMsg').textContent = ''; }
+function stepperHTML(i) { return [...STEPS, { key: 's' }].map((_, k) => `<i class="${k <= i ? 'on' : ''}"></i>`).join(''); }
+async function openStep() {
+  const st = STEPS[stepIdx];
+  show('capture', '체크 ' + (stepIdx + 1) + '/' + (STEPS.length + 1));
+  $('stepper').innerHTML = stepperHTML(stepIdx);
+  $('stepNo').textContent = st.required ? '필수' : '선택 · 건너뛸 수 있어요';
+  $('stepTitle').textContent = st.title; $('stepDesc').textContent = st.desc;
+  $('shot').hidden = true; $('retake').hidden = true; $('next').disabled = !!st.required; $('skip').hidden = !!st.required;
+  $('wave').hidden = st.kind !== 'video'; $('badge').hidden = true; $('capSt').textContent = ''; $('stageMsg').textContent = '';
+  $('next').textContent = stepIdx === STEPS.length - 1 ? '다음' : '다음';
+  const done = st.key === 'face' ? !!S.face : st.key === 'video' ? !!S.vital : !!S[st.key];
+  if (done) { $('next').disabled = false; $('capSt').textContent = '이미 측정했어요. 다시 찍거나 다음으로 넘어가세요.'; $('capSt').className = 'status ok'; }
+  // file inputs: native camera app as the dependable path
+  $('cap').accept = st.kind === 'video' ? 'video/*' : 'image/*'; $('cap').setAttribute('capture', st.facing);
+  $('pick').accept = st.kind === 'video' ? 'video/*' : 'image/*';
+  $('stage').classList.toggle('mirror', st.facing === 'user');
+  const ok = await startCam(st.facing);
+  $('liveCtl').hidden = !ok; $('stageEmpty').hidden = ok;
+  $('capWrap').classList.toggle('primary', !ok);
+  if (ok) { drawGuide(st.key === 'video' ? 'video' : st.key === 'face' ? 'face' : 'box'); $('stageMsg').textContent = st.kind === 'video' ? '준비되면 버튼을 눌러 40초 측정을 시작하세요' : '가이드에 맞추고 버튼을 눌러 촬영하세요'; }
+  else $('stageEmpty').innerHTML = `<div><b style="color:#fff">카메라 앱으로 촬영해 주세요</b><br>이 화면에서는 실시간 카메라가 허용되지 않아요.<br>아래 <b style="color:#fff">카메라로 촬영</b>을 누르면 휴대폰 카메라가 열려요.</div>`;
+}
+$('skip').onclick = () => goNext();
+$('next').onclick = () => goNext();
+$('retake').onclick = () => openStep();
+function goNext() { stopCam(); if (stepIdx < STEPS.length - 1) { stepIdx++; openStep(); } else { show('survey', '체크 ' + (STEPS.length + 1) + '/' + (STEPS.length + 1)); $('stepper2').innerHTML = stepperHTML(STEPS.length); } }
+
+function capMsg(t, cls) { $('capSt').className = 'status ' + (cls || ''); $('capSt').textContent = t; }
+function showShot(canvas) { clearGuide(); $('shot').src = canvas.toDataURL('image/jpeg', 0.85); $('shot').hidden = false; $('stageEmpty').hidden = true; $('retake').hidden = false; stopCam(); $('liveCtl').hidden = true; $('stage').classList.remove('mirror'); }
+
+async function handlePhoto(blob) {
+  const st = STEPS[stepIdx]; capMsg('분석 중…');
+  try {
+    const bm = await loadBitmap(blob);
+    if (st.key === 'face') {
+      const small = draw(bm, 240), big = draw(bm, Math.min(720, bm.width));
+      const r = Photo.analyze(px(small), small.width, small.height, px(big), big.width, big.height);
+      if (r.error) { S.face = null; showShot(big); return capMsg(r.error, 'warn'); }
+      S.face = r; S.faceBlob = await toBlob(bm, 1280);
+      const ctx = big.getContext('2d'); ctx.lineWidth = Math.max(2, big.width / 180);
+      Object.entries(r.reg).forEach(([k, q]) => { ctx.strokeStyle = k.startsWith('iris') ? '#e3a83a' : k.startsWith('under') ? '#5aa9ff' : k.startsWith('crow') ? '#f08672' : '#3fbf86'; ctx.strokeRect(q.x0, q.y0, q.x1 - q.x0, q.y1 - q.y0); });
+      showShot(big);
+      const h = r.health, w = [];
+      if (r.raw.sharp < 1.2) w.push('조금 흐려요'); if (r.raw.lum < 40) w.push('조금 어두워요'); if (!(h.scleraPx >= 12)) w.push('눈 흰자가 잘 안 보여요'); if (h.cast > 8) w.push('조명이 노란 편이에요');
+      capMsg(w.length ? `측정했어요. 다만 ${w.join(', ')}. 다시 찍으면 더 정확해요.` : '측정했어요. 다음으로 넘어가세요.', w.length ? 'warn' : 'ok');
+    } else {
+      const c = draw(bm, 300), r = st.key === 'hair' ? Photo.scalp(px(c), c.width, c.height) : Photo.conjunctiva(px(c), c.width, c.height);
+      showShot(draw(bm, Math.min(720, bm.width)));
+      if (r.error) { S[st.key] = null; return capMsg(r.error, 'warn'); }
+      S[st.key] = r; S[st.key + 'Blob'] = await toBlob(bm, 1024);
+      capMsg(st.key === 'hair' ? `두피 노출 ${fmt(r.raw.scalpRatio)}% · 흰머리 ${fmt(r.raw.grayRatio)}% 측정했어요.` : `눈꺼풀 안쪽 붉은기 a* ${fmt(r.raw.conjRed, 1)} 측정했어요.`, 'ok');
+    }
+    $('next').disabled = false;
+  } catch { capMsg('이 사진을 열 수 없어요. 다시 찍어 주세요.', 'warn'); }
+}
+
+/* live shutter: photo or 40 s vitals */
+$('shutter').onclick = async () => {
+  const st = STEPS[stepIdx], v = $('live');
+  if (st.kind === 'photo') {
+    const c = document.createElement('canvas'); c.width = v.videoWidth; c.height = v.videoHeight; const g = c.getContext('2d');
+    if (st.facing === 'user') { g.translate(c.width, 0); g.scale(-1, 1); }
+    g.drawImage(v, 0, 0); c.toBlob(b => handlePhoto(b), 'image/jpeg', 0.92);
+  } else runLiveVitals();
+};
+function runLiveVitals() {
+  const v = $('live'), proc = document.createElement('canvas'), pc = proc.getContext('2d', { willReadFrequently: true }), frames = [], st = {};
+  const run = liveRun = { stop: false }; const t0 = performance.now(); let lastWave = 0;
+  $('shutter').disabled = true; $('badge').hidden = false; $('stageMsg').textContent = '말하지 말고 가만히 화면을 봐 주세요';
+  const tick = () => {
+    if (run.stop) return;
+    const t = (performance.now() - t0) / 1000;
+    const PW = 180, PH = Math.round(180 * v.videoHeight / v.videoWidth); if (proc.width !== PW) { proc.width = PW; proc.height = PH; }
+    pc.drawImage(v, 0, 0, PW, PH); const f = Face.frameFeatures(pc.getImageData(0, 0, PW, PH).data, PW, PH, st); f.t = t; frames.push(f);
+    $('badgeL').textContent = !f.ok ? '얼굴을 찾는 중' : f.lum < 70 ? '조금 어두워요' : f.motion > 2.5 ? '움직임 감지' : '측정 중'; $('badgeR').textContent = `${Math.ceil(Math.max(0, 40 - t))}초`;
+    const ok = frames.filter(x => x.ok && x.t > t - 8);
+    if (ok.length > 90 && t - lastWave > 0.25) { lastWave = t; const { p } = pulseOf(ok); wave(Array.from(p.slice(-150))); }
+    if (t >= 40) return finishVitals(frames);
+    v.requestVideoFrameCallback ? v.requestVideoFrameCallback(tick) : requestAnimationFrame(tick);
+  };
+  tick();
+}
+function wave(sig) {
+  const c = $('wave'), r = c.getBoundingClientRect(), dpr = devicePixelRatio || 1; c.width = r.width * dpr; c.height = r.height * dpr;
+  const g = c.getContext('2d'); let mx = 0; sig.forEach(v => mx = Math.max(mx, Math.abs(v))); mx = mx || 1;
+  g.strokeStyle = '#3fbf86'; g.lineWidth = 2 * dpr; g.beginPath(); sig.forEach((v, i) => { const x = i / (sig.length - 1) * c.width, y = c.height / 2 - v / mx * c.height * 0.4; i ? g.lineTo(x, y) : g.moveTo(x, y); }); g.stroke();
+}
+function finishVitals(frames) {
+  stopCam(); clearGuide(); $('shutter').disabled = false; $('badge').hidden = true; $('liveCtl').hidden = true;
+  const r = analyzeBasic(frames);
+  if (r.error) { S.vital = null; $('retake').hidden = false; return capMsg(r.error, 'warn'); }
+  S.vital = { hr: r.hr, rr: r.rr, stress: r.stress, blinkRate: r.blinkRate, q: r.q, snr: r.snr, dur: r.dur, rmssd: r.rmssd };
+  $('stageEmpty').hidden = false; $('stageEmpty').innerHTML = `<div style="color:#fff"><div style="font-family:var(--f-display);font-size:48px;font-weight:800">${fmt(r.hr)}</div>심박수 bpm<br>호흡 ${fmt(r.rr)}회/분 · 스트레스 ${fmt(r.stress)}</div>`;
+  $('retake').hidden = false; $('next').disabled = false;
+  capMsg(r.q >= 3 ? '측정했어요.' : '측정했지만 신호 품질이 낮아요. 휴대폰을 고정하고 다시 해 보면 더 정확해요.', r.q >= 3 ? 'ok' : 'warn');
+}
+function handleVideoFile(file) {
+  const vid = document.createElement('video'); vid.muted = true; vid.playsInline = true;
+  const proc = document.createElement('canvas'), pc = proc.getContext('2d', { willReadFrequently: true }), frames = [], st = {}; let t0 = null, done = false;
+  capMsg('영상을 분석하는 중… (영상 길이만큼 걸려요)');
+  vid.src = URL.createObjectURL(file);
+  const end = () => { if (done) return; done = true; vid.pause(); finishVitals(frames); };
+  const tick = (now, meta) => { if (done) return; const t = meta?.mediaTime ?? vid.currentTime; if (t0 === null) t0 = t;
+    const PW = 180, PH = Math.round(180 * vid.videoHeight / vid.videoWidth); if (proc.width !== PW) { proc.width = PW; proc.height = PH; }
+    pc.drawImage(vid, 0, 0, PW, PH); const f = Face.frameFeatures(pc.getImageData(0, 0, PW, PH).data, PW, PH, st); f.t = t - t0; frames.push(f);
+    $('capSt').textContent = `영상 분석 중… ${Math.floor(f.t)}초`;
+    if (f.t > 60) return end(); vid.requestVideoFrameCallback ? vid.requestVideoFrameCallback(tick) : requestAnimationFrame(tick); };
+  vid.onended = end;
+  vid.onerror = () => capMsg('이 영상 형식은 열 수 없어요. 카메라 설정에서 "고효율 동영상"을 끄고 다시 찍어 주세요.', 'warn');
+  vid.onloadedmetadata = () => vid.play().then(() => vid.requestVideoFrameCallback ? vid.requestVideoFrameCallback(tick) : requestAnimationFrame(tick)).catch(() => capMsg('영상을 재생할 수 없어요.', 'warn'));
+}
+const onFile = e => { const f = e.target.files?.[0]; e.target.value = ''; if (!f) { toast('사진·영상이 전달되지 않았어요. 다시 시도해 주세요.'); return; } STEPS[stepIdx].kind === 'video' ? handleVideoFile(f) : handlePhoto(f); };
+$('cap').onchange = onFile; $('pick').onchange = onFile;
+
+/* ---------- analyze ---------- */
+$('analyze').onclick = async () => {
+  const age = realAge(), sex = $('sex').value, ms = metrics();
+  show('result', '나의 결과'); let err = null; S.ai = null;
+  renderReport({ age, ms, ai: null, sig: signals(null), loading: !!sampleFn });
+  if (sampleFn) {
+    try { S.ai = await askAI(ms, age, sex); }
+    catch (e) { err = e.code === 'not_granted' ? 'AI 사용을 허용하지 않아 얼굴 나이·AI 판독은 빠졌어요.' : e.code === 'rate_limited' ? '요청이 많아요. 잠시 후 다시 시도해 주세요.' : 'AI 판독을 받지 못했어요. 원본 측정값만 보여 드려요.'; }
+  } else err = '이 버전에서는 AI 판독(얼굴 나이 등)이 빠지고 원본 측정값으로만 결과를 보여 드려요.';
+  const sig = signals(S.ai);
+  const rec = { at: new Date().toISOString(), age, sex: sex || null, raw: S.face.raw, health: S.face.health, hair: S.hair?.raw ?? null, conj: S.conj?.raw ?? null,
+    vital: S.vital ?? null, survey: survey(), metrics: ms.map(m => ({ key: m.key, value: m.value, score: m.score, band: m.band })),
+    signals: sig.map(s => ({ id: s.id, tier: s.tier, ai: s.ai ?? null })), ai: S.ai ? { apparentAge: S.ai.apparentAge, signs: S.ai.signs, photoQuality: S.ai.photoQuality } : null };
+  const saved = (db && uid) ? await saveRun(rec) : saveLocal(rec);
+  renderReport({ age, ms, ai: S.ai, sig, loading: false, err, saved, rec });
+};
+
+/* ---------- history ---------- */
+function renderHistory() {
+  const H = S.history;
+  if (!H.length) { $('hist').innerHTML = '<div class="card"><p class="summary">아직 기록이 없어요. 홈에서 첫 체크를 시작해 보세요.</p></div>'; $('spark').innerHTML = ''; $('sparkNote').textContent = ''; return; }
+  const pts = [...H].reverse().filter(h => h.ai?.apparentAge != null);
+  if (pts.length >= 2) {
+    const ys = pts.flatMap(h => [h.ai.apparentAge, h.age]), lo = Math.min(...ys) - 2, hi = Math.max(...ys) + 2, X = i => 10 + i * 280 / (pts.length - 1), Y = v => 80 - (v - lo) / (hi - lo) * 70;
+    $('spark').innerHTML = `<polyline fill="none" stroke="var(--muted)" stroke-dasharray="4 4" stroke-width="1.5" points="${pts.map((h, i) => `${X(i)},${Y(h.age)}`).join(' ')}"/>
+      <polyline fill="none" stroke="var(--accent)" stroke-width="2.5" points="${pts.map((h, i) => `${X(i)},${Y(h.ai.apparentAge)}`).join(' ')}"/>
+      ${pts.map((h, i) => `<circle cx="${X(i)}" cy="${Y(h.ai.apparentAge)}" r="3.5" fill="var(--accent)"/>`).join('')}`;
+    $('sparkNote').textContent = `초록 실선: 얼굴 나이 · 점선: 실제 나이 · ${pts.length}회`;
+  } else { $('spark').innerHTML = ''; $('sparkNote').textContent = '2회 이상 측정하면 추이가 그려져요.'; }
+  $('hist').innerHTML = H.map(h => { const fl = (h.signals || []).filter(s => ['watch', 'check', 'urgent'].includes(s.tier));
+    return `<div class="hrow"><b>${h.ai?.apparentAge ?? '—'}</b><div><span class="d">${esc(new Date(h.at).toLocaleString('ko-KR'))}</span><br>${fl.length ? `확인해 볼 신호 ${fl.length}개` : '눈에 띄는 신호 없음'}${h.vital ? ` · 심박 ${fmt(h.vital.hr)}` : ''}</div><span class="chip ${fl.some(s => s.tier === 'check' || s.tier === 'urgent') ? 'c' : fl.length ? 'm' : 'g'}">${fl.length ? '관찰' : '양호'}</span></div>`; }).join('');
+}
+
+renderHome();
+
+/* ---------- diagnostics: make failures visible on phones ---------- */
+const DIAG = { ua: navigator.userAgent.replace(/\(.*?\)/, '').trim().slice(0, 80), secure: String(window.isSecureContext), framed: String(window.top !== window.self),
+  gum: navigator.mediaDevices?.getUserMedia ? '있음' : '없음', cam: '미시험', capture: ('capture' in document.createElement('input')) ? '지원' : '미지원' };
+function toast(t) { const el = $('toast'); el.textContent = t; el.hidden = false; clearTimeout(el._t); el._t = setTimeout(() => el.hidden = true, 7000); }
+window.addEventListener('error', e => { toast('오류: ' + (e.message || '알 수 없음')); DIAG.lastError = e.message; renderDiag(); });
+window.addEventListener('unhandledrejection', e => { const m = e.reason?.message || e.reason?.code || String(e.reason); toast('오류: ' + m); DIAG.lastError = m; renderDiag(); });
+function renderDiag() {
+  const rows = [['브라우저', DIAG.ua], ['보안 연결(https)', DIAG.secure], ['Claude 화면 안에서 실행', DIAG.framed], ['카메라 API', DIAG.gum], ['실시간 카메라 시험', DIAG.cam],
+    ['카메라 앱 촬영(capture)', DIAG.capture], ['AI 판독', sampleFn ? '가능' : '불가'], ['데이터 저장', db && uid ? '가능' : (db ? '로그인 필요' : '불가')], ['최근 오류', DIAG.lastError || '없음']];
+  $('diagT').innerHTML = rows.map(r => `<tr><td>${r[0]}</td><td>${esc(r[1])}</td></tr>`).join('');
+}
+$('camTest').onclick = async () => {
+  try { const s = await navigator.mediaDevices.getUserMedia({ video: true }); s.getTracks().forEach(t => t.stop()); DIAG.cam = '성공'; }
+  catch (e) { DIAG.cam = '실패: ' + (e.name || e.message); }
+  renderDiag();
+};
+$('diag').addEventListener('toggle', renderDiag);
+// record why the live camera failed during a step
+const _startCam = startCam;
+startCam = async (f) => { const ok = await _startCam(f); if (!ok && DIAG.cam === '미시험') DIAG.cam = '실패 (카메라 앱 촬영으로 진행)'; return ok; };
+renderDiag();
+</script>
+</body></html>
