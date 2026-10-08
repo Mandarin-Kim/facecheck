@@ -236,6 +236,30 @@ details.diag td:last-child{text-align:right;font-size:12px;word-break:break-all;
 .qchips{display:flex;flex-wrap:wrap;gap:8px}
 .qchips button{font-size:14px;font-weight:600;border:0;border-radius:99px;padding:10px 14px;background:var(--bg);color:var(--ink2);cursor:pointer}
 .qchips button[aria-pressed="true"]{background:var(--accent);color:#fff}
+.ttlrow{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.skiplink{background:none;border:0;color:var(--muted2);font-size:12.5px;font-weight:600;padding:4px 0;cursor:pointer;white-space:nowrap}
+.skiplink[data-arm]{color:var(--care)}
+.tabbar{grid-template-columns:repeat(3,1fr)}
+.dlist{display:grid;gap:8px}
+.dcard{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;text-align:left;border:0;background:var(--bg);border-radius:16px;padding:12px 14px;cursor:pointer;width:100%;color:var(--ink)}
+.dcard .ic{width:44px;height:44px;border-radius:14px;background:#fff;display:grid;place-items:center;font-size:24px}
+.dcard .tx{display:grid;gap:2px;min-width:0}
+.dcard .tx b{font-size:15px}
+.dcard .tx span{font-size:12.5px;color:var(--muted)}
+.dcard em{font-style:normal;color:var(--accent-d);font-weight:700}
+.dcard .st{font-size:13px;font-weight:700;color:#fff;background:var(--accent);border-radius:99px;padding:6px 12px}
+.dcard .st.on{background:var(--soft2);color:var(--accent-d)}
+.rule{justify-self:center;font-size:20px;font-weight:900;border-radius:12px;padding:6px 18px;color:#fff}
+.rule.ink{background:#7c5cff}.rule.word{background:#1a1a1a}
+.fcam{position:relative;width:100%;aspect-ratio:3/4;border-radius:18px;overflow:hidden;background:#0d1110}
+.fcam video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+.fbadge{position:absolute;right:12px;top:12px;background:var(--accent);color:#fff;font-weight:800;font-size:20px;border-radius:99px;padding:6px 14px}
+.breath{position:relative;height:280px;display:grid;place-items:center}
+.orb{position:absolute;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#8ee6b8,#27c57c 60%,#1a9e60);box-shadow:0 0 60px rgba(39,197,124,.45);transition:transform .05s linear}
+.breath span{position:relative;color:#fff;font-size:24px;font-weight:800}
+.mlog{display:grid;gap:6px}
+.mlog div{display:flex;justify-content:space-between;font-size:14px;padding:8px 0;border-bottom:1px solid var(--line)}
+.mlog div:last-child{border-bottom:0}
 
 </style>
 </head>
@@ -249,6 +273,7 @@ details.diag td:last-child{text-align:right;font-size:12px;word-break:break-all;
       <div class="hero"><span class="tag">AI 페이스체크 · 약 1분 30초</span><h2>얼굴을 비추면<br>얼굴·두뇌·눈 나이와<br>건강 신호를 알려드려요</h2><p id="today"></p>
         <svg class="deco" viewBox="0 0 120 120" fill="none" aria-hidden="true"><rect x="18" y="14" width="84" height="92" rx="22" fill="rgba(255,255,255,.16)"/><path d="M30 30v-6a6 6 0 0 1 6-6h6M78 18h6a6 6 0 0 1 6 6v6M90 82v6a6 6 0 0 1-6 6h-6M42 94h-6a6 6 0 0 1-6-6v-6" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="48" cy="52" r="4" fill="#fff"/><circle cx="72" cy="52" r="4" fill="#fff"/><path d="M48 72c6 6 18 6 24 0" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg></div>
       <div class="card" id="lastBox"></div>
+      <div class="card" id="dailyBox"></div>
       <div class="card"><p class="h2">이렇게 진행돼요</p><p class="sub2">음성 안내를 따라 하기만 하면 돼요</p><ol class="plan" id="plan"></ol></div>
       <div class="card">
         <p class="h2">내 정보</p><p class="sub2">나이 비교와 결과 해석에 쓰여요</p>
@@ -331,6 +356,9 @@ details.diag td:last-child{text-align:right;font-size:12px;word-break:break-all;
       <button class="btn cta" id="home2">홈으로</button>
     </section>
 
+    <!-- DAILY MISSIONS -->
+    <section class="screen" data-s="mission" hidden><div class="rstack" id="mArea"></div></section>
+
     <!-- HISTORY -->
     <section class="screen" data-s="history" hidden>
       <div class="card"><p class="h2">나이 변화</p><p class="sub2" id="sparkNote"></p><svg class="chart" id="spark" role="img" aria-label="얼굴·두뇌·눈 나이 추이"></svg><div class="clegend" id="clegend"></div></div>
@@ -341,6 +369,7 @@ details.diag td:last-child{text-align:right;font-size:12px;word-break:break-all;
   </main>
   <nav class="tabbar" id="tabbar">
     <button data-t="home" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>홈</button>
+    <button data-t="mission"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>1분 미션</button>
     <button data-t="history"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19h16M7 15l3-4 3 2 4-6"/></svg>기록</button>
   </nav>
 </div>
@@ -1291,7 +1320,10 @@ async function runScan() {
   tick();
   // run the missions
   ticker();
-  for (let i = 0; i < MISSIONS.length && !SES.stop; i++) { SES.idx = i; ticker(); await runMission(MISSIONS[i]); }
+  const crownI = MISSIONS.findIndex(m => m.id === 'crown');
+  for (let i = 0; i < crownI && !SES.stop; i++) { SES.idx = i; ticker(); await runMission(MISSIONS[i]); }
+  if (!SES.stop) await retryPass();
+  if (!SES.stop) { SES.idx = crownI; ticker(); await runMission(MISSIONS[crownI]); }
   const fps = SES.detN / ((now() - SES.detT0) / 1000);
   const aborted = SES.stop && !SES.finished;
   SES.stop = true; closeCam(); endScan();
@@ -1304,7 +1336,7 @@ function endScan() { $('scan').hidden = true; document.body.style.overflow = '';
 $('mStop').onclick = () => { SES && (SES.stop = true); };
 $('mSkip').onclick = () => { SES && (SES.skip = true); };
 
-function setCard(m, extra) { const i = MISSIONS.indexOf(m); $('mk').textContent = i ? `${i} · ${m.k}` : m.k; $('mt').textContent = m.id === 'words' ? WORDS.w.join(' · ') : m.t; $('mt').className = 't' + (m.id === 'words' ? ' words' : '');
+function setCard(m, extra) { const i = MISSIONS.indexOf(m); $('mk').textContent = m.retry ? `보충 측정 · ${m.k}` : i > 0 ? `${i} · ${m.k}` : m.k; $('mt').textContent = m.id === 'words' ? WORDS.w.join(' · ') : m.t; $('mt').className = 't' + (m.id === 'words' ? ' words' : '');
   $('mh').textContent = extra || m.h; $('mh').className = 'h' + (m.hClass ? ' ' + m.hClass : ''); $('mcard').classList.remove('done'); }
 function flashDone() { $('mcard').classList.add('done'); $('bigcheck').classList.add('on'); setTimeout(() => $('bigcheck').classList.remove('on'), 500); }
 function ticker() { const n = MISSIONS.length; $('ticker').innerHTML = MISSIONS.map((m, i) => { const r = SES.missions[m.id]; return `<i class="${r ? (r.ok ? 'ok' : 'miss') : i === SES.idx ? 'now' : ''}"></i>`; }).join(''); }
@@ -1334,13 +1366,14 @@ async function runMission(m) {
   const sp = speak(m.sayFn ? m.sayFn() : m.say); let spDone = false; sp.then(() => spDone = true);
   if (m.fixed) {
     if (m.vstart) { SES.vitFrames = []; SES.vitT0 = now(); SES.vitOn = true; }
+    if (m.vstart2) { SES.vitFrames1 = SES.vitFrames; SES.vitFrames = []; SES.vitT0 = now(); SES.vitOn = true; }
     if (m.voice) { await sp; startRec(); }
     SES.phase = m.id;
     const t0 = now(); let nextCap = (m.from ?? 2) * 1000; const capAt = (m.capAt || []).slice();
     if (m.pursuit) { SES.pursuit = { t0, samples: [], cur: dotPos(0) }; $('pdot').hidden = false; }
     while (!SES.stop && !SES.skip && (now() - t0 < m.fixed * 1000 || (m.waitSpeech && !spDone))) {
       const el = now() - t0;
-      if (SES.vitOn) { $('timer').hidden = !m.still; $('timer').textContent = Math.max(1, Math.ceil(20 - (now() - SES.vitT0) / 1000)); }
+      if (SES.vitOn) { $('timer').hidden = !m.still; $('timer').textContent = Math.max(1, Math.ceil((m.vstart2 ? m.fixed : 20) - (now() - SES.vitT0) / 1000)); }
       if (m.voice) { $('timer').hidden = false; $('timer').textContent = Math.ceil(m.fixed - el / 1000); }
       if (m.pursuit) { const p = dotPos(el / 1000); SES.pursuit.cur = p; const pd = $('pdot'); pd.style.left = (p.x * 100) + '%'; pd.style.top = (p.y * 100) + '%'; }
       if (m.still && SES.last && SES.lastAt > now() - 400) SES.baseList.push(SES.last.g);
@@ -1350,10 +1383,13 @@ async function runMission(m) {
       await sleep(m.pursuit ? 30 : 80);
     }
     if (m.pursuit) { $('pdot').hidden = true; SES.pursuitData = SES.pursuit.samples; SES.pursuit = null; }
-    if (m.vend) { SES.vitOn = false; computeBase(); $('timer').hidden = true; }
-    if (m.voice) { SES.voice = stopRec(); beep(660, 160); $('timer').hidden = true; }
+    if (m.vend) { SES.vitOn = false; computeBase(); $('timer').hidden = true; quickChecks(); }
+    if (m.vstart2) { SES.vitOn = false; $('timer').hidden = true; SES.vitFrames2 = SES.vitFrames; SES.vitFrames = SES.vitFrames1; }
+    if (m.id === 'conj') quickConj();
+    if (m.voice) { const v = stopRec(); if (!v.error || !SES.voice || SES.voice.error) SES.voice = v; beep(660, 160); $('timer').hidden = true; }
     rec.ok = !SES.skip && !SES.stop;
     if (m.voice) rec.ok = rec.ok && !SES.voice?.error;
+    if (m.id === 'conj') rec.ok = rec.ok && SES.conjOK !== false;
   } else if (m.near) {
     // presbyopia: the user brings the phone closer while reading; a tap marks the blur point (distance from eye spacing)
     const dist = () => { const L = SES.last; if (!L) return null; const u = Scan.geo(L.P).u; return { cm: Scan.distanceCm(u, $('live').videoWidth, $('live').videoHeight), t: L.t }; };
@@ -1391,6 +1427,30 @@ async function runMission(m) {
   }
   rec.skipped = SES.skip; SES.missions[m.id] = rec; ticker();
 }
+/* quick in-session checks so that items that would end up "판단 불가" can be measured again before the scan ends */
+function quickChecks() {
+  try { const v = analyzeBasic(SES.vitFrames); SES.vitQ = v.error ? 0 : v.q; } catch { SES.vitQ = 0; }
+  try { const fr = SES.caps.filter(c => c.kind === 'front' && c.P).slice(-1)[0];
+    if (fr) { const k = fr.c.width / $('live').videoWidth, N = Scan.normalize(fr.c, fr.P.map(p => [p[0] * k, p[1] * k])), f = Scan.front(N.d, N.W, N.H, N.P); if (!f.error) SES.ref = f; } } catch {}
+}
+function quickConj() {
+  if (!SES.ref) return; const caps = SES.caps.filter(c => c.kind === 'conj' && c.P && !c.checked); let ok = false;
+  for (const c of caps) { c.checked = true; try { const k = c.c.width / $('live').videoWidth, N = Scan.normalize(c.c, c.P.map(p => [p[0] * k, p[1] * k])), r = Scan.conj(N.d, N.W, N.H, N.P, SES.ref.ref.cheekA, SES.ref.conjRefA95); if (r.exposed) ok = true; } catch {} }
+  if (SES.missions.conj || true) SES.conjOK = ok;
+}
+async function retryPass() {
+  const need = [];
+  if (!(SES.vitQ >= 2)) need.push({ id: 'vit2', k: '심박', t: '가만히 정면 보기', h: '휴대폰을 고정하고 편하게 숨 쉬세요', say: '심박을 한 번 더 잴게요. 가만히 정면을 보세요.', fixed: 12, vstart2: true, still: true, cap: 'front', from: 1, every: 3 });
+  const base = id => MISSIONS.find(m => m.id === id);
+  if (!SES.missions.close?.ok) need.push({ ...base('close'), max: base('close').max + 5 });
+  if (!SES.missions.smile?.ok) need.push({ ...base('smile'), max: base('smile').max + 5 });
+  if (SES.conjOK === false || !SES.missions.conj?.ok) need.push({ ...base('conj'), fixed: base('conj').fixed + 3, say: '한 번 더요. 검지로 아래 눈꺼풀을 조금 더 내려 주세요.', h: '아래 눈꺼풀을 내려 안쪽 붉은 부분이 잘 보이게 해 주세요' });
+  if (!SES.missions.read?.ok) need.push({ ...base('read'), fixed: base('read').fixed + 2, say: '조금 더 크게, 문장을 소리 내어 읽어 주세요.' });
+  if (!need.length) return;
+  setCard({ k: '보충 측정', t: `${need.length}개 항목 한 번 더`, h: '판단이 어려웠던 항목만 다시 할게요', retry: true });
+  await speak(`판단이 어려웠던 ${need.length}가지만 다시 해 볼게요.`);
+  for (const m of need) { if (SES.stop) break; m.retry = true; await runMission(m); if (m.id === 'conj') quickConj(); }
+}
 function computeBase() {
   const L = SES.baseList; if (!L.length) { SES.base = SES.last?.g || null; return; }
   const k = ['ear', 'yaw', 'pitch', 'mouthW', 'mouthOpen', 'size', 'cx', 'cy', 'gx', 'gy']; SES.base = Object.fromEntries(k.map(x => [x, med(L.map(g => g[x]))]));
@@ -1415,7 +1475,8 @@ async function postProcess() {
   // vitals
   bar(0, caps.length + 2, '심박·호흡 신호 계산 중');
   await sleep(30);
-  const vit = SES.vitFrames.length ? analyzeBasic(SES.vitFrames) : { error: '정면 측정이 진행되지 않았어요.' };
+  let vit = SES.vitFrames.length ? analyzeBasic(SES.vitFrames) : { error: '정면 측정이 진행되지 않았어요.' };
+  if (SES.vitFrames2?.length) { const v2 = analyzeBasic(SES.vitFrames2); if (!v2.error && (vit.error || v2.q > vit.q)) { v2.retry = true; vit = v2; } }
   // blink rate only from the phases where the eyes were still (not while following the dot)
   const stillF = SES.vitFrames.filter(f => f.ok && f.ph !== 'pursuit');
   if (!vit.error && stillF.length > 60) { const dur = stillF.length / (SES.vitFrames.filter(f => f.ok).length / Math.max(1, vit.dur)); const cb = cleanFrames(stillF); vit.blinkRate = cb.blinks / Math.max(5, dur) * 60; vit.blinkDur = dur; }
@@ -1510,7 +1571,9 @@ async function openTasks() {
   show('tasks', '터치 체크 · 약 30초'); TK = {}; let sv = null;
   try {
     tstep(0); TK.tapR = await tapTask('오른손'); if (TK.skipped) throw 'skip';
+    if (TK.tapR.n < 8) TK.tapR = await tapTask('오른손', '한 번 더 해 볼게요. 두 원을 번갈아 빠르게 눌러 주세요.'); if (TK.skipped) throw 'skip';
     tstep(1); TK.tapL = await tapTask('왼손'); if (TK.skipped) throw 'skip';
+    if (TK.tapL.n < 8) TK.tapL = await tapTask('왼손', '한 번 더 해 볼게요. 두 원을 번갈아 빠르게 눌러 주세요.'); if (TK.skipped) throw 'skip';
     tstep(2); TK.stroop = await stroopTask();
     tstep(3); TK.recall = await recallTask();
   } catch (e) { if (e !== 'skip') console.warn(e); }
@@ -1518,16 +1581,18 @@ async function openTasks() {
   tstep(4); sv = await quizTask();
   finishAll(sv);
 }
+const skipLink = () => `<button type="button" class="skiplink" id="tSkipAll">건너뛰기</button>`;
+function armSkip(onSkip) { const b = $('tSkipAll'); if (!b) return; b.onclick = () => { if (b.dataset.arm) onSkip(); else { b.dataset.arm = 1; b.textContent = '한 번 더 누르면 건너뛰어요'; setTimeout(() => { delete b.dataset.arm; b.textContent = '건너뛰기'; }, 2500); } }; }
 function intro(title, ins, btn = '시작') { return new Promise(res => {
-  TA().innerHTML = `<p class="ttl">${title}</p><p class="ins">${ins}</p><button class="btn primary cta" id="tGo">${btn}</button><button class="btn ghost" id="tSkipAll">테스트 건너뛰기</button>`;
-  $('tGo').onclick = () => res(); $('tSkipAll').onclick = () => { TA().innerHTML = ''; res('skipall'); }; }).then(v => { if (v === 'skipall') throw 'skip'; }); }
+  TA().innerHTML = `<div class="ttlrow"><p class="ttl">${title}</p>${skipLink()}</div><p class="ins">${ins}</p><button class="btn primary cta" id="tGo">${btn}</button>`;
+  $('tGo').onclick = () => res(); armSkip(() => { TA().innerHTML = ''; res('skipall'); }); }).then(v => { if (v === 'skipall') throw 'skip'; }); }
 
 /* finger tapping: alternate two targets with one finger for 7 s (speed, rhythm, fatigue, left/right difference) */
-async function tapTask(hand) {
+async function tapTask(hand, again) {
   return new Promise(res => {
-    TA().innerHTML = `<p class="ttl">${hand} 검지로 번갈아 빠르게</p><p class="ins"><b>${hand} 검지 하나</b>로 두 원을 번갈아 ${TAP_SEC}초 동안 최대한 빠르게 누르세요. 첫 터치부터 시작돼요.</p><p class="tcount" id="tCnt">아무 원이나 눌러 시작</p><div class="tapzone"><button id="tA">A</button><button id="tB">B</button></div><button class="btn ghost" id="tSkipAll">테스트 건너뛰기</button>`;
-    $('tSkipAll').onclick = () => { done = true; res(null); TK.skipped = true; };
-    const ts = []; let last = null, t0 = null, done = false, wrong = 0;
+    TA().innerHTML = `<div class="ttlrow"><p class="ttl">${hand} 검지로 번갈아 빠르게</p>${skipLink()}</div><p class="ins">${again ? `<b style="color:var(--care)">${again}</b>` : `<b>${hand} 검지 하나</b>로 두 원을 번갈아 ${TAP_SEC}초 동안 최대한 빠르게 누르세요. 첫 터치부터 시작돼요.`}</p><p class="tcount" id="tCnt">아무 원이나 눌러 시작</p><div class="tapzone"><button id="tA">A</button><button id="tB">B</button></div>`;
+    armSkip(() => { done = true; TK.skipped = true; res(null); });
+    var ts = [], last = null, t0 = null, done = false, wrong = 0;
     const hit = (id, e) => { e.preventDefault(); if (done) return; const t = now(); const el = $(id); el.classList.add('hit'); setTimeout(() => el.classList.remove('hit'), 70);
       if (t0 == null) { t0 = t; setTimeout(finish, TAP_SEC * 1000); }
       if (id === last) { wrong++; return; } last = id; ts.push(t - t0); $('tCnt').textContent = `${ts.length}회 · ${Math.max(0, TAP_SEC - (t - t0) / 1000).toFixed(1)}초`; };
@@ -1672,7 +1737,7 @@ function compute(R, profile, survey, history) {
   hair.forEach(m => m.band = bandOf(m.score, ['좋음', '보통', '진행 신호']));
 
   // ---- face shape / expression ----
-  const sm = R.missions.smile?.ok ? (o.smile.filter(x => isFinite(x.asym))[0] || o.smile[0]) : null;
+  const sm = R.missions.smile?.ok ? ([...o.smile].filter(x => isFinite(x.asym)).sort((a, b) => (b.widen || 0) - (a.widen || 0))[0] || null) : null;
   const shape = [
     { key: 'vline', name: '페이스라인 (V라인)', how: '턱 아래쪽 폭 ÷ 광대 폭', v: F.shape.vline, u: '비율', score: sc(F.shape.vline, 0.74, 0.9), d: 2 },
     { key: 'sym', name: '좌우 대칭', how: '눈썹·입꼬리·눈 크기 좌우 차이', v: F.shape.mouthAsym + F.shape.browAsym, u: '차이', score: sc(F.shape.mouthAsym + F.shape.browAsym + F.shape.eyeAsym * 0.2, 0.01, 0.12), d: 3 },
@@ -1697,15 +1762,12 @@ function compute(R, profile, survey, history) {
   t = !cj ? 'na' : cj.conjRed < 16 ? 'check' : cj.conjRed < 22 ? 'watch' : 'ok';
   add({ id: 'conj', name: '눈꺼풀 안쪽 혈색', org: '혈액 (빈혈)', tier: t, value: cj ? `결막 a* ${fmt(cj.conjRed, 1)}` : '측정 안 됨', refs: ['conj', 'eye'],
     text: { ok: '눈꺼풀 안쪽 붉은기가 충분해 보여요.', watch: '눈꺼풀 안쪽이 다소 옅게 보여요. 어지럼·피로가 잦다면 혈색소 검사를 고려해 보세요.', check: '눈꺼풀 안쪽이 창백하게 보여요. 혈액검사(혈색소)를 권해요.', na: '아래 눈꺼풀 안쪽이 충분히 보이지 않았어요.' }[t] });
-  const mo = o.mouth.filter(m => isFinite(m.tongueA) && m.px >= 60)[0];
-  t = !mo ? 'na' : mo.tongueA < 18 ? 'watch' : 'ok';
-  add({ id: 'tongue', name: '혀 색', org: '혈액 (참고)', exp: true, tier: t, value: mo ? `혀 a* ${fmt(mo.tongueA, 1)}` : '측정 안 됨', refs: ['tongue'],
-    text: { ok: '혀 색이 일반 범위로 보여요.', watch: '혀가 창백하게 측정됐어요. 눈꺼풀 안쪽도 창백하다면 혈액검사를 권해요.', na: '입안이 충분히 보이지 않았어요.' }[t] });
+  const mo = null;
   t = !F.lip ? 'na' : (F.lip.a < 12 && F.lip.b < 4) ? 'watch' : 'ok';
   add({ id: 'lip', name: '입술 색 (창백·푸른기)', org: '혈액·호흡', tier: t, value: F.lip ? `a* ${fmt(F.lip.a, 1)} · b* ${fmt(F.lip.b, 1)}` : '측정 안 됨', refs: [],
     text: { ok: '입술 혈색이 일반 범위예요.', watch: '입술이 창백하거나 푸르게 측정됐어요. 립 제품·조명 영향이 없는데도 그렇다면 확인해 보세요. 숨참·흉통이 함께 있으면 바로 진료를 받으세요.', na: '입술이 잘 보이지 않았어요.' }[t] });
   // lipids / cardiovascular
-  const cl = o.closed.filter(c => isFinite(c.lidYellow) && (R.missions.close?.ok || c.ear < 0.2))[0];
+  const cl = [...o.closed].filter(c => isFinite(c.lidYellow) && c.ear < 0.7 * (F.eye.ear || 0.3)).sort((a, b) => a.ear - b.ear)[0];
   t = !cl ? 'na' : cl.lidYellow >= 15 ? 'check' : cl.lidYellow >= 10 ? 'watch' : 'ok';
   add({ id: 'xan', name: '눈꺼풀 노란 반점 (황색판종)', org: '지질·심혈관', tier: t, value: cl ? `눈꺼풀 b* 초과분 ${fmt(cl.lidYellow, 1)}` : '측정 안 됨', refs: ['xan'],
     text: { ok: '눈꺼풀 안쪽에 노란 반점이 보이지 않아요.', watch: '눈꺼풀 안쪽이 약간 노랗게 측정됐어요. 조명 영향일 수 있어요.', check: '눈꺼풀 안쪽에 노란 반점처럼 보이는 부분이 있어요. 콜레스테롤(지질) 검사를 받아 보세요.', na: '눈을 감은 장면이 잡히지 않았어요.' }[t] });
@@ -1798,6 +1860,8 @@ function renderReport(r, savedMsg) {
       <h2>${head}</h2>${ageTiles(r)}
       <div class="counts"><div class="cc"><b>${cnt('check')}</b><span>확인 권장</span></div><div class="cm"><b>${cnt('watch')}</b><span>관찰 필요</span></div><div class="cg"><b>${cnt('ok')}</b><span>정상 범위</span></div></div></div>
 
+    ${card('오늘의 1분 미션', `<div class="dlist">${dailyCards(r)}</div>`, '이번 결과에 맞춰 추천했어요')}
+
     ${best.length ? card('한 줄 요약', `<p class="summary">가장 좋은 항목은 <b>${best.slice(0, 2).map(m => m.name).join('</b>, <b>')}</b>, 관리하면 좋을 항목은 <b>${best.slice(-2).reverse().map(m => m.name).join('</b>, <b>')}</b>이에요.</p>`) : ''}
 
     ${r.factors.length ? card('얼굴 나이를 움직인 요인', `<ul class="factors">${r.factors.map(f => `<li><span>${esc(f.label)}</span><span class="d ${f.y > 0 ? 'up' : 'dn'}">${f.y > 0 ? '+' : ''}${fmt(f.y, 1)}세</span></li>`).join('')}</ul>
@@ -1823,6 +1887,7 @@ function renderReport(r, savedMsg) {
       <p class="summary" style="margin-top:12px;font-size:14px">${savedMsg || ''}</p>
       <div class="row" style="margin-top:12px"><button class="btn" id="saveCard">결과 카드 저장</button><button class="btn" id="saveJson">원본 데이터 (JSON)</button></div><p class="status" id="saveMsg" style="margin-top:6px"></p>`)}
     <p class="disclaimer">페이스체크는 휴대폰 카메라·마이크로 측정한 참고용 정보이며 의료 진단을 대신하지 않아요.<br>증상이 있거나 걱정되면 의료진과 상담하세요.</p>`;
+  bindDaily($('report'));
   $('saveCard').onclick = () => shareCard(r).toBlob(b => download('lifecatch-facecheck.png', b, 'saveMsg'), 'image/png');
   $('saveJson').onclick = () => download('facecheck-raw.json', new Blob([JSON.stringify(r, null, 2)], { type: 'application/json' }), 'saveMsg');
 }
@@ -1907,6 +1972,147 @@ function computeBrain(R, age, survey, sig) {
   return { befast: bf, cog, acute, riskN, brainAge, bfac };
 }
 
+/* ================= daily 1-minute missions (brain / face / calm), recommended from the latest check ================= */
+const DREF = {
+  active: ['ACTIVE 임상 (Edwards 외, 2017): 고령자 2,800여 명, 처리속도 훈련군의 10년 치매 위험 29% 감소', 'https://pure.psu.edu/en/publications/speed-of-processing-training-results-in-lower-risk-of-dementia/'],
+  face: ['Alam 외 (JAMA Dermatology 2018, 노스웨스턴대): 매일 30분 얼굴 운동 20주 후 볼 탄력 개선, 보이는 나이 약 3살 감소 (중년 여성 16명)', 'https://news.northwestern.edu/stories/2018/january/facial-exercises-help-middle-aged-women-appear-more-youthful'],
+  breath: ['Zaccaro 외 (Front Hum Neurosci 2018) 체계적 문헌고찰: 분당 6회 내외 느린 호흡은 심박변이 증가·불안 감소와 관련', 'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6137615/'],
+  sigh: ['Balban 외 (Cell Rep Med 2023, 스탠퍼드): 하루 5분 호흡 훈련 한 달, 날숨을 길게 하는 호흡이 기분 개선·안정 효과가 가장 컸음', 'https://pmc.ncbi.nlm.nih.gov/articles/PMC9873947/'],
+  binaural: ['Garcia-Argibay 외 (Psychol Res 2019) 메타분석: 바이노럴 비트가 불안·통증 감소에 중간 크기 효과 (연구 간 차이 큼, 이어폰 필요)', 'https://pubmed.ncbi.nlm.nih.gov/30073406/'],
+};
+const DAILY = [
+  { id: 'brain', icon: '🧠', name: '두뇌 1분 · 규칙 바꾸기 게임', goal: '처리 속도·전환 능력', desc: '글자 "뜻"과 "색" 규칙이 번갈아 바뀌어요. 60초 동안 최대한 많이 맞히세요.', refs: ['active'] },
+  { id: 'face', icon: '😊', name: '얼굴 1분 · 표정 근육 운동', goal: '볼·입가·이마 탄력', desc: '카메라가 동작을 세어 줘요. 미소 올리기 → "오" 입 → 눈썹 올리기 → 볼 바람 넣기, 각 15초.', refs: ['face'] },
+  { id: 'calm', icon: '🌿', name: '마음 1분 · 음파 호흡', goal: '긴장 완화·심박 안정', desc: '소리가 올라가면 들이쉬고(4초), 내려가면 길게 내쉬어요(6초). 분당 6회 호흡이에요.', refs: ['breath', 'sigh', 'binaural'] },
+];
+const DKEY = 'facecheck.daily.v1';
+let DLOG = []; try { DLOG = JSON.parse(localStorage.getItem(DKEY) || '[]'); } catch { DLOG = []; }
+const today = () => new Date().toLocaleDateString('sv-SE');
+const doneToday = id => DLOG.some(x => x.d === today() && x.t === id);
+function streak() { const days = new Set(DLOG.map(x => x.d)); let n = 0; const d = new Date(); if (!days.has(today())) d.setDate(d.getDate() - 1); while (days.has(d.toLocaleDateString('sv-SE'))) { n++; d.setDate(d.getDate() - 1); } return n; }
+function logDaily(rec) { DLOG.push({ d: today(), at: new Date().toISOString(), ...rec }); try { localStorage.setItem(DKEY, JSON.stringify(DLOG.slice(-400))); } catch {} }
+
+/* which missions the latest check points to */
+function recommend(r) {
+  if (!r) return { brain: '', face: '', calm: '' };
+  const cog = (r.brain?.cog || []).filter(s => s.tier === 'watch' || s.tier === 'check').length, sk = Object.fromEntries((r.skin || []).map(m => [m.key, m.score]));
+  const wr = ['crow', 'nl', 'fore', 'glab'].filter(k => isFinite(sk[k]) && sk[k] < 65).length;
+  return {
+    brain: cog ? `두뇌·운동 신호 ${cog}개` : (r.brain?.brainAge > r.age ? `두뇌 나이 ${r.brain.brainAge}세` : ''),
+    face: wr ? `주름 지표 ${wr}개 관리 필요` : (r.faceAge > r.age ? `얼굴 나이 ${r.faceAge}세` : ''),
+    calm: (r.vit?.stress >= 50) ? `스트레스 ${fmt(r.vit.stress)}` : (r.vit?.hr > 90 ? `심박 ${fmt(r.vit.hr)}` : (r.survey?.sleep ? '수면 부족' : '')),
+  };
+}
+function dailyCards(r, compact) {
+  const rec = recommend(r);
+  return DAILY.map(m => { const why = rec[m.id], best = Math.max(0, ...DLOG.filter(x => x.t === m.id && isFinite(x.score)).map(x => x.score));
+    return `<button class="dcard" data-m="${m.id}"><span class="ic" aria-hidden="true">${m.icon}</span><span class="tx"><b>${m.name}</b><span>${why ? `<em>추천 · ${esc(why)}</em> ` : ''}${m.goal}${best && !compact && m.id !== 'calm' ? ` · 최고 ${best}${m.id === 'face' ? '회' : '점'}` : ''}</span></span><span class="st ${doneToday(m.id) ? 'on' : ''}">${doneToday(m.id) ? '완료' : '시작'}</span></button>`; }).join('');
+}
+function bindDaily(root) { root.querySelectorAll('.dcard').forEach(b => b.onclick = () => openDaily(b.dataset.m)); }
+function renderDailyHome() {
+  const el = $('dailyBox'); if (!el) return; const s = streak();
+  el.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:baseline"><p class="h2">오늘의 1분 미션</p><span class="note2">${s ? `🔥 ${s}일 연속` : '오늘부터 시작해요'}</span></div>
+    <p class="sub2">최근 결과에 맞춰 추천해 드려요</p><div class="dlist">${dailyCards(HIST[0], true)}</div>`;
+  bindDaily(el);
+}
+function renderMissionTab() {
+  const s = streak(), done = DAILY.filter(m => doneToday(m.id)).length;
+  $('mArea').innerHTML = `<div class="card"><p class="h2">오늘의 1분 미션</p><p class="sub2">${done}/3 완료 · ${s ? `${s}일 연속 실천 중` : '하루 3분, 꾸준함이 핵심이에요'}</p><div class="dlist">${dailyCards(HIST[0])}</div></div>
+    <div class="card"><p class="secttl">왜 이 미션인가요?</p>${DAILY.map(m => `<div class="sig"><div class="top"><span class="t">${m.icon} ${m.name}</span></div><p>${m.desc}</p><details><summary>근거 보기</summary><div class="ev">${m.refs.map(k => `<a href="${DREF[k][1]}" target="_blank" rel="noopener">${esc(DREF[k][0])}</a>`).join('<br>')}</div></details></div>`).join('')}
+    <p class="note2" style="margin-top:10px">연구에서 쓴 양(예: 얼굴 운동 하루 30분)보다 짧은 '습관용' 미션이에요. 효과를 보장하지 않으며, 다음 페이스체크에서 변화를 함께 확인해 보세요.</p></div>
+    ${DLOG.length ? `<div class="card"><p class="secttl">최근 미션 기록</p><div class="mlog">${[...DLOG].reverse().slice(0, 10).map(x => `<div><span>${esc(x.d.slice(5).replace('-', '/'))} · ${DAILY.find(m => m.id === x.t)?.icon || ''} ${esc(x.label || '')}</span><b>${esc(x.res || '')}</b></div>`).join('')}</div></div>` : ''}`;
+  bindDaily($('mArea'));
+}
+function openDaily(id) { show('mission', DAILY.find(m => m.id === id).name.split(' · ')[0]); $('tabbar').hidden = true; $('back').hidden = false; DRUN = { id, stop: false }; ({ brain: runBrain, face: runFace, calm: runCalm })[id](); }
+let DRUN = null;
+function dailyDone(html) {
+  $('mArea').innerHTML = `<div class="card" style="text-align:center;display:grid;gap:10px"><div style="font-size:48px">🎉</div><p class="h2">오늘 미션 완료!</p>${html}<p class="note2">${streak()}일 연속 실천 중</p>
+    <button class="btn primary cta" id="dNext">다른 미션 보기</button></div>`;
+  $('dNext').onclick = () => { show('mission', '1분 미션'); renderMissionTab(); };
+}
+
+/* ---- 1) brain: 60 s rule-switching (colour vs word) ---- */
+async function runBrain() {
+  const C = [['빨강', '#d63a2f'], ['파랑', '#2a62d6'], ['초록', '#1c9a5a'], ['노랑', '#e0b000']];
+  $('mArea').innerHTML = `<div class="card task"><p class="ttl">규칙 바꾸기 게임</p><p class="ins">위에 <b>"색"</b>이 나오면 글자의 색깔을, <b>"뜻"</b>이 나오면 글자가 뜻하는 색을 누르세요. 60초 동안 최대한 많이!</p><button class="btn primary cta" id="bGo">시작</button></div>`;
+  await new Promise(r => $('bGo').onclick = r); unlockSound();
+  let score = 0, miss = 0; const rts = [], t0 = now(), END = 60000;
+  while (now() - t0 < END && !DRUN.stop) {
+    const rule = Math.random() < 0.5 ? 'ink' : 'word', ink = Math.floor(Math.random() * 4); let word = Math.floor(Math.random() * 4); if (Math.random() < 0.7) while (word === ink) word = Math.floor(Math.random() * 4);
+    const ans = rule === 'ink' ? ink : word;
+    const r = await new Promise(res => {
+      $('mArea').innerHTML = `<div class="card task"><div class="ttlrow"><p class="tcount">⏱ ${Math.ceil((END - (now() - t0)) / 1000)}초</p><p class="tcount">점수 <b style="color:var(--accent-d)">${score}</b></p></div>
+        <div class="rule ${rule}">${rule === 'ink' ? '색' : '뜻'}</div><div class="stroopw" style="color:${C[ink][1]}">${C[word][0]}</div>
+        <div class="stroopb">${C.map((c, k) => `<button data-k="${k}"><i style="background:${c[1]}"></i>${c[0]}</button>`).join('')}</div></div>`;
+      const ts = now(), tm = setTimeout(() => res(null), Math.max(100, END - (now() - t0)));
+      $('mArea').querySelectorAll('.stroopb button').forEach(b => b.addEventListener('pointerdown', e => { e.preventDefault(); clearTimeout(tm); res({ ok: +b.dataset.k === ans, rt: now() - ts }); }, { once: true }));
+    });
+    if (!r) break; if (r.ok) { score++; rts.push(r.rt); } else { miss++; try { navigator.vibrate?.(60); } catch {} }
+  }
+  const prev = DLOG.filter(x => x.t === 'brain').map(x => x.score), best = prev.length ? Math.max(...prev) : null;
+  logDaily({ t: 'brain', label: '규칙 바꾸기', score, res: `${score}점`, miss, rt: Math.round(med(rts)) });
+  dailyDone(`<p class="summary"><b style="font-size:32px;color:var(--accent-d)">${score}점</b><br>정확도 ${fmt(100 * score / Math.max(1, score + miss))}% · 평균 반응 ${fmt(med(rts))}ms</p><p class="note2">${best == null ? '첫 기록이에요!' : score > best ? `최고 기록 경신! (이전 ${best}점)` : `최고 기록 ${best}점`}</p>`);
+}
+
+/* ---- 2) face: 4 moves x 15 s, reps counted from landmarks ---- */
+async function runFace() {
+  if (!AI.ready) { toast('얼굴 인식 준비 중이에요. 잠시 후 다시 눌러 주세요.'); show('mission', '1분 미션'); renderMissionTab(); return; }
+  const MOVES = [
+    { t: '광대 올려 미소', h: '입꼬리를 귀 쪽으로 끌어올려 2초 유지 → 풀기', k: 'smile' },
+    { t: '"오" 입 모양', h: '입술을 동그랗게 "오~" 하고 앞으로 내밀기 → 풀기', k: 'o' },
+    { t: '눈썹 올리기', h: '눈썹을 최대한 올려 이마에 힘 → 풀기', k: 'brow' },
+    { t: '볼에 바람 넣기', h: '볼에 바람을 가득 넣고 좌우로 옮기기', k: 'puff' },
+  ];
+  $('mArea').innerHTML = `<div class="card task"><p class="ttl">표정 근육 1분</p><p class="ins">카메라를 보며 따라 하면 횟수를 세어 드려요. 동작마다 15초예요.</p><button class="btn primary cta" id="fGo">시작</button></div>`;
+  await new Promise(r => $('fGo').onclick = r); unlockSound();
+  $('mArea').innerHTML = `<div class="card task"><div class="fcam"><video id="fVid" playsinline muted></video><div class="fbadge" id="fCnt">0회</div></div><p class="ttl" id="fT"></p><p class="ins" id="fH"></p><div class="prog"><i id="fBar"></i></div></div>`;
+  const v = $('fVid'); try { await openCam(v); } catch (e) { $('fH').textContent = camErr(e); return; }
+  const det = document.createElement('canvas'), dc = det.getContext('2d', { willReadFrequently: true });
+  let base = null, cur = null, total = 0; const reps = {};
+  const metric = P => { const g = Scan.geo(P), brow = ((g.eR[1] + g.eL[1]) / 2 - (P[19][1] + P[24][1]) / 2) / g.u; return { w: g.mouthW, o: g.mouthOpen, brow }; };
+  (async () => { while (!DRUN.stop) { if (!v.videoWidth) { await sleep(60); continue; } det.width = 256; det.height = Math.round(256 * v.videoHeight / v.videoWidth); dc.drawImage(v, 0, 0, det.width, det.height);
+    let r = null; try { r = await detect(det, new faceapi.TinyFaceDetectorOptions({ inputSize: 224, scoreThreshold: 0.35 })); } catch {}
+    if (r) { const m = metric(r.P); if (!base) base = m; if (cur) cur.feed(m); } await sleep(30); } })();
+  for (const mv of MOVES) {
+    if (DRUN.stop) break; reps[mv.k] = 0; $('fT').textContent = mv.t; $('fH').textContent = mv.h; $('fCnt').textContent = '0회'; beep(880, 180); speak(mv.t);
+    let on = false;
+    cur = { feed: m => { if (!base) return; const act = mv.k === 'smile' ? m.w > base.w * 1.12 : mv.k === 'o' ? (m.w < base.w * 0.9 && m.o > 0.04) : mv.k === 'brow' ? m.brow > base.brow * 1.1 : false;
+      if (act && !on) { on = true; reps[mv.k]++; total++; $('fCnt').textContent = `${reps[mv.k]}회`; beep(660, 160); } else if (!act && on) on = false; } };
+    const t0 = now(); while (now() - t0 < 15000 && !DRUN.stop) { $('fBar').style.width = (100 * (now() - t0) / 15000) + '%'; await sleep(100); }
+    if (mv.k === 'puff') reps.puff = 1;
+  }
+  DRUN.stop = true; closeCam(); cur = null;
+  logDaily({ t: 'face', label: '표정 운동', score: total, res: `${total}회`, reps });
+  dailyDone(`${total ? '' : '<p class="status warn">동작이 거의 인식되지 않았어요. 얼굴이 화면 가운데에 잘 보이게 하고 조금 더 크게 움직여 보세요.</p>'}<p class="summary"><b style="font-size:32px;color:var(--accent-d)">${total}회</b><br>미소 ${reps.smile || 0} · 오 입 ${reps.o || 0} · 눈썹 ${reps.brow || 0}</p><p class="note2">연구에서는 하루 30분씩 20주 했을 때 볼 탄력이 좋아졌어요. 매일 1분부터 습관을 만들어 보세요.</p>`);
+}
+
+/* ---- 3) calm: 60 s paced breathing guided by a rising / falling tone (optional binaural layer for earphones) ---- */
+async function runCalm() {
+  $('mArea').innerHTML = `<div class="card task"><p class="ttl">음파 호흡 1분</p><p class="ins">소리가 <b>올라가면 코로 들이쉬고(4초)</b>, <b>내려가면 입으로 길게 내쉬세요(6초)</b>. 소리를 켜 주세요.</p>
+    <p class="qhead">지금 마음 상태는?</p><div class="qchips" id="moodA">${[1, 2, 3, 4, 5].map(n => `<button type="button" data-v="${n}" aria-pressed="false">${['매우 불안', '불안', '보통', '편안', '매우 편안'][n - 1]}</button>`).join('')}</div>
+    <label class="check" style="margin-top:6px"><input type="checkbox" id="binau">이어폰 사용 중 · 바이노럴 비트 추가 (실험)</label><button class="btn primary cta" id="cGo">시작</button></div>`;
+  let moodA = null; $('moodA').querySelectorAll('button').forEach(b => b.onclick = () => { moodA = +b.dataset.v; $('moodA').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); });
+  await new Promise(r => $('cGo').onclick = r); const bin = $('binau').checked;
+  unlockSound(); const ac = actx || new (window.AudioContext || window.webkitAudioContext)(); actx = ac; try { await ac.resume(); } catch {}
+  const master = ac.createGain(); master.gain.value = 0; master.connect(ac.destination);
+  const o1 = ac.createOscillator(); o1.type = 'sine'; o1.frequency.value = 174; o1.connect(master); o1.start();
+  let o2 = null; if (bin) { const mL = ac.createChannelMerger(2), gL = ac.createGain(), gR = ac.createGain(); master.disconnect(); master.connect(gL); gL.connect(mL, 0, 0);
+    o2 = ac.createOscillator(); o2.frequency.value = 180; o2.connect(gR); gR.gain.value = 0.18; gR.connect(mL, 0, 1); mL.connect(ac.destination); o2.start(); }   // 6 Hz difference between ears
+  $('mArea').innerHTML = `<div class="card task" style="text-align:center"><div class="breath"><div class="orb" id="orb"></div><span id="bTxt">들이쉬기</span></div><p class="tcount" id="bLeft">60초</p></div>`;
+  const t0 = now(), T = ac.currentTime + 0.05;
+  for (let c = 0; c < 6; c++) { const s = T + c * 10;   // 4 s in (pitch up, louder), 6 s out (pitch down, fade)
+    o1.frequency.setValueAtTime(174, s); o1.frequency.linearRampToValueAtTime(262, s + 4); o1.frequency.linearRampToValueAtTime(174, s + 10);
+    master.gain.setValueAtTime(0.02, s); master.gain.linearRampToValueAtTime(0.22, s + 4); master.gain.linearRampToValueAtTime(0.02, s + 10); }
+  while (now() - t0 < 60000 && !DRUN.stop) { const el = (now() - t0) / 1000, ph = el % 10, inh = ph < 4, k = inh ? ph / 4 : 1 - (ph - 4) / 6;
+    $('orb').style.transform = `scale(${0.55 + 0.45 * k})`; $('bTxt').textContent = inh ? '들이쉬기' : '내쉬기'; $('bLeft').textContent = `${Math.ceil(60 - el)}초 · ${Math.floor(el / 10) + 1}/6회`; await sleep(50); }
+  try { master.gain.cancelScheduledValues(ac.currentTime); master.gain.linearRampToValueAtTime(0, ac.currentTime + 0.4); setTimeout(() => { o1.stop(); o2?.stop(); }, 500); } catch {}
+  const moodB = await new Promise(res => { $('mArea').innerHTML = `<div class="card task"><p class="ttl">지금 마음 상태는?</p><div class="qchips" id="moodB">${[1, 2, 3, 4, 5].map(n => `<button type="button" data-v="${n}">${['매우 불안', '불안', '보통', '편안', '매우 편안'][n - 1]}</button>`).join('')}</div></div>`;
+    $('moodB').querySelectorAll('button').forEach(b => b.onclick = () => res(+b.dataset.v)); });
+  const d = moodA ? moodB - moodA : null;
+  logDaily({ t: 'calm', label: '음파 호흡', score: moodB, res: d != null ? `편안함 ${d >= 0 ? '+' : ''}${d}` : '완료', moodA, moodB, binaural: bin });
+  dailyDone(`<p class="summary">${d != null ? `<b style="font-size:28px;color:var(--accent-d)">편안함 ${d >= 0 ? '+' : ''}${d}단계</b><br>` : ''}분당 6회 호흡 6번을 마쳤어요.</p><p class="note2">긴장되거나 잠들기 전에 한 번 더 해 보세요.</p>`);
+}
+
 /* ================= navigation, profile, history, diagnostics ================= */
 let cur = 'home';
 function show(s, title) {
@@ -1917,8 +2123,8 @@ function show(s, title) {
   document.querySelectorAll('#tabbar button').forEach(b => b.setAttribute('aria-current', b.dataset.t === s ? 'page' : 'false'));
   window.scrollTo(0, 0);
 }
-document.querySelectorAll('#tabbar button').forEach(b => b.onclick = () => { if (b.dataset.t === 'history') renderHistory(); else renderHome(); show(b.dataset.t, b.dataset.t === 'history' ? '내 기록' : '페이스체크'); });
-$('back').onclick = () => { if (NEAR) NEAR.stop = true; closeCam(); renderHome(); show('home'); };
+document.querySelectorAll('#tabbar button').forEach(b => b.onclick = () => { const t = b.dataset.t; if (t === 'history') renderHistory(); else if (t === 'mission') renderMissionTab(); else renderHome(); show(t, { history: '내 기록', mission: '1분 미션' }[t] || '페이스체크'); });
+$('back').onclick = () => { if (NEAR) NEAR.stop = true; if (DRUN && !DRUN.stop) { DRUN.stop = true; closeCam(); renderMissionTab(); show('mission', '1분 미션'); return; } closeCam(); renderHome(); show('home'); };
 $('home2').onclick = () => { renderHome(); show('home'); };
 
 /* profile (kept on this phone) */
@@ -1951,6 +2157,7 @@ function finishAll(survey) {
 const HKEY = 'facecheck.scan.v1';
 let HIST = []; try { HIST = JSON.parse(localStorage.getItem(HKEY) || '[]'); } catch { HIST = []; }
 function renderHome() {
+  try { renderDailyHome(); } catch {}
   $('today').textContent = new Date().toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'long' });
   const h = HIST[0];
   if (!h) { $('lastBox').innerHTML = '<p class="h2">최근 결과</p><p class="sub2" style="margin:0">아직 측정 기록이 없어요. 첫 페이스체크를 시작해 보세요.<br>3번 이상 측정하면 "평소 대비" 붓기 비교가 켜져요.</p>'; return; }
