@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>페이스체크 운영</title>
+<style>
+:root{--bg:#F5F6F8;--card:#fff;--ink:#16191D;--muted:#5F6670;--line:#E4E7EB;--accent:#12884A;--accent-bg:#E9F7EF;--warn:#9A5B00;--warn-bg:#FFF6E3;--bad:#C8323A;--bad-bg:#FFEFEF;--na:#646D77;--na-bg:#F1F2F4;--focus:#0F7A47}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#111316;--card:#1A1D21;--ink:#ECEEF1;--muted:#A3AAB3;--line:#2B3036;--accent:#3CCB85;--accent-bg:#17301F;--warn:#F2B654;--warn-bg:#33270F;--bad:#FF7A80;--bad-bg:#3A1A1C;--na:#A3AAB3;--na-bg:#24282D}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+.top{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:16px;padding:10px 20px;flex-wrap:wrap}
+.top h1{font-size:16px;margin:0;white-space:nowrap}.top h1 small{color:var(--muted);font-weight:500;margin-left:6px}
+nav{display:flex;gap:4px;flex-wrap:wrap;flex:1}
+nav button{border:0;background:none;padding:8px 12px;border-radius:8px;cursor:pointer;color:var(--muted);font-weight:600}
+nav button[aria-current="page"]{background:var(--accent-bg);color:var(--accent)}
+nav button .n{display:inline-block;min-width:18px;padding:0 5px;border-radius:9px;background:var(--bad);color:#fff;font-size:11px;margin-left:4px}
+.who{color:var(--muted);font-size:13px;display:flex;gap:10px;align-items:center}
+main{max-width:1180px;margin:0 auto;padding:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:16px}
+h2{font-size:17px;margin:0 0 4px}h3{font-size:15px;margin:0 0 10px}
+.sub{color:var(--muted);margin:0 0 14px;font-size:13px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+.kpi .l{color:var(--muted);font-size:12.5px}.kpi .v{font-size:26px;font-weight:800;margin-top:2px}.kpi.alert .v{color:var(--bad)}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:12.5px;white-space:nowrap}
+tbody tr.click{cursor:pointer}tbody tr.click:hover{background:var(--bg)}
+.tw{overflow-x:auto}
+.b{display:inline-block;padding:1px 8px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap}
+.b.ok{background:var(--accent-bg);color:var(--accent)}.b.rv{background:var(--warn-bg);color:var(--warn)}.b.rj{background:var(--bad-bg);color:var(--bad)}.b.na{background:var(--na-bg);color:var(--na)}
+.btn{border:1px solid var(--line);background:var(--card);padding:8px 14px;border-radius:8px;cursor:pointer;font-weight:600}
+.btn.p{background:var(--accent);border-color:var(--accent);color:#fff}.btn.d{color:var(--bad);border-color:var(--bad)}.btn:disabled{opacity:.5;cursor:default}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+input[type=text],input[type=email],input[type=password],input[type=date],select,textarea{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:8px 10px}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.muted{color:var(--muted)}.small{font-size:12.5px}
+.login{max-width:380px;margin:12vh auto;padding:0 16px}
+.login label{display:block;margin:12px 0 4px;font-weight:600}.login input{width:100%}
+.err{color:var(--bad);min-height:20px;margin:8px 0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:800px){.grid2{grid-template-columns:1fr}main{padding:12px}}
+.chart svg{width:100%;height:auto;display:block}
+.legend{display:flex;gap:14px;font-size:12.5px;color:var(--muted);margin-top:6px;flex-wrap:wrap}.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.dl{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;margin:0}.dl dt{color:var(--muted)}.dl dd{margin:0}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:20;padding:16px}
+[hidden]{display:none!important}
+.modal>div{background:var(--card);border-radius:14px;max-width:640px;width:100%;max-height:86vh;overflow:auto;padding:20px}
+.modal textarea{width:100%;min-height:70px}
+pre{background:var(--bg);padding:12px;border-radius:8px;overflow:auto;font-size:12px;max-height:50vh}
+.pager{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-top:10px}
+.cmp{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin:10px 0}
+.cmp div{background:var(--bg);border-radius:8px;padding:8px 10px}.cmp b{display:block;font-size:16px}
+.demobar{background:var(--warn-bg);color:var(--warn);padding:8px 20px;font-weight:700;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--card);padding:10px 16px;border-radius:10px;z-index:30;max-width:90vw}
+.evgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin:8px 0}.evgrid figure{margin:0;background:var(--bg);border-radius:10px;overflow:hidden}.evgrid img{width:100%;display:block;aspect-ratio:3/4;object-fit:cover;transform:scaleX(-1)}.evgrid figcaption{padding:6px 8px;font-size:12.5px;display:grid}.evgrid figcaption small{color:var(--muted);font-size:11.5px}
+.kv td:first-child{color:var(--muted);width:38%}.modal>div{max-width:760px}
+.empty{color:var(--muted);text-align:center;padding:30px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="modal" class="modal" hidden><div id="modalIn" role="dialog" aria-modal="true"></div></div>
+<div id="toast" class="toast" hidden></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+/* =====================================================================
+   페이스체크 운영 대시보드
+   - 배포 전에 아래 두 값을 Supabase 프로젝트 값으로 바꾸세요 (Project Settings → API).
+     ANON 키는 공개돼도 되는 키예요. 실제 권한은 DB의 운영진 권한(admin/operator/viewer)으로 막혀 있어요.
+   - service_role 키는 절대 여기에 넣지 마세요.
+   ===================================================================== */
+const SUPABASE_URL = 'https://YOUR-PROJECT.supabase.co';
+const SUPABASE_ANON_KEY = 'YOUR-ANON-KEY';
+const PLAT = 'gr';     // 그린리본 통합 회원 공간 (회원번호 GR········)
+const IDLE_MIN = 30;   // 이 시간(분) 동안 조작이 없으면 자동 로그아웃 (개인정보 보호)
+
+/* 시연 모드: admin/?demo=1 — Supabase 없이, 같은 브라우저에서 앱을 ?demo=1 로 측정한 기록(이 기기에만 저장)을 보여 줌 */
+const DEMO = new URLSearchParams(location.search).get('demo') === '1';
+const sb = DEMO ? demoClient() : supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: true, autoRefreshToken: true } });
+function demoClient() {
+  const KEY = 'facecheck.demo.db';
+  const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || 'null') || { members: {}, rows: [], audit: [] }; } catch { return { members: {}, rows: [], audit: [] }; } };
+  const save = db => { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch {} };
+  const ME_ = { id: 'demo', email: 'demo@시연' };
+  // 시연: 앱(?demo=1)이 같은 주소의 이 기기 IndexedDB에 저장한 장면 사진을 읽음
+  const idbGet = key => new Promise(ok => { try { const q = indexedDB.open('facecheck-img', 1); q.onupgradeneeded = () => q.result.createObjectStore('ev'); q.onsuccess = () => { try { const g = q.result.transaction('ev').objectStore('ev').get(key); g.onsuccess = () => ok(g.result || null); g.onerror = () => ok(null); } catch { ok(null); } }; q.onerror = () => ok(null); } catch { ok(null); } });
+  const audit = (db, action, target, detail) => { (db.audit ||= []).push({ id: (db.audit.length || 0) + 1, at: new Date().toISOString(), actor: 'demo', actor_email: ME_.email, action, target, detail }); };
+  const tables = db => ({
+    members: Object.values(db.members).map(m => ({ platform: PLAT, member_id: m.member_id, first_seen: m.first_seen, last_seen: m.last_seen, birth_year: m.birth_year ?? null, sex: m.sex ?? null, consent_health_at: m.consent_health_at ?? null, consent_face_at: m.consent_face_at ?? null, consent_ver: m.consent_ver ?? '',
+      phone_last4: m.phone_last4 ?? null, birth_date: m.birth_date ?? null, first_channel: m.first_channel ?? 'direct', status: 'active', consent_age_at: m.consent_age_at ?? null, consent_terms_at: m.consent_terms_at ?? null, consent_privacy_at: m.consent_privacy_at ?? null, consent_photo_at: m.consent_photo_at ?? null, consent_marketing_at: m.consent_marketing_at ?? null, face_sessions: m.face_sessions || 0, face_enrolled_at: m.face ? (m.face_enrolled_at || m.first_seen) : null, face_updated_at: null, n_accepted: m.n_accepted || 0, n_review: m.n_review || 0, n_rejected: m.n_rejected || 0, latest: m.latest || null })),
+    measurements: db.rows.map(r => ({ platform: PLAT, reviewed_by: null, reviewed_at: null, review_note: null, channel: 'direct', ...r })),
+    channels: (db.channels || [{ code: 'direct', name: '직접 방문', active: true, note: '플랫폼 코드 없이 들어온 경우', created_at: '2026-10-19T00:00:00Z' }]).map(c => ({ note: null, created_at: '2026-10-19T00:00:00Z', ...c })),
+    operators: [{ user_id: 'demo', email: ME_.email, name: '시연', role: 'super', active: true, created_at: new Date().toISOString() }],
+    operator_invites: [],
+    audit_log: [...(db.audit || [])],
+  });
+  class Q {
+    constructor(t) { this.t = t; this.f = []; this.o = null; this.r = null; this.lim = null; this.opt = {}; this.one = null; }
+    select(c, opt) { this.opt = opt || {}; return this; }
+    eq(k, v) { this.f.push(x => x[k] === v); return this; }
+    is(k, v) { this.f.push(x => (x[k] ?? null) === v); return this; }
+    in(k, a) { this.f.push(x => a.includes(x[k])); return this; }
+    ilike(k, p) { const s = p.replace(/%/g, '').toLowerCase(); this.f.push(x => String(x[k] || '').toLowerCase().includes(s)); return this; }
+    order(k, o = {}) { this.o = [k, o.ascending !== false]; return this; }
+    range(a, b) { this.r = [a, b]; return this; }
+    limit(n) { this.lim = n; return this; }
+    maybeSingle() { this.one = 'maybe'; return this; }
+    single() { this.one = 'one'; return this; }
+    then(ok, no) { return Promise.resolve(this.run()).then(ok, no); }
+    run() {
+      let a = tables(load())[this.t] || []; this.f.forEach(fn => { a = a.filter(fn); });
+      const count = a.length;
+      if (this.o) { const [k, asc] = this.o; a = [...a].sort((x, y) => { const p = x[k] ?? '', q = y[k] ?? ''; return (p > q ? 1 : p < q ? -1 : 0) * (asc ? 1 : -1); }); }
+      if (this.r) a = a.slice(this.r[0], this.r[1] + 1); if (this.lim) a = a.slice(0, this.lim);
+      if (this.opt.head) return { data: null, count, error: null };
+      if (this.one) return a.length || this.one === 'maybe' ? { data: a[0] || null, error: null } : { data: null, error: { message: '기록이 없어요' } };
+      return { data: a, count, error: null };
+    }
+  }
+  const R = {
+    my_role: () => 'super',
+    invite_operator: () => { throw new Error('시연 모드에서는 운영진을 등록할 수 없어요'); },
+    remove_operator: () => { throw new Error('시연 모드에서는 운영진을 해제할 수 없어요'); },
+    log_view: (a, db) => { audit(db, 'view_member', 'gr:' + a.p_member, null); save(db); },
+    dashboard_stats: (a, db) => {
+      const rows = db.rows, now = Date.now(), day = t => new Date(new Date(t).getTime() + 9 * 3600e3).toISOString().slice(0, 10), today = day(now);
+      const by = []; for (let i = (a.p_days || 14) - 1; i >= 0; i--) { const d = day(now - i * 864e5), rs = rows.filter(r => day(r.measured_at) === d);
+        by.push({ day: d, accepted: rs.filter(r => r.status === 'accepted').length, review: rs.filter(r => r.status === 'review').length, rejected: rs.filter(r => r.status === 'rejected').length, finger: rs.filter(r => r.kind === 'finger').length }); }
+      const reasons = {}; rows.filter(r => r.status !== 'accepted').forEach(r => { const k = r.identity?.reason || '?'; reasons[k] = (reasons[k] || 0) + 1; });
+      const ms = Object.values(db.members);
+      return { members: ms.length, members_new_7d: ms.filter(m => now - new Date(m.first_seen) < 7 * 864e5).length, active_30d: new Set(rows.filter(r => r.status === 'accepted').map(r => r.member_id)).size,
+        channels: tables(db).channels.map(c => ({ code: c.code, name: c.name, members: ms.filter(m => (m.first_channel || 'direct') === c.code).length, measured_30d: rows.filter(r => (r.channel || 'direct') === c.code).length })),
+        measured_today: rows.filter(r => day(r.measured_at) === today).length, review_open: rows.filter(r => r.status === 'review' && !r.reviewed_at).length, rejected_30d: rows.filter(r => r.status === 'rejected').length, enrolled: ms.filter(m => m.face).length, by_day: by, reasons };
+    },
+    review_measurement: (a, db) => {
+      if ((a.p_note || '').trim().length < 2) throw new Error('검토 사유를 적어 주세요');
+      const r = db.rows.find(x => x.id === a.p_id); if (!r) throw new Error('기록이 없습니다'); if (r.status === 'accepted') throw new Error('이미 반영된 기록입니다');
+      const m = db.members[r.member_id], was = r.status; r.status = a.p_decision === 'accept' ? 'accepted' : 'rejected'; r.reviewed_at = new Date().toISOString(); r.review_note = a.p_note;
+      if (m) { m['n_' + was]--; m['n_' + r.status]++; if (r.status === 'accepted') m.latest = { ...(m.latest || {}), ...r.summary, measured_at: r.measured_at, kind: r.kind }; }
+      audit(db, 'review_' + a.p_decision, 'gr:' + r.member_id, { note: a.p_note }); save(db); return { ok: true };
+    },
+    reset_face: (a, db) => { const m = db.members[a.p_member]; if (!m) throw new Error('회원이 없습니다'); m.face = null; m.face_sessions = 0; audit(db, 'reset_face', 'gr:' + a.p_member, { reason: a.p_reason }); save(db); return { ok: true }; },
+    delete_member: (a, db) => { const n = db.rows.filter(r => r.member_id === a.p_member).length; delete db.members[a.p_member]; db.consents = (db.consents || []).filter(c => c.member_id !== a.p_member); for (const [k, v] of Object.entries(db.phones || {})) if (v === a.p_member) delete db.phones[k]; for (const [k, v] of Object.entries(db.sessions || {})) if (v === a.p_member) delete db.sessions[k]; db.rows = db.rows.filter(r => r.member_id !== a.p_member); audit(db, 'delete_member', 'gr:' + a.p_member, { reason: a.p_reason, measurements: n }); save(db); return { ok: true, deleted_measurements: n }; },
+    export_measurements: (a, db) => { const f = new Date(a.p_from), t = new Date(a.p_to), rows = tables(db).measurements.filter(r => r.status === 'accepted' && new Date(r.measured_at) >= f && new Date(r.measured_at) <= t); audit(db, 'export', null, { rows: rows.length }); save(db); return rows; },
+    set_operator: () => { throw new Error('시연 모드에서는 운영진 권한을 바꿀 수 없어요'); },
+    upsert_channel: (a, db) => {
+      if (!/^[a-z0-9_-]{2,32}$/.test(a.p_code || '')) throw new Error('코드는 영문 소문자·숫자·-·_ 2~32자예요'); if (!(a.p_name || '').trim()) throw new Error('플랫폼 이름을 적어 주세요');
+      db.channels = tables(db).channels; const c = db.channels.find(x => x.code === a.p_code); if (c) Object.assign(c, { name: a.p_name.trim(), active: a.p_active !== false, note: a.p_note ?? null }); else db.channels.push({ code: a.p_code, name: a.p_name.trim(), active: a.p_active !== false, note: a.p_note ?? null, created_at: new Date().toISOString() });
+      audit(db, 'upsert_channel', a.p_code, { name: a.p_name, active: a.p_active }); save(db); return { ok: true };
+    },
+    member_consents: (a, db) => { audit(db, 'view_consents', 'gr:' + a.p_member, null); save(db); return (db.consents || []).filter(c => c.member_id === a.p_member).map((c, i) => ({ id: i + 1, platform: PLAT, ...c })).reverse(); },
+    get_measurement_images: async (a, db) => {
+      const r = db.rows.find(x => x.id === a.p_id); if (!r) throw new Error('기록이 없습니다'); if (r.img_hidden) return [];
+      const ev = await idbGet(r.client_id); audit(db, 'view_images', 'gr:' + r.member_id, { measurement: r.id, n: ev?.items?.length || 0 }); save(db);
+      return (ev?.items || []).map(x => ({ kind: x.kind, src: x.src }));
+    },
+  };
+  return {
+    from: t => new Q(t),
+    rpc: async (fn, a) => { const db = load(); try { return { data: await R[fn](a || {}, db), error: null }; } catch (e) { return { data: null, error: { message: e.message } }; } },
+    auth: { getSession: async () => ({ data: { session: { user: ME_ } } }), signInWithPassword: async () => ({ error: null }), signInWithOtp: async () => ({ error: null }), verifyOtp: async () => ({ error: null }), signOut: async () => ({}), onAuthStateChange: () => {} },
+  };
+}
+function demoSample() {
+  const KEY = 'facecheck.demo.db'; let db; try { db = JSON.parse(localStorage.getItem(KEY) || 'null') || { members: {}, rows: [], audit: [] }; } catch { db = { members: {}, rows: [], audit: [] }; }
+  const rnd = (a, b) => a + Math.random() * (b - a), id = () => Math.random().toString(36).slice(2) + Date.now().toString(36);
+  const people = [['GR90000001', 1968, 'f', 'direct'], ['GR90000002', 1975, 'm', 'pharm'], ['GR90000003', 1982, 'f', 'pharm'], ['GR90000004', 1990, 'm', 'insure'], ['GR90000005', 1959, 'f', 'direct'], ['GR90000006', 1987, 'f', 'insure']];
+  db.channels = db.channels || [{ code: 'direct', name: '직접 방문', active: true, note: '플랫폼 코드 없이 들어온 경우', created_at: '2026-10-19T00:00:00Z' }];
+  [['pharm', 'OO약국 앱(샘플)'], ['insure', 'OO보험 앱(샘플)']].forEach(([code, name]) => { if (!db.channels.some(c => c.code === code)) db.channels.push({ code, name, active: true, note: '시연 샘플', created_at: new Date().toISOString() }); });
+  db.consents = db.consents || [];
+  people.forEach(([mid, by, sx, ch], pi) => {
+    const t0 = new Date(Date.now() - 13 * 864e5).toISOString();
+    ['age', 'terms', 'privacy', 'health', 'face', ...(pi % 2 ? [] : ['photo']), ...(pi % 3 ? [] : ['marketing'])].forEach(k => db.consents.push({ member_id: mid, kind: k, version: '2026-10-19', agreed: true, at: t0, channel: ch }));
+    const age = 2026 - by, m = db.members[mid] = { member_id: mid, first_seen: t0, birth_year: by, birth_date: `${by}-0${1 + pi}-1${pi}`, phone_last4: String(3100 + pi * 7), first_channel: ch, sex: sx, consent_age_at: t0, consent_terms_at: t0, consent_privacy_at: t0, consent_health_at: t0, consent_face_at: t0, consent_photo_at: pi % 2 ? null : t0, consent_marketing_at: pi % 3 ? null : t0, consent_ver: '2026-10-19', face: [0], face_sessions: 1, face_enrolled_at: new Date(Date.now() - 13 * 864e5).toISOString(), n_accepted: 0, n_review: 0, n_rejected: 0, latest: null };
+    const n = 3 + (pi % 3);
+    for (let k = 0; k < n; k++) {
+      const at = new Date(Date.now() - (13 - k * 3 - pi % 2) * 864e5 - rnd(0, 6) * 3600e3).toISOString();
+      const finger = k === 1 && pi % 2 === 0, st = pi === 3 && k === n - 1 ? 'review' : pi === 1 && k === n - 1 ? 'rejected' : 'accepted', reason = st === 'review' ? 'borderline' : st === 'rejected' ? 'mismatch' : k === 0 ? 'enroll' : 'verified';
+      const sm = finger ? { hr: Math.round(rnd(62, 80)), stress: Math.round(rnd(25, 60)), src: 'finger', age } : { age, sex: sx, faceAge: Math.round(age + rnd(-6, 3)), brainAge: Math.round(age + rnd(-5, 5)), eyeAge: Math.round(age + rnd(-4, 4)), hr: Math.round(rnd(60, 84)), stress: Math.round(rnd(20, 65)), hr_src: 'face', watch: Math.round(rnd(1, 5)), check: Math.round(rnd(0, 2)), brain_level: 'normal' };
+      db.rows.push({ id: id(), client_id: id(), member_id: mid, kind: finger ? 'finger' : 'scan', measured_at: at, received_at: at, status: st, identity: { reason, d: reason === 'enroll' ? null : +(st === 'accepted' ? rnd(0.05, 0.35) : st === 'review' ? rnd(0.47, 0.58) : rnd(0.7, 0.9)).toFixed(2), frames: finger ? 5 : 14, kept: finger ? 5 : 14, out: 0, app_flag: 'clean' }, summary: sm, record: { sample: true }, app_ver: 'SAMPLE', device: '시연 샘플', channel: ch });
+      m['n_' + st]++; if (st === 'accepted') m.latest = { ...(m.latest || {}), ...sm, measured_at: at };
+      m.last_seen = at;
+    }
+  });
+  try { localStorage.setItem(KEY, JSON.stringify(db)); } catch {}
+}
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const fmtT = t => t ? new Date(t).toLocaleString('ko-KR', { year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—';
+const fmtD = t => t ? new Date(t).toLocaleDateString('ko-KR', { year: '2-digit', month: '2-digit', day: '2-digit' }) : '—';
+const num = (v, d = 0) => v == null || !isFinite(v) ? '—' : (+v).toFixed(d);
+const MEM_COLS = 'platform,member_id,first_seen,last_seen,birth_year,sex,consent_health_at,consent_face_at,consent_photo_at,consent_ver,face_sessions,face_enrolled_at,face_updated_at,n_accepted,n_review,n_rejected,latest,phone_last4,birth_date,first_channel,status,consent_age_at,consent_terms_at,consent_privacy_at,consent_marketing_at';
+const MEAS_COLS = 'id,platform,member_id,kind,measured_at,received_at,status,identity,summary,app_ver,device,reviewed_by,reviewed_at,review_note,channel';
+const phoneM = l4 => l4 ? `010-****-${esc(l4)}` : '—';
+const birthM = d => d ? esc(d.replace(/-/g, '.')) : '—';
+let CHN = {};   // 플랫폼 코드 → 이름
+async function loadChannels() { const { data } = await sb.from('channels').select('*').order('created_at'); CHN = Object.fromEntries((data || []).map(c => [c.code, c.name])); return data || []; }
+const chName = c => esc(CHN[c || 'direct'] || c || '직접 방문');
+const CONS_KO = { age: '만 14세 이상', terms: '이용약관', privacy: '개인정보 수집·이용', health: '건강정보(민감)', face: '얼굴 특징값(생체)', photo: '사진 보관(선택)', marketing: '혜택·소식(선택)' };
+const ROLE_KO = { super: '슈퍼어드민', admin: '관리자', operator: '운영자', viewer: '조회 전용', pending: '승인 대기', none: '권한 없음' };
+const ST = { accepted: ['반영', 'ok'], review: ['검토', 'rv'], rejected: ['거절', 'rj'] };
+const REASON = { enroll: '첫 측정 · 얼굴 등록', verified: '본인 확인됨', borderline: '본인 여부 애매', mismatch: '등록 얼굴과 다름', mixed: '측정 중 다른 얼굴 섞임', multi: '화면에 여러 사람', enroll_short: '등록용 얼굴 부족', no_face: '얼굴 확인 안 됨' };
+const KIND = { scan: '페이스체크', finger: '손가락' };
+const badge = s => { const [t, c] = ST[s] || [s, 'na']; return `<span class="b ${c}">${esc(t)}</span>`; };
+let ME = { user: null, role: 'none' }, VIEW = 'overview', LASTACT = Date.now();
+
+function toast(t) { const el = $('toast'); el.textContent = t; el.hidden = false; clearTimeout(el._t); el._t = setTimeout(() => el.hidden = true, 4500); }
+function modal(html) { $('modalIn').innerHTML = html; $('modal').hidden = false; const f = $('modalIn').querySelector('textarea,input,button'); f && f.focus(); }
+function closeModal() { $('modal').hidden = true; $('modalIn').innerHTML = ''; }
+$('modal').addEventListener('click', e => { if (e.target === $('modal')) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('modal').hidden) closeModal(); });
+const RANK = { super: 4, admin: 3, operator: 2, viewer: 1 };
+const can = r => (RANK[ME.role] || 0) >= (RANK[r] || 9);
+async function rpc(fn, args) { const { data, error } = await sb.rpc(fn, args); if (error) throw new Error(error.message); return data; }
+
+/* ---------- 로그인 ---------- */
+// 로그인: 비밀번호 없이 이메일 인증번호. 등록된 운영진 이메일만 번호를 받을 수 있음
+function renderLogin(msg = '') {
+  $('app').innerHTML = `<div class="login card"><h2>페이스체크 운영</h2><p class="sub">운영진으로 등록된 이메일로 인증번호를 보내 드려요. 비밀번호는 없어요.</p>
+    <form id="lf"><label for="em">이메일</label><input id="em" type="email" autocomplete="username" required>
+    <p class="err" id="lerr">${esc(msg)}</p><button class="btn p" style="width:100%" id="lgo">인증번호 받기</button></form>
+    <form id="cf" hidden><p class="sub" id="cto"></p><label for="otp">인증번호 6자리</label><input id="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" required style="letter-spacing:.3em;font-size:20px">
+    <p class="err" id="cerr"></p><button class="btn p" style="width:100%" id="cgo">로그인</button><div class="row" style="margin-top:8px"><button class="btn" type="button" id="cback">이메일 다시 입력</button><button class="btn" type="button" id="cre">다시 보내기</button></div>
+    <p class="small muted" style="margin-top:10px">메일이 안 오면 스팸함을 확인해 주세요. 인증번호는 10분 동안 쓸 수 있어요.</p></form></div>`;
+  let email = '';
+  const sendCode = async () => {
+    email = $('em').value.trim().toLowerCase(); $('lgo').disabled = true; $('lerr').textContent = ''; $('cerr').textContent = '';
+    const { error } = await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: true } });
+    $('lgo').disabled = false;
+    if (error) { const m = /rate|seconds|after/i.test(error.message || '') ? '잠시 후 다시 요청해 주세요(메일 발송 제한).' : '인증번호를 보낼 수 없어요. 운영진으로 등록된 이메일인지 확인해 주세요.'; if ($('cf').hidden) $('lerr').textContent = m; else $('cerr').textContent = m; return; }
+    $('lf').hidden = true; $('cf').hidden = false; $('cto').innerHTML = `<b>${esc(email)}</b>(으)로 인증번호를 보냈어요.`; $('otp').value = ''; $('otp').focus();
+  };
+  $('lf').onsubmit = e => { e.preventDefault(); sendCode(); };
+  $('cre').onclick = sendCode;
+  $('cback').onclick = () => { $('cf').hidden = true; $('lf').hidden = false; $('em').focus(); };
+  $('cf').onsubmit = async e => { e.preventDefault(); $('cgo').disabled = true; $('cerr').textContent = '';
+    const { error } = await sb.auth.verifyOtp({ email, token: $('otp').value.trim(), type: 'email' });
+    $('cgo').disabled = false; if (error) { $('cerr').textContent = '인증번호가 맞지 않거나 시간이 지났어요.'; return; } boot(); };
+}
+async function logout(why) { await sb.auth.signOut(); ME = { user: null, role: 'none' }; renderLogin(why || ''); }
+['click', 'keydown', 'pointermove'].forEach(ev => document.addEventListener(ev, () => { LASTACT = Date.now(); }, { passive: true }));
+setInterval(() => { if (ME.user && Date.now() - LASTACT > IDLE_MIN * 60000) logout(`${IDLE_MIN}분 동안 사용하지 않아 로그아웃했어요.`); }, 30000);
+
+async function boot() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) return renderLogin();
+  ME.user = session.user;
+  try { ME.role = await rpc('my_role'); } catch (e) { return renderLogin('권한 확인에 실패했어요: ' + e.message); }
+  if (ME.role === 'pending' || ME.role === 'none') {
+    $('app').innerHTML = `<div class="login card"><h2>${ME.role === 'pending' ? '승인 대기 중' : '운영진 권한이 없어요'}</h2><p class="sub">${esc(ME.user.email)} 계정은 ${ME.role === 'pending' ? '관리자가 권한을 주면 사용할 수 있어요. 관리자에게 알려 주세요.' : '운영진으로 등록되지 않았거나 사용이 중지됐어요.'}</p><button class="btn" id="lo">로그아웃</button></div>`;
+    $('lo').onclick = () => logout(); return;
+  }
+  shell(); try { await loadChannels(); } catch {} go(location.hash.slice(1) || 'overview');
+}
+const TABS = [['overview', '개요', 'viewer'], ['members', '회원', 'operator'], ['review', '검토 대기', 'operator'], ['channels', '제휴 플랫폼', 'operator'], ['ops', '운영진', 'admin'], ['audit', '접속 기록', 'admin'], ['export', '내보내기', 'admin']];
+function shell() {
+  $('app').innerHTML = `<header class="top"><h1>페이스체크 운영<small>내부용</small></h1><nav id="nav">${TABS.filter(t => can(t[2])).map(t => `<button data-v="${t[0]}">${t[1]}${t[0] === 'review' ? '<span class="n" id="rvN" hidden></span>' : ''}</button>`).join('')}</nav>
+    <div class="who"><span>${esc(ME.user.email)} · ${ROLE_KO[ME.role]}</span><button class="btn" id="lo">로그아웃</button></div></header>${DEMO ? '<div class="demobar">시연 모드 · 이 기기에서 앱(?demo=1)으로 가입·측정한 기록만 보여요 <button class="btn" id="dmS">샘플 회원 넣기</button><button class="btn" id="dmC">시연 기록 지우기</button></div>' : ''}<main id="main"></main>`;
+  $('nav').querySelectorAll('button').forEach(b => b.onclick = () => go(b.dataset.v));
+  $('lo').onclick = () => logout();
+  if (DEMO) { $('dmS').onclick = () => { demoSample(); toast('샘플 회원 6명을 넣었어요'); refreshReviewCount(); go(VIEW); }; $('dmC').onclick = () => { if ($('dmC').dataset.arm) { localStorage.removeItem('facecheck.demo.db'); toast('시연 기록을 지웠어요'); refreshReviewCount(); go('overview'); delete $('dmC').dataset.arm; $('dmC').textContent = '시연 기록 지우기'; } else { $('dmC').dataset.arm = 1; $('dmC').textContent = '한 번 더 누르면 지워요'; } }; }
+  refreshReviewCount();
+}
+async function refreshReviewCount() { if (!can('operator')) return; const { count } = await sb.from('measurements').select('id', { count: 'exact', head: true }).eq('status', 'review').is('reviewed_at', null); const n = $('rvN'); if (n) { n.hidden = !count; n.textContent = count || ''; } }
+function go(v, arg) {
+  const t = TABS.find(x => x[0] === v.split(':')[0]); if (!t || !can(t[2])) v = 'overview';
+  VIEW = v; history.replaceState(null, '', '#' + v);
+  document.querySelectorAll('#nav button').forEach(b => b.setAttribute('aria-current', v.startsWith(b.dataset.v) ? 'page' : 'false'));
+  $('main').innerHTML = '<p class="empty">불러오는 중…</p>';
+  const [name, a] = v.split(':');
+  ({ overview, members, member: memberDetail, review, channels, ops, audit, export: exportView })[name === 'members' && a ? 'member' : name](a ? decodeURIComponent(a) : arg).catch(e => { $('main').innerHTML = `<div class="card"><p class="err">불러오지 못했어요: ${esc(e.message)}</p></div>`; });
+}
+
+/* ---------- 개요 ---------- */
+async function overview() {
+  const s = await rpc('dashboard_stats', { p_days: 14 });
+  const K = (l, v, alert) => `<div class="kpi${alert && v ? ' alert' : ''}"><div class="l">${l}</div><div class="v">${num(v)}</div></div>`;
+  const days = s.by_day || [], mx = Math.max(1, ...days.map(d => d.accepted + d.review + d.rejected)), W = 700, H = 220, L = 34, B = 26, bw = (W - L - 10) / Math.max(1, days.length);
+  let svg = ''; for (let i = 0; i <= 4; i++) { const v = Math.round(mx * i / 4), y = H - B - (H - B - 10) * i / 4; svg += `<line x1="${L}" x2="${W - 6}" y1="${y}" y2="${y}" stroke="var(--line)"/><text x="${L - 6}" y="${y + 4}" font-size="11" text-anchor="end" fill="var(--muted)">${v}</text>`; }
+  days.forEach((d, i) => { let y = H - B; const x = L + i * bw + bw * 0.18, w = bw * 0.64;
+    [['accepted', 'var(--accent)'], ['review', 'var(--warn)'], ['rejected', 'var(--bad)']].forEach(([k, c]) => { const h = (H - B - 10) * d[k] / mx; if (h > 0) { y -= h; svg += `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${c}" rx="2"><title>${d.day} ${ST[k][0]} ${d[k]}건</title></rect>`; } });
+    if (i % 2 === 0 || days.length <= 8) svg += `<text x="${x + w / 2}" y="${H - 8}" font-size="11" text-anchor="middle" fill="var(--muted)">${d.day.slice(5).replace('-', '/')}</text>`; });
+  const rs = Object.entries(s.reasons || {}).sort((a, b) => b[1] - a[1]);
+  $('main').innerHTML = `<h2>개요</h2><p class="sub">개인을 알아볼 수 없는 집계예요. 오늘 기준은 한국 시간이에요.</p>
+    <div class="kpis">${K('전체 회원', s.members)}${K('최근 7일 신규', s.members_new_7d)}${K('30일 활성 회원', s.active_30d)}${K('오늘 측정', s.measured_today)}${K('검토 대기', s.review_open, true)}${K('30일 거절', s.rejected_30d)}${K('얼굴 등록 회원', s.enrolled)}</div>
+    <div class="grid2"><div class="card chart"><h3>최근 14일 측정</h3><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="일별 측정 건수">${svg}</svg>
+      <div class="legend"><span><i style="background:var(--accent)"></i>반영</span><span><i style="background:var(--warn)"></i>검토</span><span><i style="background:var(--bad)"></i>거절</span><span>손가락 측정 ${days.reduce((a, d) => a + d.finger, 0)}건 포함</span></div></div>
+    <div class="card"><h3>최근 30일 반영 안 된 이유</h3>${rs.length ? `<table><tbody>${rs.map(([k, n]) => `<tr><td>${esc(REASON[k] || k)}</td><td style="text-align:right"><b>${n}</b>건</td></tr>`).join('')}</tbody></table>` : '<p class="empty">없어요</p>'}
+      <p class="small muted" style="margin-top:10px">‘등록 얼굴과 다름’이 많다면 가족이 한 아이디로 함께 쓰는 경우일 수 있어요.</p></div></div>
+    <div class="card"><h3>제휴 플랫폼별 <span class="muted small">처음 들어온 곳 기준 회원 수 · 최근 30일 측정</span></h3><table><thead><tr><th>플랫폼</th><th>코드</th><th style="text-align:right">회원</th><th style="text-align:right">30일 측정</th></tr></thead><tbody>${(s.channels || []).map(c => `<tr><td>${esc(c.name)}</td><td class="small muted">${esc(c.code)}</td><td style="text-align:right"><b>${c.members}</b></td><td style="text-align:right">${c.measured_30d}</td></tr>`).join('') || '<tr><td colspan="4" class="empty">없어요</td></tr>'}</tbody></table></div>`;
+}
+
+/* ---------- 회원 목록 ---------- */
+let MPAGE = 0, MQ = '';
+async function members() {
+  const per = 50; let q = sb.from('members').select(MEM_COLS, { count: 'exact' }).order('last_seen', { ascending: false, nullsFirst: false }).range(MPAGE * per, MPAGE * per + per - 1);
+  if (MQ) { const d = MQ.replace(/\D/g, ''); q = /^\d{4}$/.test(MQ.trim()) ? q.eq('phone_last4', MQ.trim()) : q.ilike('member_id', `%${MQ.replace(/[%_]/g, '').toUpperCase()}%`); }
+  const { data, count, error } = await q; if (error) throw error;
+  $('main').innerHTML = `<h2>회원</h2><p class="sub">휴대폰 번호(문자 인증)+생년월일로 확인한 통합 회원이에요. 어느 제휴 플랫폼에서 들어와도 한 회원번호로 쌓여요. 휴대폰 번호는 암호화돼 있어 뒷자리만 보여요. 회원을 열면 열람 기록이 남아요.</p>
+    <div class="card"><div class="row" style="margin-bottom:10px"><input type="text" id="mq" placeholder="회원번호(GR…) 또는 휴대폰 뒷자리 4개" value="${esc(MQ)}" style="flex:1;min-width:180px"><button class="btn" id="mqGo">검색</button></div>
+    <div class="tw"><table><thead><tr><th>회원번호</th><th>휴대폰</th><th>최근 측정</th><th>가입</th><th>생년월일·성별</th><th>처음 들어온 곳</th><th>반영 / 검토 / 거절</th><th>얼굴 등록</th><th>최근 결과</th></tr></thead>
+    <tbody>${(data || []).map(m => { const l = m.latest || {}; return `<tr class="click" data-id="${esc(m.member_id)}"><td><b>${esc(m.member_id)}</b></td><td>${phoneM(m.phone_last4)}</td><td>${fmtT(m.last_seen)}</td><td>${fmtD(m.first_seen)}</td><td>${m.birth_date ? birthM(m.birth_date) : m.birth_year ?? '—'} · ${m.sex === 'f' ? '여' : m.sex === 'm' ? '남' : '—'}</td><td class="small">${chName(m.first_channel)}</td>
+      <td>${m.n_accepted} / <span style="color:var(--warn)">${m.n_review}</span> / <span style="color:var(--bad)">${m.n_rejected}</span></td><td>${m.face_enrolled_at ? `등록 (${m.face_sessions}회 반영)` : '<span class="muted">미등록</span>'}</td>
+      <td class="small">${l.faceAge != null ? `얼굴 ${l.faceAge}세 · ` : ''}${l.hr != null ? `심박 ${num(l.hr)} · ` : ''}${l.stress != null ? `스트레스 ${num(l.stress)}` : ''}</td></tr>`; }).join('') || '<tr><td colspan="9" class="empty">회원이 없어요</td></tr>'}</tbody></table></div>
+    <div class="pager"><span class="muted small">전체 ${count ?? 0}명</span><button class="btn" id="mPrev" ${MPAGE ? '' : 'disabled'}>이전</button><button class="btn" id="mNext" ${(MPAGE + 1) * per < (count || 0) ? '' : 'disabled'}>다음</button></div></div>`;
+  $('mqGo').onclick = () => { MQ = $('mq').value.trim(); MPAGE = 0; members(); }; $('mq').onkeydown = e => { if (e.key === 'Enter') $('mqGo').click(); };
+  $('mPrev').onclick = () => { MPAGE--; members(); }; $('mNext').onclick = () => { MPAGE++; members(); };
+  document.querySelectorAll('tr[data-id]').forEach(tr => tr.onclick = () => go('members:' + encodeURIComponent(tr.dataset.id)));
+}
+
+/* ---------- 회원 상세 ---------- */
+function lineChart(pts, key, label, color, unit = '') {
+  const p = pts.filter(x => x.summary && x.summary[key] != null && isFinite(x.summary[key])); if (p.length < 1) return `<div class="card chart"><h3>${label}</h3><p class="empty small">기록 없음</p></div>`;
+  const W = 520, H = 170, L = 34, B = 24, vals = p.map(x => +x.summary[key]), lo = Math.max(0, Math.floor(Math.min(...vals) - 3)), hi = Math.ceil(Math.max(...vals) + 3);
+  const oneDay = new Date(p[0].measured_at).toDateString() === new Date(p[p.length - 1].measured_at).toDateString(), tl = t => oneDay ? new Date(t).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }) : fmtD(t);
+  const X = i => p.length === 1 ? (L + W - 10) / 2 : L + i * (W - L - 14) / (p.length - 1), Y = v => 10 + (hi - v) / ((hi - lo) || 1) * (H - B - 10);
+  let s = `<line x1="${L}" x2="${W - 6}" y1="${Y(lo)}" y2="${Y(lo)}" stroke="var(--line)"/><text x="${L - 6}" y="${Y(hi) + 4}" font-size="11" text-anchor="end" fill="var(--muted)">${hi}</text><text x="${L - 6}" y="${Y(lo) + 4}" font-size="11" text-anchor="end" fill="var(--muted)">${lo}</text>`;
+  if (p.length > 1) s += `<polyline fill="none" stroke="${color}" stroke-width="2.5" points="${p.map((x, i) => `${X(i)},${Y(vals[i])}`).join(' ')}"/>`;
+  p.forEach((x, i) => { s += `<circle cx="${X(i)}" cy="${Y(vals[i])}" r="4" fill="var(--card)" stroke="${color}" stroke-width="2"><title>${fmtT(x.measured_at)} ${vals[i]}${unit}</title></circle>`; });
+  s += `<text x="${L}" y="${H - 6}" font-size="11" fill="var(--muted)">${tl(p[0].measured_at)}</text><text x="${W - 6}" y="${H - 6}" font-size="11" text-anchor="end" fill="var(--muted)">${tl(p[p.length - 1].measured_at)}</text>`;
+  return `<div class="card chart"><h3>${label} <span class="muted small">최근 ${num(vals[vals.length - 1], key === 'hr' ? 1 : 0)}${unit}</span></h3><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${label} 변화">${s}</svg></div>`;
+}
+async function memberDetail(mid) {
+  await rpc('log_view', { p_platform: PLAT, p_member: mid });
+  const [{ data: ms, error: e1 }, { data: rows, error: e2 }] = await Promise.all([
+    sb.from('members').select(MEM_COLS).eq('platform', PLAT).eq('member_id', mid).maybeSingle(),
+    sb.from('measurements').select(MEAS_COLS).eq('platform', PLAT).eq('member_id', mid).order('measured_at', { ascending: false }).limit(300)]);
+  if (e1 || e2) throw (e1 || e2); if (!ms) { $('main').innerHTML = '<div class="card"><p class="empty">회원이 없어요 (삭제됐을 수 있어요)</p><button class="btn" onclick="go(\'members\')">회원 목록</button></div>'; return; }
+  const acc = (rows || []).filter(r => r.status === 'accepted').reverse(), scans = acc.filter(r => r.kind === 'scan');
+  $('main').innerHTML = `<div class="row" style="justify-content:space-between"><div><button class="btn" id="backM">← 회원 목록</button></div>
+      ${can('admin') ? `<div class="row"><button class="btn" id="rsF">얼굴 등록 초기화</button><button class="btn d" id="delM">회원 데이터 삭제</button></div>` : ''}</div>
+    <div class="card" style="margin-top:12px"><h2>${esc(mid)}</h2>
+      <dl class="dl"><dt>휴대폰</dt><dd>${phoneM(ms.phone_last4)} <span class="muted small">(암호화 보관 · 운영 화면에서는 전체 번호를 볼 수 없어요)</span></dd><dt>생년월일 · 성별</dt><dd>${birthM(ms.birth_date)} · ${ms.sex === 'f' ? '여성' : ms.sex === 'm' ? '남성' : '—'}</dd>
+      <dt>가입 · 최근 이용</dt><dd>${fmtT(ms.first_seen)} · ${fmtT(ms.last_seen)}</dd><dt>처음 들어온 곳</dt><dd>${chName(ms.first_channel)}</dd>
+      <dt>동의 <span class="muted small">(${esc(ms.consent_ver || '')})</span></dt><dd>${['age', 'terms', 'privacy', 'health', 'face', 'photo', 'marketing'].map(k => `<span class="b ${ms['consent_' + k + '_at'] ? 'ok' : 'na'}" title="${fmtT(ms['consent_' + k + '_at'])}">${CONS_KO[k]}${ms['consent_' + k + '_at'] ? '' : ' ✕'}</span>`).join(' ')} <button class="btn small" id="cHist">동의 이력</button></dd>
+      <dt>본인 확인용 얼굴</dt><dd>${ms.face_enrolled_at ? `${fmtT(ms.face_enrolled_at)} 등록 · ${ms.face_sessions}회 측정으로 다듬어짐` : '미등록 (다음 정상 측정 때 등록)'}</dd>
+      <dt>측정</dt><dd>반영 ${ms.n_accepted} · 검토 ${ms.n_review} · 거절 ${ms.n_rejected}</dd></dl></div>
+    <div class="grid2">${lineChart(scans, 'faceAge', '얼굴 나이', '#7C5CFF', '세')}${lineChart(acc, 'hr', '심박수', '#E8505B', 'bpm')}${lineChart(acc, 'stress', '스트레스', '#F29F05')}${lineChart(scans, 'brainAge', '두뇌 나이(실험)', '#1E88E5', '세')}</div>
+    <div class="card"><h3>측정 기록 <span class="muted small">거절·검토 기록도 함께 보여요. 반영된 것만 위 그래프에 쓰여요.</span></h3><div class="tw"><table><thead><tr><th>측정 시각</th><th>종류</th><th>판정</th><th>본인 확인</th><th>요약</th><th></th></tr></thead><tbody>
+    ${(rows || []).map(r => { const s = r.summary || {}, id = r.identity || {}; return `<tr><td>${fmtT(r.measured_at)}</td><td>${KIND[r.kind] || esc(r.kind)}</td><td>${badge(r.status)}${r.reviewed_at ? `<div class="small muted">검토: ${esc(r.review_note || '')}</div>` : ''}</td>
+      <td class="small">${esc(REASON[id.reason] || id.reason || '')}${id.d != null ? ` · 거리 ${num(id.d, 2)}` : ''}${id.frames != null ? ` · 장면 ${id.kept ?? '?'}/${id.frames}` : ''}</td>
+      <td class="small">${[s.faceAge != null && `얼굴 ${s.faceAge}세`, s.hr != null && `심박 ${num(s.hr)}${s.hr_src === 'finger' || r.kind === 'finger' ? '(손가락)' : ''}`, s.stress != null && `스트레스 ${num(s.stress)}`, s.watch != null && `확인 신호 ${s.watch + (s.check || 0)}개`].filter(Boolean).join(' · ')}</td>
+      <td style="white-space:nowrap"><button class="btn small" data-det="${r.id}">상세${(s.img_n && !r.img_hidden) ? ` · 사진 ${s.img_n}` : ''}</button></td></tr>`; }).join('') || '<tr><td colspan="6" class="empty">기록 없음</td></tr>'}</tbody></table></div></div>`;
+  $('backM').onclick = () => go('members');
+  $('cHist').onclick = async () => { try { const L = await rpc('member_consents', { p_platform: PLAT, p_member: mid });
+    modal(`<h3>동의 이력 · ${esc(mid)}</h3><p class="small muted">항목·문구 버전·동의/철회·시각·들어온 곳. 열람 기록이 남아요.</p><div class="tw"><table><thead><tr><th>시각</th><th>항목</th><th>버전</th><th>내용</th><th>들어온 곳</th></tr></thead><tbody>${(L || []).map(c => `<tr><td>${fmtT(c.at)}</td><td>${esc(CONS_KO[c.kind] || c.kind)}</td><td class="small">${esc(c.version)}</td><td>${c.agreed ? '<span class="b ok">동의</span>' : '<span class="b rj">철회</span>'}</td><td class="small">${chName(c.channel)}</td></tr>`).join('') || '<tr><td colspan="5" class="empty">기록 없음</td></tr>'}</tbody></table></div><div class="row" style="justify-content:flex-end;margin-top:10px"><button class="btn" id="mx">닫기</button></div>`); $('mx').onclick = closeModal; } catch (e) { toast(e.message); } };
+  document.querySelectorAll('[data-det]').forEach(b => b.onclick = () => showDetail(b.dataset.det));
+  if ($('rsF')) $('rsF').onclick = () => askReason('얼굴 등록 초기화', `${esc(mid)} 회원의 본인 확인용 얼굴을 지워요. 다음 정상 측정 때 다시 등록돼요. 성형·큰 외모 변화로 본인인데 계속 거절될 때 써요.`, '초기화', async note => { await rpc('reset_face', { p_platform: PLAT, p_member: mid, p_reason: note }); toast('초기화했어요'); memberDetail(mid); });
+  if ($('delM')) $('delM').onclick = () => askReason('회원 데이터 삭제', `${esc(mid)} 회원의 회원 정보·모든 측정 기록·사진·얼굴 특징값·동의 이력을 지워요. 되돌릴 수 없어요. 회원이 앱에서 직접 탈퇴하기 어려울 때(고객센터 요청)만 써요.<br><br>확인을 위해 회원번호를 입력하세요.`, '영구 삭제', async (note, typed) => {
+    if (typed !== mid) throw new Error('회원번호가 일치하지 않아요'); const r = await rpc('delete_member', { p_platform: PLAT, p_member: mid, p_reason: note }); toast(`삭제했어요 (측정 ${r.deleted_measurements}건)`); go('members'); }, true);
+}
+/* ---------- 측정 상세: 평가 이미지 + 측정값 + 판정 + 원본 (회원 번호와 함께) ---------- */
+const EVK = { front: ['정면', '얼굴 나이 · 피부 · 입술 · 눈 흰자 · 눈꺼풀 · 맥파(심박) 영역'], gaze: ['시선', '눈 따라가기 · 눈 흰자'], closed: ['눈 감기', '눈꺼풀 처짐 · 졸음 신호'], smile: ['미소', '미소 대칭 · 표정 움직임'],
+  conj: ['눈꺼풀 안쪽', '결막 혈색(빈혈 경향)'], neck: ['목', '목 피부 착색'], crown: ['정수리', '흰머리 비율'], nail: ['손톱', '손톱 혈색(실험)'] };
+const TIER_KO = { ok: ['정상', 'ok'], watch: ['관찰', 'rv'], check: ['확인', 'rj'], urgent: ['긴급', 'rj'], na: ['측정 안 됨', 'na'], base: ['기준 쌓는 중', 'na'] };
+async function loadImages(row) {   // [{kind, src}] — 사진을 열면 접속 기록에 남음
+  const data = await rpc('get_measurement_images', { p_id: row.id });
+  return (data || []).map(x => ({ kind: x.kind, src: x.src || ('data:image/jpeg;base64,' + x.b64) }));
+}
+const imgGrid = items => items.length ? `<div class="evgrid">${items.map(x => { const L = EVK[x.kind] || [x.kind, '']; return `<figure><img src="${x.src}" alt="${esc(L[0])} 장면"><figcaption><b>${esc(L[0])}</b><small>${esc(L[1])}</small></figcaption></figure>`; }).join('')}</div>` : '<p class="small muted">저장된 사진이 없어요 (사진 보관 미동의, 다른 사람으로 판정되어 저장 안 함, 또는 손가락 측정).</p>';
+async function showDetail(id) {
+  const { data: r, error } = await sb.from('measurements').select('*').eq('id', id).single();
+  if (error) return toast(error.message);
+  const s = r.summary || {}, idn = r.identity || {}, rec = r.record || {};
+  const V = (l, v) => `<tr><td>${l}</td><td><b>${v ?? '—'}</b></td></tr>`;
+  const sigs = [...(rec.signals || []), ...(rec.brain?.cog || []), ...(rec.wellness || [])];
+  const bd = rec.brain?.bdet;
+  modal(`<div class="row" style="justify-content:space-between"><h3 style="margin:0">측정 상세 · 회원 <b>${esc(r.member_id)}</b></h3>${badge(r.status)}</div>
+    <p class="small muted">${KIND[r.kind] || ''} · ${fmtT(r.measured_at)} · 앱 ${esc(r.app_ver || '')} · ${esc(REASON[idn.reason] || idn.reason || '')}${idn.d != null ? ` · 등록 얼굴과 거리 ${num(idn.d, 2)}` : ''}</p>
+    <h3>평가 이미지</h3><div id="dImg"><p class="small muted">${s.img_n && !r.img_hidden ? '불러오는 중…' : ''}</p></div>
+    <h3 style="margin-top:14px">측정값</h3><table class="kv"><tbody>
+      ${V('실제 나이 · 성별', `${s.age ?? '—'}세 · ${s.sex === 'f' || s.sex === '여성' ? '여' : s.sex === 'm' || s.sex === '남성' ? '남' : '—'}`)}${V('얼굴 나이', s.faceAge != null ? s.faceAge + '세' : null)}
+      ${V('두뇌 나이 (실험)', s.brainAge != null ? `${s.brainAge}세${bd ? ` (${bd.lo}~${bd.hi}세 범위 · 난이도 ${esc(bd.levelName || '')} · 반응 ${bd.rtRaw ?? bd.rt}ms / 기대 ${bd.exp}ms)` : ''}` : null)}
+      ${V('눈가 나이 (실험)', s.eyeAge != null ? s.eyeAge + '세' : null)}${V('심박수', s.hr != null ? `${num(s.hr)} bpm${s.hr_src === 'finger' || r.kind === 'finger' ? ' (손가락)' : ' (얼굴)'}` : null)}
+      ${V('스트레스', s.stress != null ? num(s.stress) + ' / 100' : null)}${V('호흡수', s.rr != null ? num(s.rr) + ' 회/분' : null)}${V('맥파 신호 품질', s.pulse_q != null ? s.pulse_q + ' / 5' : null)}
+      ${V('측정 방식', s.mode === 'stand' ? '거치대·태블릿 (얼굴 + 상반신·손)' : s.mode === 'mobile' ? '휴대폰 (얼굴)' : null)}${s.rr_src === 'shoulder' ? V('호흡수 출처', '어깨 움직임') : ''}
+      ${s.drift_asym != null ? V('팔 처짐 좌우 차 (실험)', Math.round(s.drift_asym * 100) + '% (어깨너비 대비)') : ''}${s.tremor_amp != null ? V('손 떨림 (실험)', s.tremor_amp + '% (손 크기 대비)') : ''}${s.fist_rate != null ? V('주먹 쥐었다 펴기 (실험)', '느린 손 초당 ' + s.fist_rate + '회') : ''}
+      ${V('단어 기억', s.recall)}${V('손가락 두드리기', s.tap_rate != null ? s.tap_rate + ' 회/초' : null)}${V('확인·관찰 신호', s.watch != null ? `확인 ${s.check || 0} · 관찰 ${s.watch}` : null)}</tbody></table>
+    ${sigs.length ? `<h3 style="margin-top:14px">항목별 판정 (${sigs.length})</h3><table class="kv"><tbody>${sigs.map(x => { const T = TIER_KO[x.tier] || [x.tier, 'na']; return `<tr><td>${esc(x.name)}</td><td><span class="b ${T[1]}">${T[0]}</span> <span class="small muted">${esc(x.value || '')}</span></td></tr>`; }).join('')}</tbody></table>` : ''}
+    <details style="margin-top:12px"><summary>원본 데이터 (JSON)</summary><pre>${esc(JSON.stringify({ identity: idn, summary: s, record: rec }, null, 1))}</pre></details>
+    <div class="row" style="justify-content:flex-end;margin-top:10px"><button class="btn" id="mx">닫기</button></div>`);
+  $('mx').onclick = closeModal;
+  if (s.img_n && !r.img_hidden) { try { const items = await loadImages(r); if ($('dImg')) $('dImg').innerHTML = imgGrid(items); } catch (e) { if ($('dImg')) $('dImg').innerHTML = `<p class="err">${esc(e.message)}</p>`; } }
+  else if ($('dImg')) $('dImg').innerHTML = imgGrid([]);
+}
+function askReason(title, html, okLabel, fn, typeId) {
+  modal(`<h3>${title}</h3><p>${html}</p>${typeId ? '<input type="text" id="tid" placeholder="회원번호" style="width:100%;margin-bottom:8px">' : ''}<textarea id="rsn" placeholder="사유 (접속 기록에 남아요)"></textarea><p class="err" id="merr"></p>
+    <div class="row" style="justify-content:flex-end"><button class="btn" id="mc">취소</button><button class="btn ${typeId ? 'd' : 'p'}" id="mo">${okLabel}</button></div>`);
+  $('mc').onclick = closeModal;
+  $('mo').onclick = async () => { const note = $('rsn').value.trim(); if (note.length < 2) { $('merr').textContent = '사유를 적어 주세요.'; return; }
+    $('mo').disabled = true; try { await fn(note, typeId ? $('tid').value.trim() : null); closeModal(); } catch (e) { $('merr').textContent = e.message; $('mo').disabled = false; } };
+}
+
+/* ---------- 검토 대기 ---------- */
+async function review() {
+  const { data, error } = await sb.from('measurements').select(MEAS_COLS).eq('status', 'review').is('reviewed_at', null).order('received_at', { ascending: true }).limit(100);
+  if (error) throw error;
+  const mids = [...new Set((data || []).map(r => r.member_id))];
+  const { data: mem } = mids.length ? await sb.from('members').select(MEM_COLS).in('member_id', mids) : { data: [] };
+  const M = Object.fromEntries((mem || []).map(m => [m.member_id, m]));
+  // 평소 값 = 이 회원의 반영된 측정 중앙값 (최근 30건)
+  const { data: hist } = mids.length ? await sb.from('measurements').select('member_id,summary,measured_at').in('member_id', mids).eq('status', 'accepted').order('measured_at', { ascending: false }).limit(30 * mids.length) : { data: [] };
+  const medOf = (mid, k) => { const v = (hist || []).filter(h => h.member_id === mid && h.summary && h.summary[k] != null && isFinite(h.summary[k])).slice(0, 30).map(h => +h.summary[k]).sort((a, b) => a - b); return v.length ? v[v.length >> 1] : null; };
+  $('main').innerHTML = `<h2>검토 대기 <span class="muted small">${(data || []).length}건</span></h2>
+    <p class="sub">본인인지 확실하지 않아 회원 기록에 아직 넣지 않은 측정이에요. 사진 보관에 동의한 회원은 <b>이번 사진과 최근 반영된 사진</b>을 나란히 볼 수 있어요. 수치와 사진을 비교하고 필요하면 회원에게 확인한 뒤 결정하세요. 애매하면 <b>폐기</b>가 안전해요(회원 기록이 섞이지 않고, 폐기한 측정의 사진은 지워져요).</p>
+    ${(data || []).map(r => { const s = r.summary || {}, id = r.identity || {}, m = M[r.member_id] || {}, l = m.latest || {}, yr = new Date(r.measured_at).getFullYear();
+      const ageNow = m.birth_year ? yr - m.birth_year : null;
+      return `<div class="card" data-rv="${r.id}"><div class="row" style="justify-content:space-between"><div><b>${esc(r.member_id)}</b> · ${KIND[r.kind] || ''} · ${fmtT(r.measured_at)}</div>${badge(r.status)}</div>
+        <p style="margin:8px 0 0"><b>${esc(REASON[id.reason] || id.reason)}</b>${id.d != null ? ` · 등록 얼굴과 거리 ${num(id.d, 2)} <span class="muted small">(0.45 이하 본인, 0.60 초과 다른 사람)</span>` : ''}${id.frames ? ` · 얼굴 장면 ${id.kept}/${id.frames}${id.out ? `, 다른 얼굴로 빠진 장면 ${id.out}` : ''}` : ''}${id.faces ? ` · 두 사람 잡힌 장면 ${id.faces}` : ''}</p>
+        <div class="cmp"><div><span class="small muted">이번 얼굴 나이</span><b>${s.faceAge ?? '—'}</b></div><div><span class="small muted">평소 얼굴 나이</span><b>${medOf(r.member_id, 'faceAge') ?? '—'}</b></div><div><span class="small muted">회원 실제 나이</span><b>${ageNow ?? '—'}</b></div><div><span class="small muted">이번 입력 나이·성별</span><b>${s.age ?? '—'} · ${s.sex ? esc(s.sex) : '—'}</b></div><div><span class="small muted">이번 심박</span><b>${num(s.hr)}</b></div><div><span class="small muted">평소 심박</span><b>${num(medOf(r.member_id, 'hr'))}</b></div></div>
+        <div class="pcmp" data-pc="${r.id}"></div>
+        <div class="row"><input type="text" placeholder="결정 사유 (예: 회원 확인 결과 본인)" style="flex:1;min-width:200px" data-note><button class="btn p" data-dec="accept">회원 기록에 반영</button><button class="btn d" data-dec="reject">폐기</button><button class="btn" data-open="${esc(r.member_id)}">회원 보기</button></div><p class="err small" data-err style="min-height:0;margin:6px 0 0"></p></div>`; }).join('') || '<div class="card"><p class="empty">검토할 측정이 없어요</p></div>'}`;
+  // 사진 비교: 이번 측정 정면 사진 vs 같은 회원의 최근 반영된(사진 있는) 측정 정면 사진
+  const { data: withImg } = mids.length ? await sb.from('measurements').select('id,member_id,measured_at,summary').in('member_id', mids).eq('status', 'accepted').order('measured_at', { ascending: false }).limit(20 * mids.length) : { data: [] };
+  for (const r of data || []) {
+    const box = document.querySelector(`[data-pc="${r.id}"]`); if (!box || !(r.summary?.img_n) || r.img_hidden) continue;
+    const ref = (withImg || []).find(x => x.member_id === r.member_id && x.summary?.img_n && !x.img_hidden);
+    try {
+      const cur = (await loadImages(r)).find(x => x.kind === 'front'), old = ref ? (await loadImages(ref)).find(x => x.kind === 'front') : null;
+      box.innerHTML = `<div class="evgrid" style="grid-template-columns:repeat(2,minmax(0,180px))">${cur ? `<figure><img src="${cur.src}" alt="이번 측정 정면"><figcaption><b>이번 측정</b><small>${fmtT(r.measured_at)}</small></figcaption></figure>` : ''}${old ? `<figure><img src="${old.src}" alt="최근 반영 측정 정면"><figcaption><b>최근 반영된 측정</b><small>${fmtT(ref.measured_at)}</small></figcaption></figure>` : '<p class="small muted">비교할 이전 사진이 없어요</p>'}</div>`;
+    } catch {}
+  }
+  document.querySelectorAll('[data-rv]').forEach(c => {
+    c.querySelectorAll('[data-dec]').forEach(b => b.onclick = async () => { const note = c.querySelector('[data-note]').value.trim(); if (note.length < 2) { c.querySelector('[data-err]').textContent = '결정 사유를 적어 주세요.'; return; }
+      b.disabled = true; try { await rpc('review_measurement', { p_id: c.dataset.rv, p_decision: b.dataset.dec, p_note: note }); toast(b.dataset.dec === 'accept' ? '회원 기록에 반영했어요' : '폐기했어요'); c.remove(); refreshReviewCount(); } catch (e) { c.querySelector('[data-err]').textContent = e.message; b.disabled = false; } });
+    c.querySelector('[data-open]').onclick = e => go('members:' + encodeURIComponent(e.target.dataset.open)); });
+}
+
+/* ---------- 제휴 플랫폼 링크 ---------- */
+async function channels() {
+  const [list, st] = await Promise.all([loadChannels(), rpc('dashboard_stats', { p_days: 1 })]);
+  const S = Object.fromEntries((st.channels || []).map(c => [c.code, c])), base = new URL('../', location.href.split('#')[0].split('?')[0]).href;
+  const linkOf = c => c === 'direct' ? base : `${base}?p=${c}`;
+  $('main').innerHTML = `<h2>제휴 플랫폼</h2><p class="sub">제휴 앱·웹에 걸 링크예요. 링크 끝의 <b>?p=코드</b>로 어디서 들어왔는지만 기록하고, <b>회원 정보와 측정 결과는 플랫폼에 주지 않아요.</b> 같은 사람이 다른 플랫폼으로 들어와도 같은 회원번호로 쌓여요. 중지하면 그 코드는 ‘직접 방문’으로 기록돼요.</p>
+    <div class="card"><div class="tw"><table><thead><tr><th>플랫폼</th><th>코드</th><th>링크</th><th style="text-align:right">회원</th><th style="text-align:right">30일 측정</th><th>상태</th>${can('admin') ? '<th></th>' : ''}</tr></thead><tbody>
+    ${list.map(c => `<tr data-c="${esc(c.code)}"><td>${can('admin') && c.code !== 'direct' ? `<input type="text" value="${esc(c.name)}" data-n style="width:150px">` : `<b>${esc(c.name)}</b>`}${c.note ? `<div class="small muted">${esc(c.note)}</div>` : ''}</td><td class="small">${esc(c.code)}</td>
+      <td class="small"><code>${esc(linkOf(c.code))}</code> <button class="btn small" data-copy="${esc(linkOf(c.code))}">복사</button></td><td style="text-align:right">${S[c.code]?.members ?? 0}</td><td style="text-align:right">${S[c.code]?.measured_30d ?? 0}</td>
+      <td>${can('admin') && c.code !== 'direct' ? `<label><input type="checkbox" data-a ${c.active ? 'checked' : ''}> 사용</label>` : c.active ? '사용' : '<span class="muted">중지</span>'}</td>${can('admin') ? `<td>${c.code !== 'direct' ? '<button class="btn small" data-save>저장</button>' : ''}</td>` : ''}</tr>`).join('')}</tbody></table></div></div>
+    ${can('admin') ? `<div class="card"><h3>새 플랫폼 링크 만들기</h3><div class="row"><label>플랫폼 이름 <input type="text" id="chN" placeholder="예: OO약국 앱"></label><label>코드 <input type="text" id="chC" placeholder="예: oopharm" style="width:140px"></label><label>메모 <input type="text" id="chM" placeholder="담당자·계약 등 (선택)"></label><button class="btn p" id="chAdd">만들기</button></div><p class="small muted" style="margin-top:8px">코드는 영문 소문자·숫자·-·_ 2~32자. 만든 뒤에는 바꾸지 말고, 필요하면 새로 만드세요(통계가 이어지도록).</p><p class="err" id="chE"></p></div>` : ''}`;
+  document.querySelectorAll('[data-copy]').forEach(b => b.onclick = async () => { try { await navigator.clipboard.writeText(b.dataset.copy); toast('링크를 복사했어요'); } catch { toast(b.dataset.copy); } });
+  document.querySelectorAll('tr[data-c] [data-save]').forEach(b => b.onclick = async () => { const tr = b.closest('tr'); try { await rpc('upsert_channel', { p_code: tr.dataset.c, p_name: tr.querySelector('[data-n]').value, p_active: tr.querySelector('[data-a]').checked, p_note: null }); toast('저장했어요'); channels(); } catch (e) { toast(e.message); } });
+  if ($('chAdd')) $('chAdd').onclick = async () => { const code = $('chC').value.trim().toLowerCase();
+    if (CHN[code]) { $('chE').textContent = '이미 있는 코드예요.'; return; }
+    try { await rpc('upsert_channel', { p_code: code, p_name: $('chN').value, p_active: true, p_note: $('chM').value.trim() || null }); toast('만들었어요. 링크를 복사해 제휴처에 전달하세요.'); channels(); } catch (e) { $('chE').textContent = e.message; } };
+}
+
+/* ---------- 운영진 (관리자) ---------- */
+async function ops() {
+  const [{ data, error }, { data: inv }] = await Promise.all([sb.from('operators').select('*').order('created_at'), sb.from('operator_invites').select('*').order('invited_at')]); if (error) throw error;
+  const isSuper = ME.role === 'super', mine = isSuper ? ['admin', 'operator', 'viewer'] : ['operator', 'viewer'];
+  const editable = o => o.role !== 'super' && o.user_id !== ME.user.id && (isSuper || o.role !== 'admin');
+  const joined = new Set((data || []).map(o => (o.email || '').toLowerCase())), waiting = (inv || []).filter(i => !joined.has(i.email));
+  $('main').innerHTML = `<h2>운영진</h2><p class="sub">운영진은 비밀번호 없이 <b>등록된 이메일로 받은 인증번호</b>로 로그인해요. 아래에서 이메일을 등록하면 그 사람이 운영 화면에서 바로 인증번호를 받아 들어올 수 있어요. ${isSuper ? '관리자 권한은 슈퍼어드민만 줄 수 있어요.' : '관리자 권한은 슈퍼어드민에게 요청하세요.'}</p>
+    <div class="card"><h3>운영진 이메일 등록</h3><div class="row"><label>이메일 <input type="email" id="ivE" placeholder="name@green-ribbon.co.kr" style="width:240px"></label><label>이름 <input type="text" id="ivN" style="width:120px"></label>
+      <label>권한 <select id="ivR">${mine.map(r => `<option value="${r}">${ROLE_KO[r]}</option>`).join('')}</select></label><button class="btn p" id="ivGo">등록</button></div><p class="err" id="ivErr"></p></div>
+    <div class="card"><div class="tw"><table><thead><tr><th>이메일</th><th>이름</th><th>권한</th><th>사용</th><th>등록·첫 로그인</th><th></th></tr></thead><tbody>
+    ${(data || []).map(o => editable(o) ? `<tr data-u="${o.user_id}" data-e="${esc(o.email)}"><td>${esc(o.email)}</td><td><input type="text" value="${esc(o.name || '')}" data-name style="width:120px"></td>
+      <td><select data-role>${[...new Set([...mine, o.role])].map(r => `<option value="${r}" ${r === o.role ? 'selected' : ''}>${ROLE_KO[r]}</option>`).join('')}</select></td>
+      <td><label><input type="checkbox" data-active ${o.active ? 'checked' : ''}> 사용</label></td><td>${fmtD(o.created_at)}</td><td style="white-space:nowrap"><button class="btn small" data-save>저장</button> <button class="btn small d" data-rm>해제</button></td></tr>`
+      : `<tr><td>${esc(o.email)}${o.user_id === ME.user.id ? ' <span class="muted small">(나)</span>' : ''}</td><td>${esc(o.name || '')}</td><td><b>${ROLE_KO[o.role] || o.role}</b>${o.role === 'super' ? ' <span class="muted small">(고정)</span>' : ''}</td><td>${o.active ? '사용' : '<span class="muted">중지</span>'}</td><td>${fmtD(o.created_at)}</td><td></td></tr>`).join('')}
+    ${waiting.map(i => `<tr data-e="${esc(i.email)}" data-wait><td>${esc(i.email)}</td><td>${esc(i.name || '')}</td><td>${ROLE_KO[i.role]}</td><td><span class="muted">첫 로그인 전</span></td><td>${fmtD(i.invited_at)} 등록</td><td>${isSuper || i.role !== 'admin' ? '<button class="btn small d" data-rm>해제</button>' : ''}</td></tr>`).join('')}</tbody></table></div>
+    <p class="small muted" style="margin-top:10px">슈퍼어드민: 모든 기능 + 관리자 지정 · 관리자: 모든 기능(운영자·조회 전용 등록) · 운영자: 회원 조회·검토 · 조회 전용: 개요 통계만. 해제하면 그 이메일로는 더 이상 로그인할 수 없어요.</p></div>`;
+  $('ivGo').onclick = async () => { $('ivErr').textContent = ''; try { await rpc('invite_operator', { p_email: $('ivE').value, p_role: $('ivR').value, p_name: $('ivN').value }); toast('등록했어요. 그 이메일로 운영 화면에 들어오면 인증번호가 가요.'); ops(); } catch (e) { $('ivErr').textContent = e.message; } };
+  document.querySelectorAll('tr[data-u] [data-save]').forEach(b => b.onclick = async () => { const tr = b.closest('tr');
+    try { await rpc('set_operator', { p_user: tr.dataset.u, p_role: tr.querySelector('[data-role]').value, p_active: tr.querySelector('[data-active]').checked, p_name: tr.querySelector('[data-name]').value.trim() || null }); toast('저장했어요'); } catch (e) { toast(e.message); ops(); } });
+  document.querySelectorAll('[data-rm]').forEach(b => b.onclick = async () => { const tr = b.closest('tr');
+    if (!b.dataset.arm) { b.dataset.arm = 1; b.textContent = '한 번 더'; return; }
+    try { await rpc('remove_operator', { p_email: tr.dataset.e }); toast('해제했어요'); ops(); } catch (e) { toast(e.message); } });
+}
+
+/* ---------- 접속 기록 (관리자) ---------- */
+const ACT_KO = { invite_operator: '운영진 이메일 등록', remove_operator: '운영진 해제', view_consents: '동의 이력 열람', upsert_channel: '제휴 플랫폼 링크 변경', member_withdraw: '회원 탈퇴(본인 요청 · 앱)', view_images: '측정 사진 열람', view_member: '회원 열람', review_accept: '검토 → 반영', review_reject: '검토 → 폐기', reset_face: '얼굴 초기화', delete_member: '회원 삭제', export: '내보내기', set_operator: '운영진 권한 변경' };
+async function audit() {
+  const { data, error } = await sb.from('audit_log').select('*').order('at', { ascending: false }).limit(300); if (error) throw error;
+  $('main').innerHTML = `<h2>접속 기록</h2><p class="sub">운영진이 회원 정보를 열람·변경·내보낸 기록이에요(개인정보 처리 기록). 최근 300건.</p><div class="card"><div class="tw"><table><thead><tr><th>시각</th><th>운영진</th><th>한 일</th><th>대상</th><th>내용</th></tr></thead><tbody>
+    ${(data || []).map(a => `<tr><td>${fmtT(a.at)}</td><td>${esc(a.actor_email || '')}</td><td>${esc(ACT_KO[a.action] || a.action)}</td><td>${esc(a.target || '')}</td><td class="small">${esc(a.detail ? JSON.stringify(a.detail) : '')}</td></tr>`).join('') || '<tr><td colspan="5" class="empty">기록 없음</td></tr>'}</tbody></table></div></div>`;
+}
+
+/* ---------- 내보내기 (관리자) ---------- */
+async function exportView() {
+  const d1 = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10), d2 = new Date().toISOString().slice(0, 10);
+  $('main').innerHTML = `<h2>내보내기</h2><p class="sub">회원 기록에 반영된 측정만 내보내요. 내보낸 사실은 접속 기록에 남아요. 받은 파일은 암호가 걸린 곳에 보관하고, 쓰고 나면 지워 주세요.</p>
+    <div class="card"><div class="row"><label>시작 <input type="date" id="x1" value="${d1}"></label><label>끝 <input type="date" id="x2" value="${d2}"></label><button class="btn p" id="xcsv">CSV(요약)</button><button class="btn" id="xjson">JSON(원본 포함)</button></div><p class="small muted" id="xst" style="margin-top:8px"></p></div>`;
+  const run = async fmt => { $('xst').textContent = '만드는 중…';
+    try { const from = new Date($('x1').value + 'T00:00:00+09:00').toISOString(), to = new Date($('x2').value + 'T23:59:59+09:00').toISOString();
+      const rows = await rpc('export_measurements', { p_from: from, p_to: to }); let blob, name;
+      if (fmt === 'csv') { const keys = [...new Set(rows.flatMap(r => Object.keys(r.summary || {})))];
+        const head = ['member_id', 'channel', 'kind', 'measured_at', 'identity_reason', 'identity_d', ...keys.map(k => 'summary.' + k)];
+        const q = v => { const s = v == null ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+        const lines = [head.join(','), ...rows.map(r => [r.member_id, r.channel, r.kind, r.measured_at, r.identity?.reason, r.identity?.d, ...keys.map(k => r.summary?.[k])].map(q).join(','))];
+        blob = new Blob(['﻿' + lines.join('\n')], { type: 'text/csv;charset=utf-8' }); name = `facecheck_${$('x1').value}_${$('x2').value}.csv`; }
+      else { blob = new Blob([JSON.stringify(rows)], { type: 'application/json' }); name = `facecheck_${$('x1').value}_${$('x2').value}.json`; }
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+      $('xst').textContent = `${rows.length}건을 내보냈어요.`; } catch (e) { $('xst').textContent = '실패: ' + e.message; } };
+  $('xcsv').onclick = () => run('csv'); $('xjson').onclick = () => run('json');
+}
+
+if (!DEMO && SUPABASE_URL.includes('YOUR-PROJECT')) $('app').innerHTML = '<div class="login card"><h2>설정이 필요해요</h2><p class="sub">이 파일 안의 SUPABASE_URL과 SUPABASE_ANON_KEY를 Supabase 프로젝트 값으로 바꿔 주세요.</p></div>';
+else { sb.auth.onAuthStateChange((ev) => { if (ev === 'SIGNED_OUT' && ME.user) renderLogin(); }); boot(); }
+</script>
+</body>
+</html>
