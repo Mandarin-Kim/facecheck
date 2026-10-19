@@ -65,7 +65,7 @@ pre{background:var(--bg);padding:12px;border-radius:8px;overflow:auto;font-size:
 <div id="app"></div>
 <div id="modal" class="modal" hidden><div id="modalIn" role="dialog" aria-modal="true"></div></div>
 <div id="toast" class="toast" hidden></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
 <script>
 /* =====================================================================
    페이스체크 운영 대시보드
@@ -192,6 +192,8 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const fmtT = t => t ? new Date(t).toLocaleString('ko-KR', { year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—';
 const fmtD = t => t ? new Date(t).toLocaleDateString('ko-KR', { year: '2-digit', month: '2-digit', day: '2-digit' }) : '—';
+/* 회원 기기에서 온 값(측정 요약·기록)은 화면에 넣기 전에 모두 글자로 처리 — 악성 문구가 운영 화면에서 실행되지 않게 */
+const SAFE = o => o == null ? o : typeof o === 'string' ? esc(o) : typeof o === 'number' ? (Number.isFinite(o) ? o : null) : typeof o === 'boolean' ? o : Array.isArray(o) ? o.map(SAFE) : typeof o === 'object' ? Object.fromEntries(Object.entries(o).map(([k, v]) => [k, SAFE(v)])) : null;
 const num = (v, d = 0) => v == null || !isFinite(v) ? '—' : (+v).toFixed(d);
 const MEM_COLS = 'platform,member_id,first_seen,last_seen,birth_year,sex,consent_health_at,consent_face_at,consent_photo_at,consent_ver,face_sessions,face_enrolled_at,face_updated_at,n_accepted,n_review,n_rejected,latest,phone_last4,birth_date,first_channel,status,consent_age_at,consent_terms_at,consent_privacy_at,consent_marketing_at';
 const MEAS_COLS = 'id,platform,member_id,kind,measured_at,received_at,status,identity,summary,app_ver,device,reviewed_by,reviewed_at,review_note,channel';
@@ -229,10 +231,10 @@ function renderLogin(msg = '') {
   let email = '';
   const sendCode = async () => {
     email = $('em').value.trim().toLowerCase(); $('lgo').disabled = true; $('lerr').textContent = ''; $('cerr').textContent = '';
-    const { error } = await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: true } });
+    const { error } = await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: true, emailRedirectTo: location.origin + location.pathname } });   // 메일에 번호 대신 링크만 오는 경우(기본 메일 양식) 그 링크로도 로그인
     $('lgo').disabled = false;
     if (error) { const m = /rate|seconds|after/i.test(error.message || '') ? '잠시 후 다시 요청해 주세요(메일 발송 제한).' : '인증번호를 보낼 수 없어요. 운영진으로 등록된 이메일인지 확인해 주세요.'; if ($('cf').hidden) $('lerr').textContent = m; else $('cerr').textContent = m; return; }
-    $('lf').hidden = true; $('cf').hidden = false; $('cto').innerHTML = `<b>${esc(email)}</b>(으)로 인증번호를 보냈어요.`; $('otp').value = ''; $('otp').focus();
+    $('lf').hidden = true; $('cf').hidden = false; $('cto').innerHTML = `<b>${esc(email)}</b>(으)로 로그인 메일을 보냈어요. 메일에 6자리 번호가 있으면 아래에 넣고, 링크만 있으면 <b>이 브라우저에서</b> 링크를 눌러 주세요.`; $('otp').value = ''; $('otp').focus();
   };
   $('lf').onsubmit = e => { e.preventDefault(); sendCode(); };
   $('cre').onclick = sendCode;
@@ -247,14 +249,14 @@ setInterval(() => { if (ME.user && Date.now() - LASTACT > IDLE_MIN * 60000) logo
 
 async function boot() {
   const { data: { session } } = await sb.auth.getSession();
-  if (!session) return renderLogin();
+  if (!session) { const he = new URLSearchParams(location.hash.slice(1)); if (he.get('error')) { history.replaceState(null, '', location.pathname); return renderLogin('로그인 링크가 만료됐거나 이미 사용됐어요. 다시 받아 주세요.'); } return renderLogin(); }
   ME.user = session.user;
   try { ME.role = await rpc('my_role'); } catch (e) { return renderLogin('권한 확인에 실패했어요: ' + e.message); }
   if (ME.role === 'pending' || ME.role === 'none') {
     $('app').innerHTML = `<div class="login card"><h2>${ME.role === 'pending' ? '승인 대기 중' : '운영진 권한이 없어요'}</h2><p class="sub">${esc(ME.user.email)} 계정은 ${ME.role === 'pending' ? '관리자가 권한을 주면 사용할 수 있어요. 관리자에게 알려 주세요.' : '운영진으로 등록되지 않았거나 사용이 중지됐어요.'}</p><button class="btn" id="lo">로그아웃</button></div>`;
     $('lo').onclick = () => logout(); return;
   }
-  shell(); try { await loadChannels(); } catch {} go(location.hash.slice(1) || 'overview');
+  shell(); try { await loadChannels(); } catch {} const h = location.hash.slice(1); go(h && !/access_token|error|type=/.test(h) ? h : 'overview');
 }
 const TABS = [['overview', '개요', 'viewer'], ['members', '회원', 'operator'], ['review', '검토 대기', 'operator'], ['channels', '제휴 플랫폼', 'operator'], ['ops', '운영진', 'admin'], ['audit', '접속 기록', 'admin'], ['export', '내보내기', 'admin']];
 function shell() {
@@ -303,7 +305,7 @@ async function members() {
   $('main').innerHTML = `<h2>회원</h2><p class="sub">휴대폰 번호(문자 인증)+생년월일로 확인한 통합 회원이에요. 어느 제휴 플랫폼에서 들어와도 한 회원번호로 쌓여요. 휴대폰 번호는 암호화돼 있어 뒷자리만 보여요. 회원을 열면 열람 기록이 남아요.</p>
     <div class="card"><div class="row" style="margin-bottom:10px"><input type="text" id="mq" placeholder="회원번호(GR…) 또는 휴대폰 뒷자리 4개" value="${esc(MQ)}" style="flex:1;min-width:180px"><button class="btn" id="mqGo">검색</button></div>
     <div class="tw"><table><thead><tr><th>회원번호</th><th>휴대폰</th><th>최근 측정</th><th>가입</th><th>생년월일·성별</th><th>처음 들어온 곳</th><th>반영 / 검토 / 거절</th><th>얼굴 등록</th><th>최근 결과</th></tr></thead>
-    <tbody>${(data || []).map(m => { const l = m.latest || {}; return `<tr class="click" data-id="${esc(m.member_id)}"><td><b>${esc(m.member_id)}</b></td><td>${phoneM(m.phone_last4)}</td><td>${fmtT(m.last_seen)}</td><td>${fmtD(m.first_seen)}</td><td>${m.birth_date ? birthM(m.birth_date) : m.birth_year ?? '—'} · ${m.sex === 'f' ? '여' : m.sex === 'm' ? '남' : '—'}</td><td class="small">${chName(m.first_channel)}</td>
+    <tbody>${(data || []).map(m => { const l = SAFE(m.latest || {}); return `<tr class="click" data-id="${esc(m.member_id)}"><td><b>${esc(m.member_id)}</b></td><td>${phoneM(m.phone_last4)}</td><td>${fmtT(m.last_seen)}</td><td>${fmtD(m.first_seen)}</td><td>${m.birth_date ? birthM(m.birth_date) : m.birth_year ?? '—'} · ${m.sex === 'f' ? '여' : m.sex === 'm' ? '남' : '—'}</td><td class="small">${chName(m.first_channel)}</td>
       <td>${m.n_accepted} / <span style="color:var(--warn)">${m.n_review}</span> / <span style="color:var(--bad)">${m.n_rejected}</span></td><td>${m.face_enrolled_at ? `등록 (${m.face_sessions}회 반영)` : '<span class="muted">미등록</span>'}</td>
       <td class="small">${l.faceAge != null ? `얼굴 ${l.faceAge}세 · ` : ''}${l.hr != null ? `심박 ${num(l.hr)} · ` : ''}${l.stress != null ? `스트레스 ${num(l.stress)}` : ''}</td></tr>`; }).join('') || '<tr><td colspan="9" class="empty">회원이 없어요</td></tr>'}</tbody></table></div>
     <div class="pager"><span class="muted small">전체 ${count ?? 0}명</span><button class="btn" id="mPrev" ${MPAGE ? '' : 'disabled'}>이전</button><button class="btn" id="mNext" ${(MPAGE + 1) * per < (count || 0) ? '' : 'disabled'}>다음</button></div></div>`;
@@ -341,7 +343,7 @@ async function memberDetail(mid) {
       <dt>측정</dt><dd>반영 ${ms.n_accepted} · 검토 ${ms.n_review} · 거절 ${ms.n_rejected}</dd></dl></div>
     <div class="grid2">${lineChart(scans, 'faceAge', '얼굴 나이', '#7C5CFF', '세')}${lineChart(acc, 'hr', '심박수', '#E8505B', 'bpm')}${lineChart(acc, 'stress', '스트레스', '#F29F05')}${lineChart(scans, 'brainAge', '두뇌 나이(실험)', '#1E88E5', '세')}</div>
     <div class="card"><h3>측정 기록 <span class="muted small">거절·검토 기록도 함께 보여요. 반영된 것만 위 그래프에 쓰여요.</span></h3><div class="tw"><table><thead><tr><th>측정 시각</th><th>종류</th><th>판정</th><th>본인 확인</th><th>요약</th><th></th></tr></thead><tbody>
-    ${(rows || []).map(r => { const s = r.summary || {}, id = r.identity || {}; return `<tr><td>${fmtT(r.measured_at)}</td><td>${KIND[r.kind] || esc(r.kind)}</td><td>${badge(r.status)}${r.reviewed_at ? `<div class="small muted">검토: ${esc(r.review_note || '')}</div>` : ''}</td>
+    ${(rows || []).map(r => { const s = SAFE(r.summary || {}), id = SAFE(r.identity || {}); return `<tr><td>${fmtT(r.measured_at)}</td><td>${KIND[r.kind] || esc(r.kind)}</td><td>${badge(r.status)}${r.reviewed_at ? `<div class="small muted">검토: ${esc(r.review_note || '')}</div>` : ''}</td>
       <td class="small">${esc(REASON[id.reason] || id.reason || '')}${id.d != null ? ` · 거리 ${num(id.d, 2)}` : ''}${id.frames != null ? ` · 장면 ${id.kept ?? '?'}/${id.frames}` : ''}</td>
       <td class="small">${[s.faceAge != null && `얼굴 ${s.faceAge}세`, s.hr != null && `심박 ${num(s.hr)}${s.hr_src === 'finger' || r.kind === 'finger' ? '(손가락)' : ''}`, s.stress != null && `스트레스 ${num(s.stress)}`, s.watch != null && `확인 신호 ${s.watch + (s.check || 0)}개`].filter(Boolean).join(' · ')}</td>
       <td style="white-space:nowrap"><button class="btn small" data-det="${r.id}">상세${(s.img_n && !r.img_hidden) ? ` · 사진 ${s.img_n}` : ''}</button></td></tr>`; }).join('') || '<tr><td colspan="6" class="empty">기록 없음</td></tr>'}</tbody></table></div></div>`;
@@ -365,9 +367,9 @@ const imgGrid = items => items.length ? `<div class="evgrid">${items.map(x => { 
 async function showDetail(id) {
   const { data: r, error } = await sb.from('measurements').select('*').eq('id', id).single();
   if (error) return toast(error.message);
-  const s = r.summary || {}, idn = r.identity || {}, rec = r.record || {};
+  const s = SAFE(r.summary || {}), idn = SAFE(r.identity || {}), rec = SAFE(r.record || {}), rawRec = r.record || {};
   const V = (l, v) => `<tr><td>${l}</td><td><b>${v ?? '—'}</b></td></tr>`;
-  const sigs = [...(rec.signals || []), ...(rec.brain?.cog || []), ...(rec.wellness || [])];
+  const sigs = [...(rawRec.signals || []), ...(rawRec.brain?.cog || []), ...(rawRec.wellness || [])].filter(x => x && typeof x === 'object');
   const bd = rec.brain?.bdet;
   modal(`<div class="row" style="justify-content:space-between"><h3 style="margin:0">측정 상세 · 회원 <b>${esc(r.member_id)}</b></h3>${badge(r.status)}</div>
     <p class="small muted">${KIND[r.kind] || ''} · ${fmtT(r.measured_at)} · 앱 ${esc(r.app_ver || '')} · ${esc(REASON[idn.reason] || idn.reason || '')}${idn.d != null ? ` · 등록 얼굴과 거리 ${num(idn.d, 2)}` : ''}</p>
@@ -380,8 +382,8 @@ async function showDetail(id) {
       ${V('측정 방식', s.mode === 'stand' ? '거치대·태블릿 (얼굴 + 상반신·손)' : s.mode === 'mobile' ? '휴대폰 (얼굴)' : null)}${s.rr_src === 'shoulder' ? V('호흡수 출처', '어깨 움직임') : ''}
       ${s.drift_asym != null ? V('팔 처짐 좌우 차 (실험)', Math.round(s.drift_asym * 100) + '% (어깨너비 대비)') : ''}${s.tremor_amp != null ? V('손 떨림 (실험)', s.tremor_amp + '% (손 크기 대비)') : ''}${s.fist_rate != null ? V('주먹 쥐었다 펴기 (실험)', '느린 손 초당 ' + s.fist_rate + '회') : ''}
       ${V('단어 기억', s.recall)}${V('손가락 두드리기', s.tap_rate != null ? s.tap_rate + ' 회/초' : null)}${V('확인·관찰 신호', s.watch != null ? `확인 ${s.check || 0} · 관찰 ${s.watch}` : null)}</tbody></table>
-    ${sigs.length ? `<h3 style="margin-top:14px">항목별 판정 (${sigs.length})</h3><table class="kv"><tbody>${sigs.map(x => { const T = TIER_KO[x.tier] || [x.tier, 'na']; return `<tr><td>${esc(x.name)}</td><td><span class="b ${T[1]}">${T[0]}</span> <span class="small muted">${esc(x.value || '')}</span></td></tr>`; }).join('')}</tbody></table>` : ''}
-    <details style="margin-top:12px"><summary>원본 데이터 (JSON)</summary><pre>${esc(JSON.stringify({ identity: idn, summary: s, record: rec }, null, 1))}</pre></details>
+    ${sigs.length ? `<h3 style="margin-top:14px">항목별 판정 (${sigs.length})</h3><table class="kv"><tbody>${sigs.map(x => { const T = TIER_KO[x.tier] || [esc(x.tier), 'na']; return `<tr><td>${esc(x.name)}</td><td><span class="b ${T[1]}">${T[0]}</span> <span class="small muted">${esc(x.value || '')}</span></td></tr>`; }).join('')}</tbody></table>` : ''}
+    <details style="margin-top:12px"><summary>원본 데이터 (JSON)</summary><pre>${esc(JSON.stringify({ identity: r.identity || {}, summary: r.summary || {}, record: rawRec }, null, 1))}</pre></details>
     <div class="row" style="justify-content:flex-end;margin-top:10px"><button class="btn" id="mx">닫기</button></div>`);
   $('mx').onclick = closeModal;
   if (s.img_n && !r.img_hidden) { try { const items = await loadImages(r); if ($('dImg')) $('dImg').innerHTML = imgGrid(items); } catch (e) { if ($('dImg')) $('dImg').innerHTML = `<p class="err">${esc(e.message)}</p>`; } }
@@ -407,11 +409,11 @@ async function review() {
   const medOf = (mid, k) => { const v = (hist || []).filter(h => h.member_id === mid && h.summary && h.summary[k] != null && isFinite(h.summary[k])).slice(0, 30).map(h => +h.summary[k]).sort((a, b) => a - b); return v.length ? v[v.length >> 1] : null; };
   $('main').innerHTML = `<h2>검토 대기 <span class="muted small">${(data || []).length}건</span></h2>
     <p class="sub">본인인지 확실하지 않아 회원 기록에 아직 넣지 않은 측정이에요. 사진 보관에 동의한 회원은 <b>이번 사진과 최근 반영된 사진</b>을 나란히 볼 수 있어요. 수치와 사진을 비교하고 필요하면 회원에게 확인한 뒤 결정하세요. 애매하면 <b>폐기</b>가 안전해요(회원 기록이 섞이지 않고, 폐기한 측정의 사진은 지워져요).</p>
-    ${(data || []).map(r => { const s = r.summary || {}, id = r.identity || {}, m = M[r.member_id] || {}, l = m.latest || {}, yr = new Date(r.measured_at).getFullYear();
+    ${(data || []).map(r => { const s = SAFE(r.summary || {}), id = SAFE(r.identity || {}), m = M[r.member_id] || {}, l = SAFE(m.latest || {}), yr = new Date(r.measured_at).getFullYear();
       const ageNow = m.birth_year ? yr - m.birth_year : null;
       return `<div class="card" data-rv="${r.id}"><div class="row" style="justify-content:space-between"><div><b>${esc(r.member_id)}</b> · ${KIND[r.kind] || ''} · ${fmtT(r.measured_at)}</div>${badge(r.status)}</div>
         <p style="margin:8px 0 0"><b>${esc(REASON[id.reason] || id.reason)}</b>${id.d != null ? ` · 등록 얼굴과 거리 ${num(id.d, 2)} <span class="muted small">(0.45 이하 본인, 0.60 초과 다른 사람)</span>` : ''}${id.frames ? ` · 얼굴 장면 ${id.kept}/${id.frames}${id.out ? `, 다른 얼굴로 빠진 장면 ${id.out}` : ''}` : ''}${id.faces ? ` · 두 사람 잡힌 장면 ${id.faces}` : ''}</p>
-        <div class="cmp"><div><span class="small muted">이번 얼굴 나이</span><b>${s.faceAge ?? '—'}</b></div><div><span class="small muted">평소 얼굴 나이</span><b>${medOf(r.member_id, 'faceAge') ?? '—'}</b></div><div><span class="small muted">회원 실제 나이</span><b>${ageNow ?? '—'}</b></div><div><span class="small muted">이번 입력 나이·성별</span><b>${s.age ?? '—'} · ${s.sex ? esc(s.sex) : '—'}</b></div><div><span class="small muted">이번 심박</span><b>${num(s.hr)}</b></div><div><span class="small muted">평소 심박</span><b>${num(medOf(r.member_id, 'hr'))}</b></div></div>
+        <div class="cmp"><div><span class="small muted">이번 얼굴 나이</span><b>${s.faceAge ?? '—'}</b></div><div><span class="small muted">평소 얼굴 나이</span><b>${medOf(r.member_id, 'faceAge') ?? '—'}</b></div><div><span class="small muted">회원 실제 나이</span><b>${ageNow ?? '—'}</b></div><div><span class="small muted">이번 입력 나이·성별</span><b>${s.age ?? '—'} · ${s.sex || '—'}</b></div><div><span class="small muted">이번 심박</span><b>${num(s.hr)}</b></div><div><span class="small muted">평소 심박</span><b>${num(medOf(r.member_id, 'hr'))}</b></div></div>
         <div class="pcmp" data-pc="${r.id}"></div>
         <div class="row"><input type="text" placeholder="결정 사유 (예: 회원 확인 결과 본인)" style="flex:1;min-width:200px" data-note><button class="btn p" data-dec="accept">회원 기록에 반영</button><button class="btn d" data-dec="reject">폐기</button><button class="btn" data-open="${esc(r.member_id)}">회원 보기</button></div><p class="err small" data-err style="min-height:0;margin:6px 0 0"></p></div>`; }).join('') || '<div class="card"><p class="empty">검토할 측정이 없어요</p></div>'}`;
   // 사진 비교: 이번 측정 정면 사진 vs 같은 회원의 최근 반영된(사진 있는) 측정 정면 사진
@@ -490,7 +492,8 @@ async function exportView() {
       const rows = await rpc('export_measurements', { p_from: from, p_to: to }); let blob, name;
       if (fmt === 'csv') { const keys = [...new Set(rows.flatMap(r => Object.keys(r.summary || {})))];
         const head = ['member_id', 'channel', 'kind', 'measured_at', 'identity_reason', 'identity_d', ...keys.map(k => 'summary.' + k)];
-        const q = v => { const s = v == null ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+        const q = v => { let s = v == null ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v); if (typeof v !== 'number' && /^[=+\-@\t\r]/.test(s)) s = "'" + s;   // 엑셀 수식 실행 방지
+          return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
         const lines = [head.join(','), ...rows.map(r => [r.member_id, r.channel, r.kind, r.measured_at, r.identity?.reason, r.identity?.d, ...keys.map(k => r.summary?.[k])].map(q).join(','))];
         blob = new Blob(['﻿' + lines.join('\n')], { type: 'text/csv;charset=utf-8' }); name = `facecheck_${$('x1').value}_${$('x2').value}.csv`; }
       else { blob = new Blob([JSON.stringify(rows)], { type: 'application/json' }); name = `facecheck_${$('x1').value}_${$('x2').value}.json`; }
