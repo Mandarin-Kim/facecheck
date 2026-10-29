@@ -1,0 +1,13 @@
+PASS all lab scripts parse
+PASS posture A/B/C preserve torch comparison conditions
+PASS real finger engine accepts clean synthetic 75 bpm without threshold changes
+PASS low FPS cannot produce RMSSD
+PASS empty and flat recordings are retained as failures
+PASS missing spans excluded from FPS and no age yields no stress score
+PASS usable duration pauses without discarding prior time
+PASS export retains raw RGB, failures, protocol and privacy notice
+PASS local retention removes records older than 7 days
+PASS test screen has no upload/API calls or external dependencies
+PASS page hiding stops capture, wall cap and photo limits are wired
+PASS actual worker protocol returns final and live results
+PASS simulated browser flow captures raw frames, saves failed analysis, stops camera and exports replayable JSON

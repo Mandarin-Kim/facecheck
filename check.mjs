@@ -1,0 +1,18 @@
+import fs from 'node:fs';import vm from 'node:vm';import assert from 'node:assert/strict';
+const root=new URL('../',import.meta.url),core=fs.readFileSync(new URL('lab-core.js',root),'utf8'),worker=fs.readFileSync(new URL('lab-worker.js',root),'utf8'),app=fs.readFileSync(new URL('lab.js',root),'utf8'),html=fs.readFileSync(new URL('index.html',root),'utf8');
+for(const src of [core,worker,app])new vm.Script(src);console.log('PASS all lab scripts parse');
+const c={console,self:{}};vm.createContext(c);vm.runInContext(worker,c);vm.runInContext(core+'\nthis.protocols=LAB_PROTOCOLS;',c);
+assert.equal(c.protocols.A.torch,true);assert.equal(c.protocols.B.torch,true);assert.equal(c.protocols.C.torch,false);console.log('PASS posture A/B/C preserve torch comparison conditions');
+const gen=(fps,amp=.1)=>Array.from({length:60*fps},(_,i)=>{const t=i/fps,phase=2*Math.PI*1.25*t+.12*Math.sin(2*Math.PI*.2*t);return {t,r:180+2*amp*Math.sin(phase),g:50+amp*Math.sin(phase),b:20,sat:0};});
+let r=c.labAnalyze(gen(30),35,'여성');assert.equal(r.accepted,true);assert.ok(Math.abs(r.hr-75)<2);console.log('PASS real finger engine accepts clean synthetic 75 bpm without threshold changes');
+r=c.labAnalyze(gen(12),35,'여성');assert.equal(r.rmssd,null);assert.ok(r.actualFps<24);console.log('PASS low FPS cannot produce RMSSD');
+r=c.labAnalyze([],null,'');assert.equal(r.accepted,false);assert.ok(r.error);r=c.labAnalyze(gen(30,0),35,'여성');assert.equal(r.accepted,false);console.log('PASS empty and flat recordings are retained as failures');
+r=c.labAnalyze(gen(30).map(f=>({...f,t:f.t+(f.t>=30?15:0)})),null,'');assert.ok(r.actualFps>29);assert.equal(r.stress,null);console.log('PASS missing spans excluded from FPS and no age yields no stress score');
+const clock={seconds:0};for(let i=0;i<=100;i++)c.pipeCollect(clock,true,i/10);const prior=clock.seconds;c.pipeCollect(clock,false,10.1);for(let i=102;i<=120;i++)c.pipeCollect(clock,false,i/10);assert.equal(clock.seconds,prior);console.log('PASS usable duration pauses without discarding prior time');
+const p=c.labPacket([{id:'failed',frames:[{t:1,r:3,g:4,b:5,on:false}],photos:[],processingError:'test'}],[{stage:'worker',message:'test'}]);assert.equal(Object.keys(p)[0],'privacyNotice');assert.equal(p.trials[0].frames[0].r,3);assert.equal(p.trials[0].processingError,'test');assert.equal(p.errors.length,1);assert.equal(p.thresholds.targetUsableSeconds,60);console.log('PASS export retains raw RGB, failures, protocol and privacy notice');
+const at=Date.parse('2026-10-29T00:00:00Z');assert.equal(c.labExpired(new Date(at-8*86400000).toISOString(),at),true);assert.equal(c.labExpired(new Date(at-6*86400000).toISOString(),at),false);assert.equal(c.labExpired(new Date(at-7*86400000).toISOString(),at),false);console.log('PASS local retention removes records older than 7 days');
+assert.ok(html.includes("connect-src 'none'"));assert.ok(!/\bfetch\s*\(|XMLHttpRequest|sendBeacon|supabase/i.test(app));assert.ok(!html.includes('https://'));console.log('PASS test screen has no upload/API calls or external dependencies');
+assert.ok(app.includes("finish('page_hidden')"));assert.ok(app.includes("wall>=150"));assert.ok(app.includes("a.trial.photos.length<12"));assert.ok(app.includes('if(active)'));console.log('PASS page hiding stops capture, wall cap and photo limits are wired');
+let message;c.self.postMessage=x=>message=x;c.self.onmessage({data:{id:1,type:'final',samples:gen(30),age:35,sex:'여성'}});assert.equal(message.id,1);assert.ok(message.result.accepted);c.self.onmessage({data:{id:2,type:'live',samples:gen(30).slice(-450)}});assert.ok(Math.abs(message.result.hr-75)<2);console.log('PASS actual worker protocol returns final and live results');
+
+await import('./runtime.mjs');
