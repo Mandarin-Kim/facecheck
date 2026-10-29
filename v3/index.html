@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#F7F9F9">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="color-scheme" content="only light">
 <title>FaceCheck · 그린리본 페이스체크</title>
 <style>
@@ -620,6 +624,35 @@ input[type=number],select,input[type=text],input[type=tel]{border-radius:14px;ba
 .stroopw,.wgrid button,.stroopb button,.qgroup label,.qchips button,.qseg button{border-radius:14px}
 .wgrid button[aria-pressed="true"],.qchips button[aria-pressed="true"],.qseg button[aria-pressed="true"]{background:var(--btn)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+
+/* v3.2 홈 위젯 · 밤새 수면 소리 측정 */
+.wg{padding:16px}
+.wg .wgh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.wgt{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+@media (max-width:420px){.wgt{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.wgi{border-radius:16px;padding:12px 10px 10px;color:#fff;display:flex;flex-direction:column;gap:2px;min-width:0}
+.wgi span{font-size:12.5px;font-weight:700;opacity:.92}
+.wgi b{font-size:24px;font-weight:800;line-height:1.15;letter-spacing:-.3px}
+.wgi b small{font-size:12px;font-weight:700;margin-left:2px;opacity:.9}
+.wgi em{font-style:normal;font-size:11.5px;opacity:.85;min-height:16px}
+.wgi button{margin-top:6px;border:0;border-radius:99px;background:#fff;font:inherit;font-size:14px;font-weight:800;padding:8px 0;cursor:pointer}
+.wgi.hr{background:#D97706}.wgi.hr button{color:#B45309}
+.wgi.st{background:#0C786D}.wgi.st button{color:#0C786D}
+.wgi.rr{background:#2563EB}.wgi.rr button{color:#1D4ED8}
+.wgi.sl{background:#4F46B5}.wgi.sl button{color:#4338CA}
+.wgnote{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;font-size:13px;color:var(--muted)}
+.wgnote button{border:1px solid var(--line);background:#fff;border-radius:99px;padding:7px 12px;font:inherit;font-size:13px;font-weight:800;color:var(--accent-d);cursor:pointer;white-space:nowrap}
+.slprep{margin:10px 0 0;padding-left:20px;display:grid;gap:6px;font-size:14.5px;line-height:1.5}
+.slrun{position:fixed;inset:0;z-index:80;background:#000;color:#8A949B;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;text-align:center}
+.slrun .clk{font-size:64px;font-weight:300;color:#C9D1D6;letter-spacing:1px;font-variant-numeric:tabular-nums;transition:transform 2s}
+.slrun .el{font-size:15px}
+.slrun .lv{width:180px;height:6px;border-radius:9px;background:#1A1F22;overflow:hidden}.slrun .lv i{display:block;height:100%;width:0;background:#3B4A52;transition:width .25s}
+.slrun .msg{font-size:13.5px;line-height:1.6;max-width:300px}
+.slrun button{margin-top:18px;border:1px solid #2A3236;background:#0B0E10;color:#C9D1D6;border-radius:99px;padding:12px 22px;font:inherit;font-size:15px;font-weight:700;cursor:pointer}
+.slbig{display:flex;align-items:baseline;gap:6px;margin:6px 0 2px}.slbig b{font-size:40px;font-weight:800;letter-spacing:-.5px}.slbig small{font-size:14px;color:var(--muted);font-weight:700}
+.slrows{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.slrows div{background:var(--bg);border-radius:14px;padding:10px 12px}.slrows span{display:block;font-size:12px;color:var(--muted);font-weight:700}.slrows b{font-size:18px}
+.sltl{width:100%;height:auto;display:block;margin-top:6px}
 </style>
 </head>
 <body>
@@ -638,6 +671,7 @@ input[type=number],select,input[type=text],input[type=tel]{border-radius:14px;ba
         <ol class="plan" id="plan"></ol>
         <button class="herolast" id="heroLast" hidden></button>
       </div>
+      <div class="card wg" id="wgBox"></div>
       <p class="note2" id="startNote" style="text-align:center;margin:-4px 0 0">밝고 조용한 곳에서 소리를 켜고 해 주세요 · 카메라 권한은 허용해 주세요</p>
       <div class="modebox" role="group" aria-label="측정 방식">
         <p class="h2" style="font-size:15px;margin:0 0 8px">측정 방식</p>
@@ -807,6 +841,27 @@ input[type=number],select,input[type=text],input[type=tel]{border-radius:14px;ba
       </div>
       <div class="card" id="fgRes" hidden></div>
     </section>
+
+    <!-- v3.2 SLEEP: 밤새 소리로 숨 멈춤 보기 -->
+    <section class="screen" data-s="sleep" hidden>
+      <div class="card" id="slIntro">
+        <p class="h2">밤새 수면 소리 측정</p>
+        <p class="sub2" style="margin:4px 0 0">자는 동안 휴대폰 마이크로 코골이와 <b>10초 이상 숨소리가 끊겼다가 다시 시작하는 순간</b>을 셉니다. 수면다원검사 판독 기준(AASM)에서 무호흡을 '10초 이상 숨이 멈춤'으로 보는 것과 같은 시간 기준이에요.</p>
+        <ol class="slprep">
+          <li><b>충전기를 꽂아</b> 주세요. 밤새 화면이 켜진 채로 측정해요(화면은 검게 어두워져요).</li>
+          <li>휴대폰을 <b>머리맡 30~50cm</b>, 이불에 덮이지 않는 곳에 화면이 위로 오게 두세요.</li>
+          <li>혼자 자는 날이 가장 정확해요. 함께 자는 사람의 코골이·TV 소리가 섞이면 틀려져요.</li>
+          <li><b>4시간 이상</b> 측정해야 결과를 믿을 수 있어요. 일어나면 '그만하고 결과 보기'를 두 번 눌러 주세요.</li>
+          <li>측정 중에는 이 화면을 닫거나 다른 앱으로 가지 마세요. 화면이 꺼지면 그 시간은 빠져요.</li>
+        </ol>
+        <p class="note2" style="margin:10px 0 0">🔒 소리는 녹음·저장하지 않아요. 0.25초마다 '소리 크기' 숫자만 이 휴대폰에 남기고, 아침에 결과만 계산해요.</p>
+        <div class="row" style="margin-top:12px"><button class="btn primary" id="slGo" style="flex:1">측정 시작</button><button class="btn" id="slBack">돌아가기</button></div>
+        <p class="status" id="slSt"></p>
+      </div>
+      <div class="card" id="slRes" hidden></div>
+    </section>
+    <div class="slrun" id="slRun" hidden><div class="clk" id="slClk">--:--</div><div class="el" id="slEl">측정 0분</div><div class="lv"><i id="slLv"></i></div>
+      <p class="msg" id="slMsg">소리는 저장하지 않아요 · 충전기를 꽂아 두세요<br>화면을 끄거나 다른 앱으로 가지 마세요</p><button id="slStop">그만하고 결과 보기</button></div>
 
     <!-- DAILY MISSIONS -->
     <section class="screen" data-s="mission" hidden><div class="rstack" id="mArea"></div></section>
@@ -1042,10 +1097,10 @@ const Face = (() => {
     const motion = state.prev ? Math.hypot(f.cx - state.prev.cx, f.cy - state.prev.cy) / f.w * 100 : 0;
     state.prev = { cx: f.cx, cy: f.cy };
     const R = regions(state.box);
-    const avg = list => { let r = 0, g = 0, b = 0, c = 0;
+    const avg = list => { let r = 0, g = 0, b = 0, c = 0, cl = 0;
       for (const q of list) for (let y = Math.max(0, q.y0); y < Math.min(H, q.y1); y++) for (let x = Math.max(0, q.x0); x < Math.min(W, q.x1); x++) {
-        const p = y * W + x; if (f.lab[p] !== f.id) continue; const k4 = p * 4; r += d[k4]; g += d[k4 + 1]; b += d[k4 + 2]; c++; }
-      return c > 8 ? [r / c, g / c, b / c, c] : null; };
+        const p = y * W + x; if (f.lab[p] !== f.id) continue; const k4 = p * 4; r += d[k4]; g += d[k4 + 1]; b += d[k4 + 2]; c++; if (d[k4] >= 250 || d[k4 + 1] >= 250 || d[k4 + 2] >= 250) cl++; }
+      return c > 8 ? [r / c, g / c, b / c, c, cl] : null; };
     const fh = avg(R.fh), ck = avg(R.ck);
     if (!fh && !ck) return { ok: false };
     const parts = [fh, ck].filter(Boolean), tot = parts.reduce((s, p) => s + p[3], 0);
@@ -1053,7 +1108,7 @@ const Face = (() => {
     let ey = 0, ec = 0; const e = R.eye;
     for (let y = Math.max(0, e.y0); y < Math.min(H, e.y1); y++) for (let x = Math.max(0, e.x0); x < Math.min(W, e.x1); x++) { const k4 = (y * W + x) * 4; ey += d[k4] + d[k4 + 1] + d[k4 + 2]; ec++; }
     return { ok: true, all, fh: (fh || ck).slice(0, 3), ck: (ck || fh).slice(0, 3), cy: f.cy / H, motion, eye: ec ? ey / ec / 3 : 0,
-      lum: 0.299 * all[0] + 0.587 * all[1] + 0.114 * all[2], box: { ...state.box }, R };
+      lum: 0.299 * all[0] + 0.587 * all[1] + 0.114 * all[2], clip: parts.reduce((s2, q) => s2 + q[4], 0) / tot, box: { ...state.box }, R };
   }
   return { locate, regions, frameFeatures, isSkin };
 })();
@@ -1198,7 +1253,116 @@ const PV3 = (() => {
       rmssdRaw: M.raw, rmssd: both ? (Pg.rmssd + Pp.rmssd) / 2 : NaN, rmssdG: Pg.rmssd, rmssdPos: Pp.rmssd, jitter: M.jitter, nf: nfMax, mdiff, pBig,
       prvOK: !prvWhy, prvWhy, rhythmOK: tsOK && fps >= 24 && nfMax != null && nfMax <= 0.15 };
   }
-  return { analyze, resampleCubic, beatTimes, roiJitter };
+  // 5초 이상 끊김 없는 구간이 없을 때(움직임·처리 지연) 심박만이라도: 전체 장면으로 주파수 심박 + 고조파 확인
+  function hrOnly(F) {
+    const use = F.filter(f => !(f.motion > 2.5)); if (use.length < 120) return null;
+    const FS = 30, ts = use.map(f => f.t), [R, G, B] = [0, 1, 2].map(c => DSP.resample(ts, use.map(f => f.all[c]), FS));
+    const p = DSP.bandpass(DSP.pos(R, G, B, FS), FS, 0.5, 3.3), SP = DSP.spectrum(p, FS, 0.65, 3.2, 0.01);
+    const powAt = f => { let m = 0; SP.fr.forEach((x, j) => { if (Math.abs(x - f) <= 0.05) m = Math.max(m, SP.pw[j]); }); return m; };
+    const fPk = SP.fr[SP.pw.indexOf(Math.max(...SP.pw))]; let f0 = fPk;
+    for (const dv of [3, 2]) { const fc = fPk / dv; if (fc >= 0.65 && powAt(fc) >= 0.3 * powAt(fPk)) { f0 = fc; break; } }
+    let sig = 0, tot = 0; SP.fr.forEach((x, j) => { tot += SP.pw[j]; if (Math.abs(x - f0) <= 0.08 || Math.abs(x - 2 * f0) <= 0.08) sig += SP.pw[j]; });
+    return { hr: f0 * 60, snr: 10 * Math.log10(sig / Math.max(1e-12, tot - sig)), harmonic: f0 !== fPk };
+  }
+  return { analyze, hrOnly, resampleCubic, beatTimes, roiJitter };
+})();
+/* v3.1 호흡수: 네 가지 호흡 신호를 함께 보고, 2개 이상이 분당 2회 폭 안에서 맞을 때만 인정
+   ① 얼굴 위아래 움직임 ② 피부 밝기 출렁임(RIIV) ③ 숨 쉴 때 박동 간격이 빨라졌다 느려지는 정도(RIFV) ④ 맥파 크기 출렁임(RIAV)
+   근거: Karlen 외 (IEEE TBME 2013) 여러 호흡 신호 융합 · Charlton 외 (Physiol Meas 2016) 호흡수 추정 방법 비교.
+   허용폭·범위는 FaceHeart 호흡수 FDA 허가(K243966: 60초 · 분당 5~36회 · ±2회)와 맞춤. 40초 이상일 때만 분당 5회까지 봄(짧으면 숨이 너무 적게 잡힘) */
+const RRF = (() => {
+  const TOL = 2;
+  // 합격 기준은 기록 길이별로 합성 정답 시험(tests/v31_rr.js)에서 '분당 2회 넘게 틀린 값이 0건'이 되도록 정함.
+  // 20초는 숨이 4~7번뿐이라 잡음 봉우리와 진짜 호흡을 거의 구분 못 함 → 세 신호가 강하게 맞을 때만. 60초는 두 신호로 충분 (FaceHeart도 60초)
+  const RULE = d => d >= 55 ? { snr: 0, need: 2 } : d >= 40 ? { snr: 2, need: 2 } : { snr: 6, need: 3 };
+  function est(ts, vals, fs, lo, hi) {
+    if (ts.length < 8 || ts[ts.length - 1] - ts[0] < 12) return null;
+    const x = DSP.bandpass(DSP.resample(ts, vals, fs), fs, lo, hi);
+    const st = 0.0025, span = ts[ts.length - 1] - ts[0], pk = DSP.spectrumPeak(x, fs, lo, hi, st, Math.max(0.02, 1 / span));   // 봉우리 폭은 기록 길이에 반비례 → 짧은 기록도 같은 기준으로 비교
+    const edge = pk.f <= lo + 2 * st || pk.f >= hi - 2 * st;   // 띠 가장자리 봉우리 = 느린 표류·잡음
+    return { rr: +(pk.f * 60).toFixed(2), snr: +pk.snr.toFixed(2), edge };
+  }
+  function estimate(use, peaks, p, FS, dur) {
+    const lo = dur >= 40 ? 5 / 60 : 0.1, hi = 0.6, ts = use.map(f => f.t), src = {};
+    src.motion = est(ts, use.map(f => f.cy), 10, lo, hi);
+    src.riiv = est(ts, use.map(f => f.all[1]), 10, lo, hi);
+    if (peaks && peaks.length >= 12) {
+      const ib = DSP.ibis(peaks), okb = ib.filter(o => o.ok);
+      if (okb.length >= 10) src.rifv = est(okb.map(o => o.t), okb.map(o => 60000 / o.ms), 4, lo, hi);
+      const am = []; for (let k = 1; k < peaks.length; k++) { if (!ib[k - 1]?.ok) continue; const a = peaks[k - 1].i, b = peaks[k].i; if (!(a >= 0 && b < p.length && b > a)) continue; let mn = Infinity; for (let j = a; j <= b; j++) if (p[j] < mn) mn = p[j]; am.push({ t: peaks[k].t, v: p[b] - mn }); }
+      if (am.length >= 10) { const md = DSP.median(am.map(x => x.v)), mad = 1.4826 * DSP.median(am.map(x => Math.abs(x.v - md))) || 1e-9; const cl = am.filter(x => Math.abs(x.v - md) <= 3 * mad); if (cl.length >= 10) src.riav = est(cl.map(x => x.t), cl.map(x => x.v), 4, lo, hi); }
+    }
+    const rule = RULE(dur), c = Object.entries(src).filter(([, v]) => v && !v.edge && v.snr >= rule.snr).map(([k, v]) => ({ k, ...v })).sort((a, b) => a.rr - b.rr);
+    let best = null;
+    for (let i = 0; i < c.length; i++) { const m = c.filter(x => x.rr >= c[i].rr && x.rr - c[i].rr <= TOL), s = m.reduce((a, x) => a + x.snr, 0); if (!best || m.length > best.m.length || (m.length === best.m.length && s > best.s)) best = { m, s }; }
+    const agree = best && best.m.length >= rule.need ? best.m : null;
+    return { rr: agree ? +DSP.median(agree.map(x => x.rr)).toFixed(1) : NaN, snr: agree ? Math.max(...agree.map(x => x.snr)) : -99, n: agree ? agree.length : 0, used: agree ? agree.map(x => x.k) : [], src, lo: +(lo * 60).toFixed(1), rule };
+  }
+  return { estimate, TOL };
+})();
+/* v3.2 밤새 소리로 보는 수면 중 숨 멈춤 (선별용 · 진단 아님)
+   AASM 판독 규칙: 무호흡 = 숨(기류)이 90% 이상 줄어든 상태가 10초 이상. 수면무호흡 정도는 시간당 횟수(AHI) 5·15·30 기준.
+   휴대폰 마이크는 기류·호흡 노력·산소포화도를 못 재므로 AHI가 아니라 '코골이 중 10초 이상 소리가 끊겼다가 크게 다시 시작한 횟수'를 셈.
+   저호흡(숨이 30% 줄어듦)은 소리로 못 잡아 실제보다 적게 나올 수 있음 → 낮게 나와도 '없다'고 하지 않음.
+   입력: 0.25초마다 소리 크기(dB)와 낮은 음(800Hz 아래) 크기. 소리 자체는 저장하지 않음 */
+const SLEEPA = (() => {
+  const FS = 4;
+  const pct = (a, p) => { const s = a.filter(Number.isFinite).sort((x, y) => x - y); return s.length ? s[Math.min(s.length - 1, Math.floor(p * s.length))] : NaN; };
+  const med = a => pct(a, 0.5);
+  // 방 소음 바닥: 30초 구간의 하위 10% 값 → 앞뒤 2분의 중앙값 (선풍기·에어컨처럼 천천히 바뀌는 소음은 따라감)
+  function floorOf(db) {
+    const B = 30 * FS, nb = Math.ceil(db.length / B), bp = [];
+    for (let b = 0; b < nb; b++) bp.push(pct(Array.from(db.slice(b * B, (b + 1) * B)), 0.1));
+    const out = new Float32Array(db.length);
+    for (let b = 0; b < nb; b++) { const w = []; for (let k = b - 2; k <= b + 2; k++) if (k >= 0 && k < nb && isFinite(bp[k])) w.push(bp[k]); const v = w.length ? med(w) : NaN; for (let i = b * B; i < Math.min(db.length, (b + 1) * B); i++) out[i] = v; }
+    return out;
+  }
+  function bursts(db, lo, fl) {
+    const out = []; let s = -1, off = 0;
+    const close = e => { const n = e - s; if (n >= 1) { let pk = -99, lr = 0, c = 0; for (let i = s; i < e; i++) { const a = db[i] - fl[i]; if (a > pk) pk = a; if (isFinite(lo[i])) { lr += lo[i] - db[i]; c++; } } out.push({ s, e, dur: n / FS, pk, lr: c ? lr / c : 0 }); } s = -1; off = 0; };
+    for (let i = 0; i < db.length; i++) {
+      const on = isFinite(db[i]) && db[i] - fl[i] >= 6;
+      if (on) { if (s < 0) s = i; off = 0; }
+      else if (s >= 0) { if (!isFinite(db[i])) close(i); else if (++off >= 2) close(i - off + 1); }
+    }
+    if (s >= 0) close(db.length);
+    for (const b of out) b.kind = b.dur > 6 ? 'noise' : b.lr < -10 ? 'noise' : b.pk >= 12 && b.dur >= 0.3 && b.dur <= 4 ? 'snore' : b.dur >= 0.3 && b.dur <= 4 ? 'breath' : 'noise';
+    return out;
+  }
+  function analyze(db, lo, opt = {}) {
+    const n = db.length, valid = db.reduce((a, x) => a + (isFinite(x) ? 1 : 0), 0), validH = valid / FS / 3600;
+    const fl = floorOf(db), B = bursts(db, lo, fl), sn = B.filter(b => b.kind === 'snore'), snPk = sn.length ? med(sn.map(b => b.pk)) : NaN;
+    // 코골이 분: 1분에 코골이 소리 6번 이상
+    const nMin = Math.ceil(n / (60 * FS)), snPerMin = new Uint16Array(nMin), vMin = new Uint16Array(nMin);
+    for (const b of sn) snPerMin[Math.floor(b.s / (60 * FS))]++;
+    for (let i = 0; i < n; i++) if (isFinite(db[i])) vMin[Math.floor(i / (60 * FS))]++;
+    let snoreMin = 0, validMin = 0; for (let m = 0; m < nMin; m++) { if (vMin[m] >= 50 * FS) { validMin++; if (snPerMin[m] >= 6) snoreMin++; } }
+    // 숨 멈춤 의심: 리듬 있는 코골이(앞 40초에 코골이 3번 이상, 간격 2~10초) → 10~90초 조용 → 평소 코골이보다 3dB 이상 큰 소리나 연달은 코골이로 다시 시작 → 30초 안에 코골이 2번 이상 이어짐
+    const ev = [];
+    for (let k = 0; k + 1 < B.length; k++) {
+      const a = B[k], b = B[k + 1], gap = (b.s - a.e) / FS;
+      const why = r => { if (opt.dbg) opt.dbg.push({ t: b.s / FS, gap, r, ak: a.kind, bk: b.kind }); };
+      if (gap < 10) continue; if (gap > 90 || a.dur > 6 || b.dur > 6) { why('kind/long'); continue; }
+      let gapOK = true; for (let i = a.e; i < b.s; i++) if (!isFinite(db[i])) { gapOK = false; break; } if (!gapOK) { why('invalid'); continue; }
+      // 앞 40초: 숨소리·코골이가 리듬 있게(간격 2~10초) 3번 이상, 그중 코골이 1번 이상 (뒤척임 소리는 빼고 봄)
+      const before = B.slice(Math.max(0, k - 14), k + 1).filter(x => x.kind !== 'noise' && x.e > a.e - 40 * FS);
+      const iv = []; for (let j = 1; j < before.length; j++) iv.push((before[j].s - before[j - 1].s) / FS);
+      if (before.length < 3 || !before.some(x => x.kind === 'snore') || iv.filter(x => x >= 2 && x <= 10).length < before.length - 2) { why('ctx'); continue; }
+      // 다시 시작: 바로 앞 숨소리들보다 3dB 이상 큰 소리(헐떡임·몸 움직임 포함), 또는 3초 안에 연달은 소리 → 30초 안에 숨소리·코골이 2번 이상 이어짐
+      const after = B.slice(k + 1, k + 14).filter(x => x.s < b.s + 30 * FS), afterBr = after.filter(x => x.kind !== 'noise');
+      const ref = med(before.slice(-4).map(x => x.pk));
+      const loud = b.pk >= ref + 3 || (after[1] && (after[1].s - b.e) / FS <= 3);
+      if (!loud || afterBr.length < 2 || !afterBr.some(x => x.kind === 'snore')) { why(!loud ? 'quiet' : 'after'); continue; }
+      ev.push({ t: +(a.e / FS).toFixed(1), len: +gap.toFixed(1) });
+    }
+    const idx = validH > 0 ? ev.length / validH : NaN, snorePct = validMin ? snoreMin / validMin : 0;
+    const bins = []; for (let s0 = 0; s0 < n; s0 += 600 * FS) { const m0 = Math.floor(s0 / (60 * FS)); let sm = 0, vm = 0; for (let m = m0; m < Math.min(nMin, m0 + 10); m++) if (vMin[m] >= 50 * FS) { vm++; if (snPerMin[m] >= 6) sm++; } bins.push({ s: vm ? +(sm / vm).toFixed(2) : null, e: ev.filter(x => x.t * FS >= s0 && x.t * FS < s0 + 600 * FS).length }); }
+    let why = null; if (validH < 4) why = 'short'; if (!snoreMin && !ev.length) why = why || 'nosnore'; if (validMin > 30 && B.filter(b => b.kind === 'noise').length / (valid / FS / 3600) > 120) why = why || 'noisy';
+    const tier = !isFinite(idx) ? 'na' : idx >= 15 ? 'check' : idx >= 5 ? 'watch' : why === 'nosnore' ? 'na' : 'ok';
+    return { validH: +validH.toFixed(2), snorePct: +snorePct.toFixed(3), events: ev.length, idx: isFinite(idx) ? +idx.toFixed(1) : null, tier, why, longest: ev.length ? Math.max(...ev.map(x => x.len)) : null,
+      nSnore: sn.length, nNoise: B.filter(b => b.kind === 'noise').length, snPk: isFinite(snPk) ? +snPk.toFixed(1) : null, bins, ev: opt.keepEv ? ev : ev.slice(0, 300) };
+  }
+  return { analyze, FS };
 })();
 function analyzeBasic(frames) {
   const F = frames.filter(f => f.ok);
@@ -1212,7 +1376,9 @@ function analyzeBasic(frames) {
   let hr = pk.f * 60, snr = pk.snr;
   // v3: 고조파 확인·템플릿 박동·PRV 잡음 검사 (PV3). 기존 계산은 비교용으로 남김
   let P3 = null; try { P3 = PV3.analyze(F, frames.tsSrc); } catch (e) { P3 = null; }
+  let H0 = null;
   if (P3) { hr = P3.hr; snr = P3.snr; }
+  else { try { H0 = PV3.hrOnly(F); } catch (e) { H0 = null; } if (H0) { hr = H0.hr; snr = H0.snr; } }
   const pp = P3 && P3.beats.length >= 8 ? Object.assign(P3.beats.map(b => ({ t: b.t, i: Math.max(0, Math.min(p.length - 1, Math.round((b.t - use[0].t) * FS))) })), { mode: 'tpl-' + P3.mode }) : precisePeaks(F, hr);
   const peaks = pp.length >= 8 ? pp : DSP.findPeaks(p, FS, hr), v = DSP.hrv(peaks);
   const rmssdLegacy = v.rmssd;
@@ -1220,16 +1386,8 @@ function analyzeBasic(frames) {
   if (P3) { v.rmssd = P3.prvOK ? P3.rmssd : NaN; v.n = P3.nGood; } else v.rmssd = NaN;
   let stress = NaN;
   if (dur >= 14 && !isNaN(v.rmssd) && v.rmssd > 5 && v.rmssd < 150) stress = Math.max(0, Math.min(100, Math.round(100 * (4.5 - Math.log(v.rmssd)) / 2)));
-  const RFS = 10, rts = use.map(f => f.t);
-  let rr = NaN, rrSnr = -99;
-  if (dur >= 14) {
-    const cy = DSP.bandpass(DSP.resample(rts, use.map(f => f.cy), RFS), RFS, 0.1, 0.6);
-    const gi = DSP.bandpass(DSP.resample(rts, use.map(f => f.all[1]), RFS), RFS, 0.1, 0.6);
-    const ra = DSP.spectrumPeak(cy, RFS, 0.1, 0.6, 0.005, 0.03), rb = DSP.spectrumPeak(gi, RFS, 0.1, 0.6, 0.005, 0.03);
-    // 호흡: 얼굴 위아래 움직임(ra)과 피부 밝기 출렁임(rb) 두 방법이 3회/분 안으로 맞을 때만 인정 (20초 안에 숨이 4~7번뿐이라 한쪽만으로는 잘 틀림)
-    const r = ra.snr >= rb.snr ? ra : rb; rrSnr = r.snr;
-    rr = Math.abs(ra.f - rb.f) * 60 <= 3 ? 30 * (ra.f + rb.f) : NaN;
-  }
+  let rr = NaN, rrSnr = -99, rrX = null;
+  if (dur >= 14) { rrX = RRF.estimate(use, peaks, p, FS, dur); rr = rrX.rr; rrSnr = rrX.snr; }
   const rt = DSP.riseRatio(DSP.bandpass(DSP.pos(R, G, B, FS), FS, 0.5, 8), FS, hr);
   const ts2 = use.map(f => f.t);
   const pf = DSP.bandpass(DSP.pos(...[0, 1, 2].map(c => DSP.resample(ts2, use.map(f => f.fh[c]), FS)), FS), FS, 0.7, 3.2);
@@ -1244,6 +1402,10 @@ function analyzeBasic(frames) {
   const track = dur >= 12 ? hrTrack(use) : [];
   const spread = track.length > 2 ? DSP.std(track.map(x => x.hr)) : NaN;
   const lum = DSP.mean(use.map(f => f.lum)), mot = DSP.median(F.map(f => f.motion));
+  // v3.1 촬영 조건: FaceHeart FDA 허가(K223622·K243966) 사용 조건을 참고 — 얼굴 100×100화소 이상 · 초당 15~30장 · 밝은 곳(300lux 이상) · 가만히.
+  // 휴대폰 웹에서는 lux를 직접 못 재므로 피부 밝기(너무 어둡거나 밝음)와 빛 포화(하얗게 날아간 피부 화소 비율)로 대신 판단
+  const fpxL = use.map(f => f.fpx).filter(x => x > 0), fpx = fpxL.length ? DSP.median(fpxL) : NaN, clip = DSP.mean(use.map(f => f.clip || 0)), fpsE = F.length / span;
+  const condWhy = []; if (fpx < 100) condWhy.push('small'); if (clip > 0.05) condWhy.push('glare'); if (lum < 70) condWhy.push('dark'); if (lum > 225) condWhy.push('bright'); if (fpsE < 13.5) condWhy.push('fps');   // 초당 15장 기준에서 장면 누락 10%까지 허용
   const itaDeg = DSP.ita(DSP.mean(R), DSP.mean(G), DSP.mean(B));
   let q = 0;
   if (snr > -1) q++; if (snr > 2.5) q++;
@@ -1251,14 +1413,18 @@ function analyzeBasic(frames) {
   if (dur >= 25) q++;
   if (!isNaN(spread) && spread < 6) q++;
   // v3: 두 심박 계산(주파수·박동 간격)이 5bpm 안으로 맞지 않거나 박동의 70% 미만만 고르면 심박을 믿지 않음 (품질 1로 낮춤 → 심박 '측정 안 됨')
-  // 5초 이상 끊김 없이 가만히 있던 구간이 하나도 없으면(P3 없음) 박동을 검증할 수 없으므로 심박도 믿지 않음
-  if (!P3 || !P3.hrAgree || P3.okFrac < 0.7) q = Math.min(q, 1);
+  // 박동 간격으로 다시 센 심박이 주파수 심박과 5bpm 넘게 다르거나 박동의 70% 미만만 고르면 심박을 믿지 않음.
+  // 5초 이상 끊김 없는 구간이 없으면(P3 없음) 박동 검증은 못 하므로 주파수 심박(고조파 확인)만 쓰고 품질을 1단계 낮춤
+  if (P3 && (!P3.hrAgree || P3.okFrac < 0.7)) q = Math.min(q, 1);
+  if (!P3) q = Math.max(0, Math.min(q, H0 ? q - 1 : 1));
+  if (condWhy.includes('small')) q = Math.min(q, 1);              // 얼굴이 100화소보다 작게 찍힘 → 심박을 믿지 않음
+  if (condWhy.includes('glare') || condWhy.includes('fps')) q = Math.max(0, q - 1);
   const r3 = x => x != null && isFinite(x) ? +(+x).toFixed(4) : null;
   const pfx = { piR: r3(piR), piG: r3(piG), piB: r3(piB), rorRB: r3(ror), rorRG: r3(piR / (piG || 1e-9)), rise: r3(rt), ptt: r3(lag.ms), pttR: r3(lag.r), ampCV: r3(ampCV), lum: r3(lum), ita: r3(itaDeg) };
   const p3 = P3 ? { hrSpec: r3(P3.hrSpec), hrIbi: r3(P3.hrIbi), harmonic: P3.harmonic, hrAgree: P3.hrAgree, okFrac: r3(P3.okFrac), fps: r3(P3.fps), tsSrc: P3.tsSrc || null,
-    rmssdRaw: r3(P3.rmssdRaw), rmssdG: r3(P3.rmssdG), rmssdPos: r3(P3.rmssdPos), jitter: r3(P3.jitter), nf: r3(P3.nf), mdiff: r3(P3.mdiff), pBig: r3(P3.pBig), prvWhy: P3.prvWhy, rmssdLegacy: r3(rmssdLegacy), ver: 'pv3-1.0' } : null;
+    rmssdRaw: r3(P3.rmssdRaw), rmssdG: r3(P3.rmssdG), rmssdPos: r3(P3.rmssdPos), jitter: r3(P3.jitter), nf: r3(P3.nf), mdiff: r3(P3.mdiff), pBig: r3(P3.pBig), prvWhy: P3.prvWhy, rmssdLegacy: r3(rmssdLegacy), ver: 'pv3-1.0' } : H0 ? { hrOnly: true, hrSpec: r3(H0.hr), harmonic: H0.harmonic, ver: 'pv3-1.0' } : null;
   return { pfx, p3, prvOK: P3 ? P3.prvOK : false, prvWhy: P3 ? P3.prvWhy : 'segment', rhythmOK: P3 ? P3.rhythmOK : false, tsSrc: frames.tsSrc || null,
-    hr, snr, beats: v.n, sdnn: v.sdnn, rmssd: v.rmssd, stress, rr, rrSnr, dur, ror, rt, ptt: lag.ms, pttR: lag.r, lum, mot, blinks,
+    hr, snr, beats: v.n, sdnn: v.sdnn, rmssd: v.rmssd, stress, rr, rrSnr, rrX, rrWhy: isFinite(rr) ? null : dur < 40 ? 'short' : 'agree', cond: { fpx: isFinite(fpx) ? fpx : null, clip: +clip.toFixed(4), fps: +fpsE.toFixed(1), lum: +lum.toFixed(1), why: condWhy }, hrInRange: hr >= 50 && hr <= 180, dur, ror, rt, ptt: lag.ms, pttR: lag.r, lum, mot, blinks,
     blinkRate: dur > 0 ? blinks / dur * 60 : NaN, excl, n: F.length, ita: itaDeg, q, spread, track, peaks, peakMode: peaks.mode || 'old', use };
 }
 // paced breathing: how much the heart rate swings with each breath (respiratory sinus arrhythmia)
@@ -1750,7 +1916,10 @@ let MODE = (() => { try { const q = new URLSearchParams(location.search).get('mo
 const isStand = () => MODE === 'stand';
 document.documentElement.classList.toggle('stand', isStand());
 // 들어온 경로(제휴 플랫폼 코드). 회원 정보는 플랫폼에 주지 않고, 통계용으로 코드만 서버에 남김
-const CH = (() => { try { const q = new URLSearchParams(location.search), c = (q.get('p') || '').toLowerCase(); if (/^[a-z0-9_-]{2,32}$/.test(c)) sessionStorage.setItem('fc.ch', c); if (q.has('p') || q.has('demo') || q.has('mode')) history.replaceState(null, '', location.pathname + location.hash); return sessionStorage.getItem('fc.ch') || 'direct'; } catch { return 'direct'; } })();
+const CH = (() => { try { const q = new URLSearchParams(location.search), c = (q.get('p') || '').toLowerCase(); if (/^[a-z0-9_-]{2,32}$/.test(c)) sessionStorage.setItem('fc.ch', c);
+    // 주소를 지우기 전에 시험 모드(?test=1)·1분 정밀(?vit=60) 설정을 먼저 저장 (예전엔 ?p=·?demo=와 같이 오면 사라졌음)
+    if (q.get('test') === '1') sessionStorage.setItem('fc.test', '1'); if (q.get('test') === '0') sessionStorage.removeItem('fc.test'); if (q.get('vit') === '60') sessionStorage.setItem('fc.vit60', '1'); if (q.get('vit') === '20') sessionStorage.removeItem('fc.vit60');
+    if (q.has('p') || q.has('demo') || q.has('mode')) history.replaceState(null, '', location.pathname + location.hash); return sessionStorage.getItem('fc.ch') || 'direct'; } catch { return 'direct'; } })();
 const apiReady = () => DEMO || (/^https:\/\/[a-z0-9-]+\.supabase\.co\/functions\/v1\/api$/.test(API_URL) && !API_URL.includes('YOUR-PROJECT')) || /^http:\/\/localhost[:/]/.test(API_URL);
 const SESS_KEY = DEMO ? 'fc.sess.demo' : 'fc.sess';
 const MEM = (() => {
@@ -1873,11 +2042,15 @@ function tapRef() { const t = CAL?.data?.tap; return calOk(t) && t.b < -0.005 &&
 const NAIL_ON = false;
 // 안내 속도: 1.1 = 기존보다 10% 느리게 (동작 시간·장면 간격·음성 속도·동작 사이 쉬는 시간)
 const PACE = 1.1;
+// v3.1 1분 정밀 측정(심박·호흡): 주소 끝에 ?vit=60 → 이 브라우저 창에서 계속 적용, ?vit=20으로 끔.
+// FaceHeart FDA 허가 조건(약 1분 · 호흡수 60초 창)과 맞춘 시험용. 기본 흐름(20초)은 그대로
+const VIT_LONG = (() => { try { const q = new URLSearchParams(location.search); if (q.get('vit') === '60') sessionStorage.setItem('fc.vit60', '1'); if (q.get('vit') === '20') sessionStorage.removeItem('fc.vit60'); return sessionStorage.getItem('fc.vit60') === '1'; } catch { return false; } })();
+const VIT_SEC = VIT_LONG ? 60 : 20;
 const MISSIONS = [
   { id: 'ready', k: '준비', t: '얼굴을 원 안에', h: '밝은 곳에서, 앞머리는 넘겨 주세요', say: '얼굴을 원 안에 맞춰 주세요.', max: 15, need: 3, check: g => g.centered && g.sizeOK, cap: null },
   { id: 'words', k: '기억', t: '', h: '단어를 기억해 두세요 · 얼굴은 가만히', sayFn: () => `가만히 화면을 보세요. ${KO_N[WORDS.w.length] || ''} 단어를 기억하세요. ${WORDS.w.join(', ')}.`, fixed: 1, waitSpeech: true, vstart: true, still: true, cap: 'front', from: 1.2, every: 2 },
   { id: 'pursuit', k: '눈 운동', t: '초록 점을 눈으로만', h: '고개는 그대로, 점을 따라가세요', say: '초록 점을 눈으로만 따라가세요.', fixed: 8, pursuit: true, capAt: [1.25, 3.75, 6.4], cap: 'gaze' },
-  { id: 'still', k: '정면', t: '가만히 정면 보기', h: '편하게 숨 쉬세요', say: '가운데 점을 보세요.', fixed: 6, vend: true, still: true, cap: 'front', from: 0.6, every: 1.6 },
+  { id: 'still', k: '정면', t: '가만히 정면 보기', h: VIT_LONG ? '1분 측정 · 말하거나 움직이지 말고 편하게 숨 쉬세요' : '편하게 숨 쉬세요', say: VIT_LONG ? '가운데 점을 보세요. 타이머가 끝날 때까지 편하게 숨 쉬세요.' : '가운데 점을 보세요.', fixed: 6, untilVit: VIT_LONG ? VIT_SEC : 0, vend: true, still: true, cap: 'front', from: 0.6, every: 1.6 },
   { id: 'close', k: '눈꺼풀', t: '눈을 감으세요', h: '"눈 뜨세요" 하면 뜨세요', say: '눈을 감으세요.', max: 4, need: 2, check: (g, b) => eyesClosed(g.eyeC, g.ear, b), cap: 'closed', endSay: '눈 뜨세요.' },
   { id: 'smile', k: '표정', t: '이가 보이게 활짝', h: '크게 웃어 주세요', say: '활짝 웃어 보세요.', max: 4, need: 2, check: (g, b) => g.mouthW > b.mouthW * 1.14, cap: 'smile' },
   { id: 'conj', k: '눈 안쪽', t: '아래 눈꺼풀 내리기', h: '검지로 살짝 내려 안쪽 붉은 부분을 보여 주세요', say: '검지로 아래 눈꺼풀을 살짝 내려 주세요.', fixed: 3.5, from: 1, every: 0.5, cap: 'conj' },
@@ -1888,6 +2061,7 @@ const MISSIONS = [
 
 /* ---------- camera ---------- */
 let stream = null;
+let CAMSET = null;
 async function openCam(video, withAudio = false) {
   closeCam();
   if (!navigator.mediaDevices?.getUserMedia) throw new Error('이 브라우저는 카메라를 지원하지 않아요. 크롬이나 삼성 인터넷으로 열어 주세요.');
@@ -1898,6 +2072,9 @@ async function openCam(video, withAudio = false) {
   video.srcObject = stream; await video.play();
   for (let i = 0; i < 40 && !video.videoWidth; i++) await sleep(50);
   DIAG.cam = `성공 ${video.videoWidth}×${video.videoHeight}`;
+  // v3.1 카메라 실제 설정 기록 (해상도·초당 장면·노출·감도·색온도: 기기가 알려 줄 때만). 조도(lux)는 웹에서 직접 못 읽음
+  try { const st = stream.getVideoTracks()[0].getSettings(), n = x => typeof x === 'number' && isFinite(x) ? +x.toFixed(2) : null;
+    CAMSET = { w: video.videoWidth, h: video.videoHeight, fps: n(st.frameRate), exp: n(st.exposureTime), iso: n(st.iso), ct: n(st.colorTemperature), wb: st.whiteBalanceMode || null, ex: st.exposureMode || null }; if (SES) SES.cam = CAMSET; } catch { CAMSET = null; }
 }
 /* microphone envelope while reading aloud (sound is never stored, only loudness every 20 ms) */
 let REC = null;
@@ -1995,7 +2172,7 @@ async function runScan(opt = {}) {
       const PW = 180, PH = Math.round(180 * video.videoHeight / video.videoWidth); if (proc.width !== PW) { proc.width = PW; proc.height = PH; }
       const tn = now(), ok1 = x => typeof x === 'number' && isFinite(x) && Math.abs(x - tn) < 1000;
       const src = md && ok1(md.captureTime) ? 'capture' : md && ok1(md.expectedDisplayTime) ? 'display' : 'callback', tt = src === 'capture' ? md.captureTime : src === 'display' ? md.expectedDisplayTime : tn;
-      pctx.drawImage(video, 0, 0, PW, PH); const f = Face.frameFeatures(pctx.getImageData(0, 0, PW, PH).data, PW, PH, fst); f.t = (tt - SES.vitT0) / 1000; f.tsrc = src; f.ph = SES.phase;
+      pctx.drawImage(video, 0, 0, PW, PH); const f = Face.frameFeatures(pctx.getImageData(0, 0, PW, PH).data, PW, PH, fst); f.t = (tt - SES.vitT0) / 1000; f.tsrc = src; f.ph = SES.phase; if (f.ok && f.box) f.fpx = Math.round(f.box.w * video.videoWidth / PW);
       const VF = SES.vitFrames; if (!VF.length || f.t > VF[VF.length - 1].t) VF.push(f);
     }
     video.requestVideoFrameCallback ? video.requestVideoFrameCallback(tick) : requestAnimationFrame(tick);
@@ -2038,6 +2215,7 @@ function frontCond(g) {
   if (isFinite(g.noseOff) && Math.abs(g.noseOff) > 0.25) return { ok: false, msg: '고개를 정면으로 돌려 주세요' };
   if (g.rollDeg > 9) return { ok: false, msg: '고개를 기울이지 말아 주세요' };
   if (isFinite(g.lum) && g.lum < 45) return { ok: false, msg: '더 밝은 곳으로 가 주세요' };
+  { const vf = SES?.vitOn && SES.vitFrames?.length ? SES.vitFrames.slice(-15).filter(f => f.ok) : []; if (vf.length >= 8 && vf.reduce((a, f) => a + (f.clip || 0), 0) / vf.length > 0.08) return { ok: false, msg: '얼굴에 빛이 너무 강해요 · 조명을 살짝 피해 주세요' }; }
   return { ok: true, msg: '좋아요, 그대로 계세요' };
 }
 let waiter = null;
@@ -2074,9 +2252,9 @@ async function runMission(m) {
     SES.phase = m.id;
     const t0 = now(), F = m.fixed * PACE; let nextCap = (m.from ?? 2) * 1000 * PACE; const capAt = (m.capAt || []).map(x => x * PACE);
     if (m.pursuit) { SES.pursuit = { t0, samples: [], cur: dotPos(0) }; $('pdot').hidden = false; }
-    while (!SES.stop && !SES.skip && (now() - t0 < F * 1000 || (m.waitSpeech && !spDone) || (m.gate && (m.got || 0) < m.gate && now() - t0 < (F + 10) * 1000))) {
+    while (!SES.stop && !SES.skip && (now() - t0 < F * 1000 || (m.untilVit && (now() - SES.vitT0) / 1000 < m.untilVit) || (m.waitSpeech && !spDone) || (m.gate && (m.got || 0) < m.gate && now() - t0 < (F + 10) * 1000))) {
       const el = now() - t0;
-      if (SES.vitOn) { $('timer').hidden = !m.still; $('timer').textContent = Math.max(1, Math.ceil((m.vstart2 ? m.fixed : 20) * PACE - (now() - SES.vitT0) / 1000)); }
+      if (SES.vitOn) { $('timer').hidden = !m.still; $('timer').textContent = Math.max(1, Math.ceil((m.vstart2 ? m.fixed * PACE : VIT_LONG ? VIT_SEC : 20 * PACE) - (now() - SES.vitT0) / 1000)); }
       if (m.voice) { $('timer').hidden = false; $('timer').textContent = Math.ceil(F - el / 1000); }
       if (m.pursuit) { const p = dotPos(el / 1000 / PACE); SES.pursuit.cur = p; const pd = $('pdot'); pd.style.left = (p.x * 100) + '%'; pd.style.top = (p.y * 100) + '%'; }
       if (m.still && SES.last && SES.lastAt > now() - 400) SES.baseList.push(SES.last.g);
@@ -2555,6 +2733,7 @@ Object.assign(REF, {
   krfrs: ['Jee 외 (BMJ Open 2014, 한국인 26.8만 명 11.6년 추적): 미국 Framingham 식은 한국인 관상동맥질환을 실제보다 3~6배 많이 예측', 'https://bmjopen.bmj.com/content/4/5/e005025'],
   perclos: ['Dinges 외 (미국 도로교통안전국 보고서 1998): 눈꺼풀 감긴 시간 비율(PERCLOS)이 수면 박탈 중 주의력 저하를 가장 잘 반영', 'https://rosap.ntl.bts.gov/view/dot/2518'],
   sundelin: ['Sundelin 외 (SLEEP 2013): 잠을 못 잔 얼굴은 처진 눈꺼풀·충혈·부은 눈·다크서클·창백함·입꼬리 처짐으로 보임', 'https://pmc.ncbi.nlm.nih.gov/articles/PMC3738045/'],
+  aasm: ['AASM 수면 판독 규칙: 무호흡 = 기류 90% 이상 감소가 10초 이상, AHI 5·15·30 이상 = 경도·중등도·중증 (Berry 외, J Clin Sleep Med 2012 개정)', 'https://jcsm.aasm.org/doi/10.5664/jcsm.2172'],
   stopbang: ['Nagappa 외 (PLoS ONE 2015) STOP-Bang 메타분석: 17개 연구 9,206명, 수면무호흡 민감도 90~96%', 'https://doaj.org/article/4adecc9151a64a5b8aeb7b23cfc280a1'],
   mood5: ['마음 2문항(즐거움·우울 1~5)은 PHQ-2(Kroenke 2003)의 두 핵심 질문을 쉬운 척도로 바꾼 자체 문항이에요. 아직 검증 전이라 참고용으로만 보여요', 'https://www.hiv.uw.edu/page/mental-health-screening/phq-2'],
   phq2: ['Kroenke 외 (Med Care 2003) PHQ-2: 2문항 3점 이상, 주요우울장애 민감도 83%·특이도 90%', 'https://www.hiv.uw.edu/page/mental-health-screening/phq-2'],
@@ -2767,7 +2946,7 @@ function chadsva(age, rk) {
    Every result carries a check sheet: was each stage of the pipeline fed with enough good data, and did the judgement rules behave?
    pass = fine · warn = usable but weaker · fail = this stage's data should not be trusted · info = recorded for review only.
    Stage names: 촬영(capture) · 맥파(pulse) · 이미지(image analysis) · 터치·문진(touch tasks, questionnaire) · 판정(judgement logic) */
-const APP_VER = 'FC-2026.10.22-v3';
+const APP_VER = 'FC-2026.10.28-v3.2';
 function runQC(r, R, Q, CONS, ctx) {
   const C = [], add = (stage, name, status, value, expect, note) => C.push({ stage, name, status, value: value ?? '—', expect: expect || '', note: note || '' });
   const lvl = (v, pass, warn) => !isFinite(v) ? 'fail' : pass(v) ? 'pass' : warn(v) ? 'warn' : 'fail';
@@ -3050,9 +3229,19 @@ function compute(R, profile, survey, history) {
     ['체질량지수 35 초과', profile.bmi > 35], ['50세 초과', age > 50], ['목둘레 40cm 이상', sq.includes('neck')], ['남성', profile.sex === '남성']].filter(x => x[1]).map(x => x[0]);
   const sbs = sb.length, sbAsk = sq.length > 0;
   t = sbs >= 5 ? 'check' : sbs >= 3 && sbAsk ? 'watch' : sbs >= 3 ? 'watch' : 'ok';
-  addW({ id: 'osa', name: '수면무호흡 위험', org: '수면·심혈관', tier: t, value: `STOP-Bang ${sbs}/8점${sb.length ? ' · ' + sb.join(', ') : ''}`, refs: ['stopbang'],
+  // v3.2 최근 30일 안 밤새 소리 측정(4시간 이상)이 있으면 함께 반영: 둘 중 높은 쪽 (STOP-Bang은 민감도가 높아 소리 결과가 낮아도 낮추지 않음)
+  const nt = (typeof SLOG !== 'undefined' ? SLOG : []).find(x => x.validH >= 4 && ['ok', 'watch', 'check'].includes(x.tier) && Date.now() - new Date(x.end).getTime() < 30 * 864e5);
+  const RK = { ok: 0, watch: 1, check: 2 }, byNight = !!(nt && RK[nt.tier] > RK[t]); if (byNight) t = nt.tier;
+  const ntTx = nt ? ` 밤새 소리 측정(${new Date(nt.at).toLocaleDateString('ko-KR', { month: 'numeric', day: 'numeric' })})에서는 숨 멈춤 의심이 시간당 ${fmt(nt.idx, 1)}회였어요.` : '';
+  addW({ id: 'osa', name: '수면무호흡 위험', org: '수면·심혈관', tier: t, value: `STOP-Bang ${sbs}/8점${sb.length ? ' · ' + sb.join(', ') : ''}${nt ? ` · 밤 소리 숨 멈춤 ${fmt(nt.idx, 1)}회/시` : ''}`, refs: ['stopbang', ...(nt ? ['aasm'] : [])], raw2: nt ? { sleepIdx: nt.idx, sleepAt: nt.at, sleepH: nt.validH } : undefined,
     text: { ok: `수면무호흡 위험이 낮은 편이에요 (위험 점수 ${sbs}/8점).`, watch: `수면무호흡 위험이 중간이에요 (위험 점수 ${sbs}/8점). 코골이나 낮 졸림이 계속되면 수면클리닉 상담을 고려해 보세요.${closedFrac >= 0.15 && !sq.includes('tired') ? ' 오늘 촬영에서도 졸음 신호가 보였어요.' : ''}`,
       check: `수면무호흡 위험이 높은 편이에요 (위험 점수 ${sbs}/8점). 수면무호흡은 고혈압·심장병·뇌졸중 위험을 높여요. 수면다원검사 상담을 권해요. 졸린 상태에서 운전은 피하세요.` } });
+  if (ntTx) { const w0 = W2.find(x => x.id === 'osa'); if (w0) {
+    if (byNight) { const nd = new Date(nt.at).toLocaleDateString('ko-KR', { month: 'numeric', day: 'numeric' });
+      w0.textBy = { ...(w0.textBy || {}), watch: `밤새 소리 측정(${nd})에서 코골이 중 숨 멈춤 의심이 시간당 ${fmt(nt.idx, 1)}회였어요 (문진 위험 점수 ${sbs}/8점). 며칠 더 측정해 보고, 계속 이 정도면 수면클리닉 상담을 권해요.`,
+        check: `밤새 소리 측정(${nd})에서 코골이 중 숨 멈춤 의심이 시간당 ${fmt(nt.idx, 1)}회로 많았어요 (문진 위험 점수 ${sbs}/8점). 수면무호흡은 고혈압·심장병·뇌졸중 위험을 높여요. 수면다원검사 상담을 권해요. 졸린 상태에서 운전은 피하세요.` };
+      w0.text = w0.textBy[t]; }
+    else { w0.text += ntTx; if (w0.textBy) for (const k of Object.keys(w0.textBy)) w0.textBy[k] += ntTx; } } }
   // 4) mind: PHQ-2 decides; the resting facial expression is shown for reference only (it never changes the result)
   const phq = (survey.phq || []).filter(x => x != null), phqS = phq.length === 2 ? phq[0] + phq[1] : null;
   const m5 = survey.mood5 || [], joy = m5[0] ?? null, dep = m5[1] ?? null, has5 = joy != null || dep != null;
@@ -3074,7 +3263,7 @@ function compute(R, profile, survey, history) {
   const BS = R.body ? bodySignals(R.body) : []; BS.forEach(x => enrich(x, ctx));
   const bodyRR = R.body?.breath?.ok ? R.body.breath.rr : null;
   const res = { wellness: W2, body: BS.length ? BS : null, mode: R.mode || 'mobile', at: new Date().toISOString(), ver: APP_VER, age, sex: profile.sex || null, glass: profile.glass || null, faceAge, mlAge: isFinite(mlAge) ? +mlAge.toFixed(1) : null, adj: +adj.toFixed(2), factors: factors.slice(0, 5),
-    near, eyeAge, eyeFactors: ef, react, skin, hair, shape, signals: sig, brain: BR, heart: HEART, tasks: R.tasks || null, voice: R.voice || null, pursuit: R.pursuit || null, words: R.words?.w || null, vit: V ? { hr: V.q >= 2 ? V.hr : null, hrRaw: V.hr, rr: V.q >= 2 && isFinite(V.rr) ? V.rr : bodyRR, rrSrc: V.q >= 2 && isFinite(V.rr) ? 'face' : bodyRR != null ? 'shoulder' : null, stress: V.stress ?? null, stressWhy: V.stressWhy || null, peakMode: V.peakMode || null, lum: isFinite(V.lum) ? Math.round(V.lum) : null, rmssd: V.rmssd, rmssdc: isFinite(V.rmssdc) ? +V.rmssdc.toFixed(1) : null, hrvPct: isFinite(V.hrvPct) ? Math.round(V.hrvPct) : null, hrPeak: isFinite(V.hrPeak) ? +V.hrPeak.toFixed(1) : null, blinkRate: V.blinkRate, blinkDur: V.blinkDur, beats: V.beats, q: V.q, dur: V.dur } : null,
+    near, eyeAge, eyeFactors: ef, react, skin, hair, shape, signals: sig, brain: BR, heart: HEART, tasks: R.tasks || null, voice: R.voice || null, pursuit: R.pursuit || null, words: R.words?.w || null, vit: V ? { hr: V.q >= 2 ? V.hr : null, hrRaw: V.hr, rr: V.q >= 2 && isFinite(V.rr) ? V.rr : bodyRR, rrSrc: V.q >= 2 && isFinite(V.rr) ? 'face' : bodyRR != null ? 'shoulder' : null, rrWhy: V.q >= 2 && isFinite(V.rr) || bodyRR != null ? null : V.q < 2 ? 'signal' : V.rrWhy || null, rrX: rrSlim(V.rrX), cond: V.cond || null, cam: SES?.cam || null, vitLong: VIT_LONG, stress: V.stress ?? null, stressWhy: V.stressWhy || null, peakMode: V.peakMode || null, p3: V.p3 || null, prvOK: V.prvOK ?? null, tsSrc: V.tsSrc || null, blinkFps: isFinite(V.blinkFps) ? +V.blinkFps.toFixed(1) : null, lum: isFinite(V.lum) ? Math.round(V.lum) : null, rmssd: V.rmssd, rmssdc: isFinite(V.rmssdc) ? +V.rmssdc.toFixed(1) : null, hrvPct: isFinite(V.hrvPct) ? Math.round(V.hrvPct) : null, hrPeak: isFinite(V.hrPeak) ? +V.hrPeak.toFixed(1) : null, blinkRate: V.blinkRate, blinkDur: V.blinkDur, beats: V.beats, q: V.q, dur: V.dur } : null,
     quality: { light: +Q.light.toFixed(2), cast: +Q.cast.toFixed(2), pose: +Q.pose.toFixed(2), frames: +Q.frames.toFixed(2), pulse: +Q.pulse.toFixed(2), raw: Q.raw, consensusFrames: CONS.n },
     profileExtra: { bmi: profile.bmi ?? null, sbp: profile.sbp ?? null, bpMed: profile.bpMed ?? null },
     raw: { body: R.body || null, well: { perclos: isFinite(closedFrac) ? +closedFrac.toFixed(3) : null, tired: isFinite(tiredScore) ? tiredScore : null, stopbang: sbs, phq2: phqS, droop: isFinite(droop) ? +droop.toFixed(3) : null, expr: exL.length ? Object.fromEntries(exL.map(([k, v]) => [k, +v.toFixed(3)])) : null }, skin: F.skin, eye: { ...F.eye, scleraYellow: sY, scleraA2: sA, scleraPx2: sPx }, lip: F.lip, shapeRaw: F.shape, hairRaw: F.hair, malar: F.malar, neck: nk || null, conj: cj || null, tongue: mo || null, closed: cl || null, smile: sm || null, crown: cr, nail: nl, nailFrames: (o.nail || []).map(x => ({ ...x })), adip: ad, pulseFeat: V?.pfx || null },
@@ -3159,6 +3348,71 @@ function rgroup(list, emptyMsg) {
     ${ok.length ? `<details class="okgroup"><summary>정상 범위 ${ok.length}개 항목 보기</summary>${ok.map(x => rrow(x)).join('')}</details>` : ''}
     ${na.length ? `<details class="okgroup na"><summary>이번에 판단하지 못한 항목 ${na.length}개</summary>${na.map(x => rrow(x)).join('')}</details>` : ''}`;
 }
+/* v3 실기기 시험 모드 (주소 끝에 ?test=1): 결과 맨 아래에 심박·스트레스 판정 근거 숫자를 보여 줌. 일반 사용자 화면에는 안 보임 */
+const TESTMODE = (() => { try { const q = new URLSearchParams(location.search); if (q.get('test') === '1') sessionStorage.setItem('fc.test', '1'); if (q.get('test') === '0') sessionStorage.removeItem('fc.test'); return sessionStorage.getItem('fc.test') === '1'; } catch { return false; } })();
+/* v3.1 파일럿 정확도: 기준 기기 값과 짝지은 기록으로 오차를 계산 (FaceHeart가 FDA에 낸 것과 같은 지표)
+   심박 목표 ±3bpm (FaceHeart K223622: 527명 중 약 94%가 ±3bpm 안) · 호흡수 목표 ±2회/분 (K243966: RMSE 1.2회/분) */
+const PILOT_T = { hr: { tol: 3, name: '심박 (얼굴)', unit: 'bpm', get: r => r.vit?.hr, ref: r => r.labRef?.hr },
+  fhr: { tol: 3, name: '심박 (손가락)', unit: 'bpm', get: r => r.finger?.hr, ref: r => r.labRef?.hr },
+  rr: { tol: 2, name: '호흡수', unit: '회/분', get: r => r.vit?.rr, ref: r => r.labRef?.rr } };
+function pilotStats(recs) {
+  const out = {};
+  for (const [k, T] of Object.entries(PILOT_T)) {
+    const withRef = recs.filter(r => { const b = T.ref(r); return b != null && isFinite(b); }), P = withRef.map(r => [T.get(r), T.ref(r)]).filter(([a]) => a != null && isFinite(a));
+    if (!withRef.length) continue;
+    const e = P.map(([a, b]) => a - b), n = e.length, m = n ? e.reduce((x, y) => x + y, 0) / n : NaN, sd = n > 1 ? Math.sqrt(e.reduce((x, y) => x + (y - m) ** 2, 0) / (n - 1)) : NaN;
+    out[k] = { ...T, nRef: withRef.length, n, bias: m, sd, mae: n ? e.reduce((x, y) => x + Math.abs(y), 0) / n : NaN, rmse: n ? Math.sqrt(e.reduce((x, y) => x + y * y, 0) / n) : NaN, within: n ? e.filter(x => Math.abs(x) <= T.tol).length / n : NaN };
+  }
+  return out;
+}
+function pilotTable(recs) {
+  const S = pilotStats(recs), f = (x, d = 1) => x == null || !isFinite(x) ? '—' : (+x).toFixed(d), keys = Object.keys(S);
+  if (!keys.length) return '<p class="note2">기준 기기 값을 넣은 기록이 아직 없어요.</p>';
+  return `<table class="qct"><tr><td><b>항목</b></td><td><b>표시/기준</b></td><td><b>평균 오차 · RMSE</b></td><td><b>목표 안</b></td></tr>${keys.map(k => { const x = S[k]; return `<tr><td>${x.name}<br><small>목표 ±${x.tol}${x.unit}</small></td><td>${x.n}/${x.nRef}</td><td>${f(x.mae)} · ${f(x.rmse)}<br><small>치우침 ${f(x.bias)}±${f(x.sd)}</small></td><td><b style="color:${!isFinite(x.within) ? 'var(--muted)' : x.within >= 0.9 ? 'var(--good)' : 'var(--care)'}">${isFinite(x.within) ? f(x.within * 100, 0) + '%' : '—'}</b></td></tr>`; }).join('')}</table>
+    <p class="note2" style="margin-top:6px">표시/기준 = 기준값이 있는 기록 중 앱이 값을 낸 수 ('측정 안 됨'은 오차에서 빠짐). 비교 기준: FaceHeart 심박 ±3bpm 안 약 94%(527명, 심전도 기준) · 호흡수 RMSE 1.2회/분(420명).</p>`;
+}
+function testCard(r) {
+  const v = r.vit || {}, p = v.p3 || {}, c = v.cond || {}, cm = v.cam || {}, x = v.rrX || {}, f = (x, d = 1) => x == null || !isFinite(x) ? '—' : (+x).toFixed(d);
+  const pass = (ok, t) => `<b style="color:${ok == null ? 'var(--muted)' : ok ? 'var(--good)' : 'var(--care)'}">${ok == null ? '—' : ok ? '통과' : '미달'}</b>${t ? ` <small>${t}</small>` : ''}`;
+  const why = { timestamp: '장면 촬영 시각을 알 수 없는 기기', roi: '이마·볼 비교 불가', irregular: '맥박 간격 불규칙', noise: '박동 시각 흔들림이 큼', method: '두 계산법 결과 차이가 큼', segment: '5초 이상 끊김 없는 구간 없음' };
+  const rows = [
+    ['장면 시각 출처', `${v.tsSrc || p.tsSrc || '—'}`, pass(v.tsSrc ? v.tsSrc !== 'callback' : null, 'capture·display면 정상')],
+    ['초당 장면 수', f(p.fps), pass(p.fps != null ? p.fps >= 24 : null, '리듬 판단은 24 이상')],
+    ['심박 (주파수 / 박동 간격)', `${f(p.hrSpec)} / ${f(p.hrIbi)} bpm`, pass(p.hrAgree ?? null, '5bpm 이내')],
+    ['고조파 보정', p.harmonic ? '적용(2·3배 오인 막음)' : '없음', ''],
+    ['박동 고르기 비율', p.okFrac != null ? `${f(p.okFrac * 100, 0)}%` : '—', pass(p.okFrac != null ? p.okFrac >= 0.7 : null, '70% 이상')],
+    ['박동 시각 흔들림', p.jitter != null ? `${f(p.jitter)} ms` : '—', ''],
+    ['PRV 잡음 비율', p.nf != null ? `${f(p.nf * 100, 0)}%` : '—', pass(p.nf != null ? p.nf <= 0.15 : null, '15% 이하')],
+    ['두 계산법 RMSSD (녹색 / POS)', `${f(p.rmssdG)} / ${f(p.rmssdPos)} ms`, pass(p.mdiff != null ? p.mdiff <= 0.3 : null, `차이 ${p.mdiff != null ? f(p.mdiff * 100, 0) + '%' : '—'} · 30% 이하`)],
+    ['큰 간격 변화 비율', p.pBig != null ? `${f(p.pBig * 100, 0)}%` : '—', pass(p.pBig != null ? p.pBig <= 0.25 : null, '25% 이하')],
+    ['PRV(RMSSD) 최종', isFinite(v.rmssd) ? `${f(v.rmssd)} ms` : '측정 안 됨', pass(v.prvOK ?? null, p.prvWhy ? why[p.prvWhy] || p.prvWhy : '')],
+    ['스트레스', v.stress != null ? `${v.stress} / 100` : '측정 안 됨', v.stressWhy ? `<small>${esc((v.stressWhy || []).join(', '))}</small>` : ''],
+    ['심박 신호 품질', `${v.q ?? '—'} / 5`, '2 이상이면 심박 표시'],
+    ['깜빡임 장면 수', v.blinkFps != null ? `초당 ${f(v.blinkFps)}` : '—', pass(v.blinkFps != null ? v.blinkFps >= 10 : null, '10 이상')],
+    ['측정 길이', `${f(v.dur, 0)}초${v.vitLong ? ' (1분 정밀)' : ''}`, pass(v.dur != null ? v.dur >= 55 : null, '호흡수는 40초부터 · FaceHeart 60초')],
+    ['얼굴 크기 (원본 화소)', c.fpx != null ? `${f(c.fpx, 0)} px` : '—', pass(c.fpx != null ? c.fpx >= 100 : null, '100 이상 (FaceHeart 조건)')],
+    ['빛 포화 (하얗게 날아간 피부)', c.clip != null ? `${f(c.clip * 100, 1)}%` : '—', pass(c.clip != null ? c.clip <= 0.05 : null, '5% 이하')],
+    ['피부 밝기', f(c.lum ?? v.lum, 0), pass((c.lum ?? v.lum) != null ? (c.lum ?? v.lum) >= 70 && (c.lum ?? v.lum) <= 225 : null, '70~225')],
+    ['실제 초당 장면', c.fps != null ? f(c.fps) : '—', pass(c.fps != null ? c.fps >= 15 : null, '15~30 (FaceHeart 조건)')],
+    ['카메라 설정', cm.w ? `${cm.w}×${cm.h}${cm.fps ? ' · ' + f(cm.fps, 0) + 'fps' : ''}${cm.ct ? ' · ' + f(cm.ct, 0) + 'K' : ''}${cm.iso ? ' · ISO ' + f(cm.iso, 0) : ''}` : '—', pass(cm.ct ? cm.ct >= 3500 && cm.ct <= 6500 : null, '색온도 3500~6500K (기기가 알려줄 때만)')],
+    ['심박 검증 범위', v.hr != null ? `${f(v.hr)} bpm` : '—', pass(v.hr != null ? v.hr >= 50 && v.hr <= 180 : null, '50~180 (FaceHeart 검증 범위)')],
+    ['호흡수', v.rr != null ? `${f(v.rr)}회/분 (${v.rrSrc === 'shoulder' ? '어깨' : '얼굴'})` : '측정 안 됨', `<small>${x.src ? Object.entries(x.src).map(([k, s]) => `${RR_KO[k] || k} ${f(s.rr)}${s.edge ? '(가장자리)' : ''}·${f(s.snr)}dB`).join(' / ') : ''}${x.used?.length ? ` → ${x.used.map(k => RR_KO[k] || k).join('+')} 일치` : x.rule ? ` → 신호 ${x.rule.need}개가 ${x.rule.snr}dB 이상·2회 안 일치 필요` : ''}</small>`]];
+  return `<div class="card" style="border:1.5px dashed var(--accent)"><p class="secttl">실기기 측정 진단 <small style="font-weight:600;color:var(--muted)">시험용 · ?test=1</small></p>
+    <table class="qct">${rows.map(x => `<tr><td>${x[0]}</td><td>${x[1]}</td><td>${x[2]}</td></tr>`).join('')}</table>
+    ${r.finger ? `<p class="note2" style="margin-top:8px">손가락: 심박 ${f(r.finger.hr)} · 스트레스 ${r.finger.stress ?? '—'} · RMSSD ${f(r.finger.rmssd)} ms</p>` : ''}
+    <p class="secttl" style="margin-top:14px">기준 기기와 비교</p>
+    <p class="note2" style="margin:-4px 0 8px">측정 직후 손목 혈압계·산소포화도계의 심박, 1분 동안 직접 센 호흡수를 넣으면 이 기록에 저장되고 오차가 계산돼요.</p>
+    <div class="lrgrid"><label>기준 심박<input id="tvHr" type="number" inputmode="numeric" value="${r.labRef?.hr ?? ''}" placeholder="bpm"></label><label>기준 호흡수<input id="tvRr" type="number" inputmode="decimal" value="${r.labRef?.rr ?? ''}" placeholder="회/분"></label>
+      <label class="w">기준 기기<input id="tvDev" type="text" maxlength="60" value="${esc(r.labRef?.dev || '')}" placeholder="예: 갤럭시 워치 심박, 직접 센 호흡"></label></div>
+    <button class="btn" id="tvSave" style="width:100%;margin-top:8px">저장하고 오차 보기</button><div id="tvOut" style="margin-top:8px">${tvOut(r)}</div>
+    <button class="btn" id="tcCopy" style="width:100%;margin-top:10px">진단 값 복사 (담당자에게 보내기)</button></div>`;
+}
+const RR_KO = { motion: '움직임', riiv: '밝기', rifv: '박동간격', riav: '맥파크기' };
+function tvOut(r) {
+  const L = r.labRef || {}, f = (x, d = 1) => x == null || !isFinite(x) ? '—' : (+x).toFixed(d), row = (name, a, b, tol) => b == null ? '' : `<tr><td>${name}</td><td>${a == null ? '측정 안 됨' : `${f(a)} − ${f(b)} = <b style="color:${Math.abs(a - b) <= tol ? 'var(--good)' : 'var(--care)'}">${a - b >= 0 ? '+' : ''}${f(a - b)}</b>`}</td><td>±${tol} 안</td></tr>`;
+  const one = row('심박 (얼굴)', r.vit?.hr, L.hr, 3) + (r.finger ? row('심박 (손가락)', r.finger.hr, L.hr, 3) : '') + row('호흡수', r.vit?.rr, L.rr, 2);
+  return (one ? `<table class="qct">${one}</table>` : '') + `<p class="secttl" style="margin-top:10px">이 휴대폰의 파일럿 누적</p>${pilotTable(HIST)}`;
+}
 function renderReport(r, savedMsg) {
   LOWCONF_MANY = false; LOWCONF_MANY = [...(r.signals || []), ...(r.brain?.cog || []), ...(r.wellness || [])].filter(lowConf).length >= 3;
   const heart = r.heart ? HEART_KEYS.map(k => r.heart[k]).filter(Boolean).map(h => ({ ...h, tier: h.tier })) : [];
@@ -3238,6 +3492,13 @@ function renderReport(r, savedMsg) {
   tabs.forEach(b => b.onclick = () => { tabs.forEach(x => x.setAttribute('aria-selected', x === b)); $('report').querySelectorAll('.rpanel').forEach(pn => pn.hidden = pn.id !== 'r-' + b.dataset.tab);
     const bar = $('report').querySelector('.rtabs'); if (bar.getBoundingClientRect().top < 40) window.scrollTo({ top: bar.offsetTop - 60, behavior: 'smooth' }); b.scrollIntoView({ block: 'nearest', inline: 'center' }); });
   bindDaily($('report'));
+  if (TESTMODE) { $('report').insertAdjacentHTML('beforeend', testCard(r));
+    const sv = $('tvSave'); if (sv) sv.onclick = () => { const num = id => { const x = parseFloat($(id).value); return isFinite(x) ? x : null; }, hr = num('tvHr'), rr = num('tvRr');
+      if ((hr != null && (hr < 30 || hr > 220)) || (rr != null && (rr < 3 || rr > 60))) { $('tvOut').innerHTML = '<p class="note2">범위를 벗어났어요 (심박 30~220, 호흡수 3~60).</p>'; return; }
+      r.labRef = { ...(r.labRef || {}), hr, rr, dev: $('tvDev').value.trim().slice(0, 60) || null, at: new Date().toISOString() };
+      const h = HIST.find(x => x.at === r.at); if (h && h !== r) h.labRef = r.labRef; try { localStorage.setItem(HKEY, JSON.stringify(HIST.slice(0, 80))); } catch {}
+      $('tvOut').innerHTML = tvOut(r); };
+    const b = $('tcCopy'); if (b) b.onclick = () => { try { navigator.clipboard.writeText(JSON.stringify({ ver: r.ver || APP_VER, at: r.at, vit: r.vit, finger: r.finger || null, labRef: r.labRef || null, ua: navigator.userAgent }, null, 1)); b.textContent = '복사했어요'; } catch { b.textContent = '복사 실패'; } }; }
   $('saveCard').onclick = () => shareCard(r).toBlob(b => download('lifecatch-facecheck.png', b, 'saveMsg'), 'image/png');
 }
 function download(name, blob, st) { try { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); $(st).textContent = '내려받았어요. 다운로드 폴더를 확인해 주세요.'; } catch { $(st).textContent = '저장하지 못했어요. 화면을 캡처해 주세요.'; } }
@@ -3359,6 +3620,7 @@ function computeBrain(R, age, survey, sig, history) {
 /* ---------- heart & brain vessels: one measurement -> several conclusions ---------- */
 /* 얼굴 영상 스트레스(심박변이)를 믿을 수 있는 조건: 신호 품질 3 이상 · 14초 이상 · 맥박 15개 이상 · 쉬는 심박(100 이하)
    · RMSSD가 사람에게 흔한 범위(8~120ms, 그 밖은 대부분 잡음) · 두 계산법 심박 차이 6회 이하 */
+function rrSlim(x) { if (!x) return null; const o = { n: x.n, used: x.used, lo: x.lo, rule: x.rule, src: {} }; for (const [k, v] of Object.entries(x.src || {})) if (v) o.src[k] = { rr: v.rr, snr: v.snr, edge: v.edge }; return o; }
 function vitPlus(V) { if (!V || V.error) return V; const ib = V.peaks ? DSP.ibis(V.peaks).filter(x => x.ok).map(x => x.ms) : []; return { ...V, hrPeak: ib.length >= 5 ? 60000 / DSP.median(ib) : NaN }; }
 // 스트레스가 '측정 안 됨'일 때 이유 (첫 번째가 가장 큰 이유). 결과 화면 안내·운영 화면·서버 요약(stress_why)에 씀
 function stressWhy(V) {
@@ -3762,7 +4024,7 @@ let cur = 'home';
 function show(s, title) {
   cur = s; document.querySelectorAll('.screen').forEach(el => el.hidden = el.dataset.s !== s);
   $('title').textContent = title || '페이스체크';
-  const flow = ['proc', 'tasks', 'near', 'survey', 'audit', 'finger', 'join'].includes(s);
+  const flow = ['proc', 'tasks', 'near', 'survey', 'audit', 'finger', 'join', 'sleep'].includes(s);
   $('back').hidden = !flow; $('tabbar').hidden = flow;
   if (s === 'join') { $('back').hidden = MEM.need && !MEM.on; $('tabbar').hidden = true; }
   document.querySelectorAll('#tabbar button').forEach(b => b.setAttribute('aria-current', b.dataset.t === s ? 'page' : 'false'));
@@ -3844,6 +4106,7 @@ function finishAll(survey) {
 const HKEY = 'facecheck.scan.v1' + MEM.ns;
 let HIST = []; try { HIST = JSON.parse(localStorage.getItem(HKEY) || '[]'); } catch { HIST = []; }
 function renderHome() {
+  try { renderWidget(); wgNotify(); } catch {}
   try { renderDailyHome(); } catch {}
   try { renderDemoBox(); } catch {}
   $('today').textContent = new Date().toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'long' });
@@ -3870,7 +4133,7 @@ function openRecord(i) { const h = HIST[i]; if (!h) return; renderReport(h); sho
 const VMET = {
   hr: { name: '심박수', unit: 'bpm', get: h => h.vit?.hr, desc: '1분 동안 심장이 뛴 횟수예요. 쉴 때 성인은 보통 60~100회예요.', bands: [[60, '낮음', '#3B82F6'], [100, '정상', '#16A34A'], [Infinity, '높음', '#E39B1B']] },
   stress: { name: '스트레스', unit: '/100', get: h => h.vit?.stress, why: h => { const w = h?.vit?.stressWhy?.[0]; return w && STRESS_WHY_KO[w] ? STRESS_WHY_KO[w] + ' 손가락 측정(1분)을 하면 더 정확하게 잴 수 있어요.' : null; }, desc: '심박변이를 같은 나이·성별과 비교한 점수예요. 낮을수록 편안한 상태예요.', bands: [[35, '낮음', '#16A34A'], [65, '보통', '#3B82F6'], [Infinity, '높음', '#E39B1B']] },
-  rr: { name: '호흡수', unit: '회/분', get: h => h.vit?.rr, desc: '1분 동안 숨 쉰 횟수예요. 쉴 때 보통 12~20회예요.', bands: [[12, '느림', '#3B82F6'], [20.5, '정상', '#16A34A'], [Infinity, '빠름', '#E39B1B']] },
+  rr: { name: '호흡수', unit: '회/분', get: h => h.vit?.rr, why: h => ({ short: '얼굴 영상 20초로는 숨이 몇 번밖에 안 잡혀 호흡수를 정확히 셀 수 없어요. 1분 정밀 측정이나 손가락 측정(1분)에서 계산돼요.', agree: '호흡을 보는 여러 신호가 서로 맞지 않아 표시하지 않았어요. 말하거나 움직이지 않고 다시 측정해 주세요.', signal: '얼굴 맥박 신호가 약해 호흡수를 계산하지 않았어요.' })[h?.vit?.rrWhy] || null, desc: '1분 동안 숨 쉰 횟수예요. 쉴 때 보통 12~20회예요.', bands: [[12, '느림', '#3B82F6'], [20.5, '정상', '#16A34A'], [Infinity, '빠름', '#E39B1B']] },
   blink: { name: '눈 깜빡임', unit: '회/분', get: h => h.vit?.blinkRate, desc: '화면을 볼 때는 쉴 때보다 적은 게 보통이에요. 너무 적으면 눈이 건조해져요.', bands: [[6, '적음', '#3B82F6'], [32, '보통', '#16A34A'], [Infinity, '많음', '#E39B1B']] },
 };
 const CHIP_INK = { '#3B82F6': '#1D4ED8', '#16A34A': '#117A39', '#E39B1B': '#8A4F00' };
@@ -3999,6 +4262,7 @@ function renderAuditList() {
       <div class="acounts">${['ok', 'caution', 'retake', 'error'].map(k => `<div><b class="t${QC_STATUS[k][1]}">${cnt(k)}</b><span>${QC_STATUS[k][0]}</span></div>`).join('')}</div>
       <div class="row" style="margin-top:12px"><button class="btn" id="aImport">참가자 파일 불러오기</button><button class="btn" id="aCsv">전체 CSV</button><button class="btn" id="aJson">전체 JSON</button><button class="btn ghost" id="aExit">검수 모드 끄기</button></div>
       <p class="status" id="aSt"></p></div>
+    <div class="card"><p class="secttl">파일럿 정확도 (기준 기기 대비)</p>${pilotTable(all)}</div>
     ${sets.map((set, si) => `<div class="card"><p class="secttl">${esc(set.name)} <span class="note2">${set.recs.length}건${(set.finger || []).filter(f => !f.linked).length ? ` · 손가락 단독 측정 ${(set.finger || []).filter(f => !f.linked).length}건` : ''}</span></p>${set.recs.length ? `<div class="alist">${set.recs.map((r, ri) => { const q = qcOf(r), S = QC_LABEL(q.status);
       return `<button class="arow" data-s="${si}" data-r="${ri}"><span><b>${esc(new Date(r.at).toLocaleString('ko-KR', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }))}</b><small>${r.age ?? '—'}세 ${esc(r.sex || '')} · ${esc(r.ver || '이전 버전')} · 실패 ${q.nFail} · 주의 ${q.nWarn}</small></span><span class="chip ${S[1]}">${S[0]}</span></button>`; }).join('')}</div>` : '<p class="sub2" style="margin:0">기록 없음</p>'}</div>`).join('')}`;
   $('aArea').querySelectorAll('.arow').forEach(b => b.onclick = () => renderAuditDetail(+b.dataset.s, +b.dataset.r));
@@ -4040,10 +4304,10 @@ function renderAuditDetail(si, ri) {
   $('aBack').onclick = renderAuditList;
   evGet(r.cid).then(ev => { if ($('aEv')) $('aEv').innerHTML = evGrid(ev?.items); });
   $('lrSave').onclick = () => {
-    const num = id => { const v = parseFloat($(id).value); return isFinite(v) ? v : null; }, ref = { sbp: num('lrSbp'), dbp: num('lrDbp'), spo2: num('lrSpo2'), hr: num('lrHr'), dev: $('lrDev').value.trim().slice(0, 60) || null, at: new Date().toISOString() };
-    const bad = (ref.sbp != null && (ref.sbp < 70 || ref.sbp > 250)) || (ref.dbp != null && (ref.dbp < 40 || ref.dbp > 150)) || (ref.spo2 != null && (ref.spo2 < 70 || ref.spo2 > 100)) || (ref.hr != null && (ref.hr < 30 || ref.hr > 220));
-    if (bad) return $('lrSt').textContent = '범위를 벗어난 값이 있어요. 혈압 70~250 / 40~150, 산소포화도 70~100, 심박 30~220';
-    if (ref.sbp == null && ref.dbp == null && ref.spo2 == null && ref.hr == null) return $('lrSt').textContent = '값을 하나 이상 입력해 주세요.';
+    const num = id => { const v = parseFloat($(id).value); return isFinite(v) ? v : null; }, ref = { sbp: num('lrSbp'), dbp: num('lrDbp'), spo2: num('lrSpo2'), hr: num('lrHr'), rr: num('lrRr'), dev: $('lrDev').value.trim().slice(0, 60) || null, at: new Date().toISOString() };
+    const bad = (ref.sbp != null && (ref.sbp < 70 || ref.sbp > 250)) || (ref.dbp != null && (ref.dbp < 40 || ref.dbp > 150)) || (ref.spo2 != null && (ref.spo2 < 70 || ref.spo2 > 100)) || (ref.hr != null && (ref.hr < 30 || ref.hr > 220)) || (ref.rr != null && (ref.rr < 3 || ref.rr > 60));
+    if (bad) return $('lrSt').textContent = '범위를 벗어난 값이 있어요. 혈압 70~250 / 40~150, 산소포화도 70~100, 심박 30~220, 호흡수 3~60';
+    if (ref.sbp == null && ref.dbp == null && ref.spo2 == null && ref.hr == null && ref.rr == null) return $('lrSt').textContent = '값을 하나 이상 입력해 주세요.';
     r.labRef = ref;
     if (si === 0) { try { localStorage.setItem(HKEY, JSON.stringify(HIST.slice(0, 80))); } catch {} }
     $('lrSt').textContent = si === 0 ? '이 기록에 저장했어요. CSV에 labRef 열로 나와요.' : '불러온 기록에 붙였어요. 이 창을 닫기 전에 전체 CSV/JSON으로 내보내 주세요.';
@@ -4289,6 +4553,7 @@ function researchCard(r) {
     <p class="note2" style="margin:8px 0">고객이 입력한 수축기 혈압: ${r.profileExtra?.sbp ?? '—'} mmHg</p>
     <div class="lrgrid"><label>기준 수축기 혈압<input id="lrSbp" type="number" inputmode="numeric" value="${L.sbp ?? ''}" placeholder="mmHg"></label><label>기준 이완기 혈압<input id="lrDbp" type="number" inputmode="numeric" value="${L.dbp ?? ''}" placeholder="mmHg"></label>
       <label>기준 산소포화도<input id="lrSpo2" type="number" inputmode="numeric" value="${L.spo2 ?? ''}" placeholder="%"></label><label>기준 심박<input id="lrHr" type="number" inputmode="numeric" value="${L.hr ?? ''}" placeholder="bpm"></label>
+      <label>기준 호흡수<input id="lrRr" type="number" inputmode="decimal" value="${L.rr ?? ''}" placeholder="회/분"></label>
       <label class="w">기준 기기·메모<input id="lrDev" type="text" maxlength="60" value="${esc(L.dev || '')}" placeholder="예: 오므론 HEM-7156, 측정 직후"></label></div>
     <button class="btn" id="lrSave" style="width:100%;margin-top:8px">기준값 저장</button><p class="status" id="lrSt">${L.at ? `저장됨 · ${esc(new Date(L.at).toLocaleString('ko-KR'))}` : ''}</p>`;
 }
@@ -4326,7 +4591,7 @@ function renderDemoBox() {
     <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn" id="dmSeed">${n ? '예시 기록 다시 만들기' : '지난 4주 예시 기록 넣기'}</button><button class="btn ghost" id="dmClear">시연 기록 지우기</button></div><p class="status" id="dmSt"></p>`;
   $('dmSeed').onclick = demoSeedHistory;
   $('dmClear').onclick = () => { const b = $('dmClear'); if (!b.dataset.arm) { b.dataset.arm = 1; b.textContent = '한 번 더 누르면 지워요'; return; }
-    HIST = []; FLOG = []; try { localStorage.removeItem(HKEY); localStorage.removeItem(FKEY); localStorage.removeItem(DEMO_DB); localStorage.removeItem(QKEY); localStorage.removeItem(SESS_KEY); } catch {} SYNCQ = [];
+    HIST = []; FLOG = []; SLOG = []; try { localStorage.removeItem(HKEY); localStorage.removeItem(FKEY); localStorage.removeItem(SKEY); localStorage.removeItem(SKEY + '.wip'); localStorage.removeItem(DEMO_DB); localStorage.removeItem(QKEY); localStorage.removeItem(SESS_KEY); } catch {} SYNCQ = [];
     try { indexedDB.deleteDatabase('facecheck-img'); _evdb = null; } catch {} toast('시연 기록을 지웠어요.'); setTimeout(() => location.reload(), 900); };
 }
 async function demoSeedHistory() {
@@ -4622,7 +4887,9 @@ function joinCheck() {
 }
 $('jAll').onchange = () => { const v = $('jAll').checked; CONSENT_DOCS.forEach(d => JOIN.cons[d.k] = v); $('jList').querySelectorAll('[data-c]').forEach(x => x.checked = v); joinCheck(); };
 function joinStep(n) { [1, 2, 3].forEach(i => $('j' + i).hidden = i !== n); $('jStep').textContent = `${n}/3 · ${['약관 동의', '휴대폰 번호·생년월일', '문자 인증'][n - 1]}`; if (n !== 3) clearInterval(JOIN.timer); window.scrollTo(0, 0); }
-$('j1Go').onclick = () => { joinStep(2); setTimeout(() => $('jPhone').focus(), 50); };
+// v3: 자동 포커스는 사용자가 아직 다른 칸을 누르지 않았을 때만 (기기가 느리면 늦게 실행돼 입력 중인 생년월일이 번호 칸으로 들어가던 문제)
+const focusIfIdle = id => { const a = document.activeElement; if (!a || a === document.body || a.tagName === 'BUTTON') $(id).focus(); };
+$('j1Go').onclick = () => { joinStep(2); setTimeout(() => focusIfIdle('jPhone'), 50); };
 $('j2Back').onclick = () => joinStep(1);
 $('j3Back').onclick = () => joinStep(2);
 const digits = s => (s || '').replace(/\D/g, '');
@@ -4650,7 +4917,7 @@ async function sendCode() {
   $('j2St').textContent = ''; joinStep(3);
   $('jTo').textContent = `${p.slice(0, 3)}-${p.slice(3, p.length - 4)}-${p.slice(-4)}`;
   $('jDev').hidden = !r.j.dev_code; if (r.j.dev_code) $('jDev').innerHTML = `${DEMO ? '시연 모드' : '개발 모드'}라 문자 대신 여기에 보여 드려요: <b>${esc(r.j.dev_code)}</b>`;
-  $('jCode').value = ''; $('j3St').className = 'status'; $('j3St').textContent = ''; $('j3Go').disabled = true; setTimeout(() => $('jCode').focus(), 50);
+  $('jCode').value = ''; $('j3St').className = 'status'; $('j3St').textContent = ''; $('j3Go').disabled = true; setTimeout(() => focusIfIdle('jCode'), 50);
   JOIN.left = r.j.ttl || 180; clearInterval(JOIN.timer); tick(); JOIN.timer = setInterval(tick, 1000);
 }
 function tick() { JOIN.left--; const l = Math.max(0, JOIN.left); $('jTimer').textContent = `${Math.floor(l / 60)}:${String(l % 60).padStart(2, '0')}`; if (l <= 0) { clearInterval(JOIN.timer); $('j3St').className = 'status warn'; $('j3St').textContent = '시간이 지났어요. 인증번호를 다시 받아 주세요.'; $('j3Go').disabled = true; } }
@@ -5102,7 +5369,153 @@ function renderDiag() {
   $('diagT').innerHTML = rows.map(r => `<tr><td>${r[0]}</td><td>${esc(r[1])}</td></tr>`).join('');
 }
 $('diag').addEventListener('toggle', renderDiag);
+
+/* ================= v3.2 밤새 수면 소리 측정 · 홈 위젯 · 알림창 위젯 =================
+   '심박수' 같은 앱처럼: 홈 위젯(최근 값 + 바로 측정 버튼), 알림창 위젯(안드로이드 크롬·홈 화면에 추가한 아이폰), 알림을 누르면 바로 측정 화면.
+   웹은 앱이 닫혀 있을 때 정해진 시각에 알림을 스스로 띄우지 못함(서버 예약 발송이 필요 — 다음 단계) */
+const SKEY = 'facecheck.sleep.v1' + MEM.ns;
+let SLOG = []; try { SLOG = JSON.parse(localStorage.getItem(SKEY) || '[]'); } catch { SLOG = []; }
+let SL = null, SWREG = null;
+const saveSlog = () => { try { localStorage.setItem(SKEY, JSON.stringify(SLOG.slice(0, 60))); } catch {} };
+try { if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) navigator.serviceWorker.register('sw.js').then(r => { SWREG = r; wgNotify(); }).catch(() => {}); } catch {}
+try { navigator.serviceWorker?.addEventListener('message', ev => { const g = ev.data?.fc === 'go' ? ev.data.go : null; if (g) goTo(g); }); } catch {}
+function goTo(g) {
+  if (MEM.need && !MEM.on) return;
+  if (g === 'sleepstop') { if (SL) slStop(true); return; }
+  if (SL) return;
+  if (g === 'finger') openFinger(); else if (g === 'sleep') openSleep(); else if (g === 'home') { renderHome(); show('home'); }
+}
+const SL_WORKLET = `class L extends AudioWorkletProcessor{constructor(){super();this.N=Math.round(sampleRate/4);this.n=0;this.s=0;this.l=0;this.h=0;this.px=0;this.y1=0;this.y2=0;this.a=Math.exp(-2*Math.PI*800/sampleRate);this.b=Math.exp(-2*Math.PI*60/sampleRate)}
+process(inp){const c=inp[0]&&inp[0][0];if(!c)return true;for(let k=0;k<c.length;k++){const x=c[k];this.h=this.b*(this.h+x-this.px);this.px=x;const v=this.h;this.y1=this.a*this.y1+(1-this.a)*v;this.y2=this.a*this.y2+(1-this.a)*this.y1;this.s+=v*v;this.l+=this.y2*this.y2;
+if(++this.n>=this.N){this.port.postMessage([10*Math.log10(this.s/this.n+1e-12),10*Math.log10(this.l/this.n+1e-12)]);this.n=0;this.s=0;this.l=0}}return true}}registerProcessor('fc-level',L)`;
+function openSleep() {
+  if (SL) { $('slRun').hidden = false; return; }
+  show('sleep', '수면 소리 측정'); $('slIntro').hidden = false; $('slRes').hidden = true; $('slSt').textContent = '';
+  $('slBack').onclick = () => { renderHome(); show('home'); };
+  $('slGo').onclick = slStart;
+}
+async function slStart() {
+  const st = $('slSt'); st.className = 'status'; st.textContent = '마이크를 여는 중…';
+  try { if ('Notification' in window && Notification.permission === 'default') await Notification.requestPermission(); } catch {}
+  let ms; try { closeCam(); ms = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false }, video: false }); }
+  catch (e) { st.className = 'status warn'; st.textContent = e?.name === 'NotAllowedError' ? '마이크 권한이 막혀 있어요. 주소창 왼쪽 자물쇠 → 권한 → 마이크 허용 후 다시 해 주세요.' : '마이크를 열 수 없어요.'; return; }
+  const ac = new (window.AudioContext || window.webkitAudioContext)(); try { await ac.resume(); } catch {}
+  const src = ac.createMediaStreamSource(ms), me = SL = { t0: Date.now(), db: [], lo: [], ac, ms, src, node: null, wake: null, ck: 0, stopArm: 0, lastLv: -99 };
+  const onLv = ([d, l]) => { if (SL !== me) return; const idx = Math.floor((Date.now() - me.t0) / 250); while (me.db.length < idx) { me.db.push(NaN); me.lo.push(NaN); } me.db.push(Math.round(d * 10) / 10); me.lo.push(Math.round(l * 10) / 10); me.lastLv = d; };
+  try {
+    if (!ac.audioWorklet) throw 0;
+    const url = URL.createObjectURL(new Blob([SL_WORKLET], { type: 'application/javascript' })); await ac.audioWorklet.addModule(url);
+    me.node = new AudioWorkletNode(ac, 'fc-level'); me.node.port.onmessage = e => onLv(e.data); src.connect(me.node);
+  } catch {
+    // 오래된 브라우저: ScriptProcessor로 같은 계산
+    const sp = ac.createScriptProcessor(4096, 1, 1), N = Math.round(ac.sampleRate / 4), a = Math.exp(-2 * Math.PI * 800 / ac.sampleRate), b = Math.exp(-2 * Math.PI * 60 / ac.sampleRate); let n = 0, s2 = 0, l2 = 0, h = 0, px = 0, y1 = 0, y2 = 0;
+    sp.onaudioprocess = e => { const c = e.inputBuffer.getChannelData(0); for (let k = 0; k < c.length; k++) { const x = c[k]; h = b * (h + x - px); px = x; y1 = a * y1 + (1 - a) * h; y2 = a * y2 + (1 - a) * y1; s2 += h * h; l2 += y2 * y2; if (++n >= N) { onLv([10 * Math.log10(s2 / n + 1e-12), 10 * Math.log10(l2 / n + 1e-12)]); n = 0; s2 = 0; l2 = 0; } } };
+    src.connect(sp); sp.connect(ac.destination); me.node = sp;
+  }
+  me.wakeOn = async () => { try { if (navigator.wakeLock && document.visibilityState === 'visible') me.wake = await navigator.wakeLock.request('screen'); } catch {} };
+  await me.wakeOn(); me.vis = () => { if (document.visibilityState === 'visible' && SL === me) { me.wakeOn(); try { ac.resume(); } catch {} } }; document.addEventListener('visibilitychange', me.vis);
+  $('slRun').hidden = false; st.textContent = '';
+  $('slMsg').innerHTML = navigator.wakeLock ? '소리는 저장하지 않아요 · 충전기를 꽂아 두세요<br>화면을 끄거나 다른 앱으로 가지 마세요' : '이 브라우저는 화면 꺼짐을 막지 못해요. 설정에서 화면 자동 꺼짐 시간을 가장 길게 해 주세요.<br>소리는 저장하지 않아요';
+  $('slStop').textContent = '그만하고 결과 보기'; $('slStop').onclick = () => slStop(false);
+  me.tick = setInterval(() => slTick(me), 1000); slTick(me); slNote(me);
+}
+function slTick(me) {
+  if (SL !== me) return; const d = new Date(), el = (Date.now() - me.t0) / 60000;
+  $('slClk').textContent = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+  $('slClk').style.transform = `translate(${(d.getMinutes() % 5 - 2) * 6}px, ${(d.getMinutes() % 3 - 1) * 10}px)`;   // 화면 잔상 방지
+  $('slEl').textContent = el < 60 ? `측정 ${Math.floor(el)}분` : `측정 ${Math.floor(el / 60)}시간 ${Math.floor(el % 60)}분`;
+  $('slLv').style.width = Math.max(0, Math.min(100, (me.lastLv + 75) * 2)) + '%';
+  if (me.stopArm && Date.now() - me.stopArm > 3000) { me.stopArm = 0; $('slStop').textContent = '그만하고 결과 보기'; }
+  // 5분마다 중간 결과 저장 (밤사이 브라우저가 꺼져도 그때까지는 남음) · 알림창 갱신
+  if (Date.now() - me.ck > 5 * 60000 && me.db.length > 240) { me.ck = Date.now(); try { const r = SLEEPA.analyze(me.db, me.lo); localStorage.setItem(SKEY + '.wip', JSON.stringify({ ...slRec(me, r), wip: true })); } catch {} slNote(me); }
+}
+function slRec(me, r) { return { at: new Date(me.t0).toISOString(), end: new Date().toISOString(), ver: APP_VER, ...r, ev: undefined, evT: (r.ev || []).slice(0, 200).map(x => x.t) }; }
+function slNote(me) {
+  if (!SWREG || !('Notification' in window) || Notification.permission !== 'granted') return;
+  const el = (Date.now() - me.t0) / 60000;
+  try { SWREG.showNotification('수면 소리 측정 중', { tag: 'fc-sleep', body: `${Math.floor(el / 60)}시간 ${Math.floor(el % 60)}분째 · 소리는 저장하지 않아요`, silent: true, renotify: false, requireInteraction: true, icon: 'icon-192.png', badge: 'icon-192.png',
+    actions: [{ action: 'sleepstop', title: '그만하고 결과 보기' }], data: { base: location.origin + location.pathname } }); } catch {}
+}
+async function slStop(force) {
+  const me = SL; if (!me) return;
+  if (!force && !me.stopArm) { me.stopArm = Date.now(); $('slStop').textContent = '한 번 더 누르면 끝나요'; return; }
+  SL = null; clearInterval(me.tick); document.removeEventListener('visibilitychange', me.vis);
+  try { me.node.disconnect(); me.src.disconnect(); } catch {} try { me.ms.getTracks().forEach(t => t.stop()); } catch {} try { await me.ac.close(); } catch {} try { await me.wake?.release(); } catch {}
+  try { (await SWREG?.getNotifications({ tag: 'fc-sleep' }))?.forEach(n => n.close()); } catch {}
+  $('slRun').hidden = true;
+  const r = SLEEPA.analyze(me.db, me.lo), rec = slRec(me, r);
+  SLOG.unshift(rec); saveSlog(); try { localStorage.removeItem(SKEY + '.wip'); } catch {}
+  show('sleep', '수면 소리 측정'); $('slIntro').hidden = true; slResult(rec); wgNotify(true);
+}
+// 지난밤 측정이 중간에 끊긴 경우: 5분마다 저장된 중간 결과를 살림
+function slRecover() {
+  let w = null; try { w = JSON.parse(localStorage.getItem(SKEY + '.wip') || 'null'); } catch {}
+  if (!w || SL) return null; if (Date.now() - new Date(w.end).getTime() > 36 * 3600e3) { try { localStorage.removeItem(SKEY + '.wip'); } catch {} return null; }
+  return w;
+}
+const SL_WHY = { short: '측정 시간이 4시간보다 짧아요. 결과는 참고만 해 주세요.', nosnore: '코골이 소리가 거의 없어 소리로는 숨 멈춤을 판단할 수 없어요. 코골이 없이 생기는 수면무호흡(중추성 등)도 있으니, 낮에 많이 졸리면 진료를 받아 보세요.', noisy: '주변 소리(뒤척임·TV·대화)가 많아 정확도가 낮아요.' };
+const SL_TIER = { ok: ['적음', 'var(--good)'], watch: ['주의', 'var(--mid)'], check: ['많음', 'var(--care)'], na: ['판단 어려움', 'var(--na)'] };
+function slResult(n) {
+  const box = $('slRes'), short = n.validH < 4; box.hidden = false; const T = short ? ['참고', 'var(--na)'] : SL_TIER[n.tier] || SL_TIER.na, sb = HIST[0]?.raw?.well?.stopbang;
+  const W = 320, H = 70, bins = n.bins || [], bw = bins.length ? W / bins.length : W;
+  const svg = bins.map((b, i) => `${b.s != null ? `<rect x="${(i * bw + 1).toFixed(1)}" y="${(H - 14 - b.s * (H - 24)).toFixed(1)}" width="${Math.max(1, bw - 2).toFixed(1)}" height="${(b.s * (H - 24)).toFixed(1)}" rx="2" fill="#B9C6F2"/>` : `<rect x="${(i * bw + 1).toFixed(1)}" y="${H - 16}" width="${Math.max(1, bw - 2).toFixed(1)}" height="2" fill="#E1E5E8"/>`}${b.e ? `<circle cx="${(i * bw + bw / 2).toFixed(1)}" cy="8" r="${Math.min(7, 2.5 + b.e)}" fill="#9B4938"/>` : ''}`).join('');
+  const st = new Date(n.at), en = new Date(n.end), hm = d => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+  const txt = n.tier === 'check' ? '코골이 중 숨이 10초 이상 끊겼다가 다시 시작하는 일이 자주 있었어요. 수면무호흡이 있을 가능성이 높아요. 수면다원검사로 확인해 보세요(수면무호흡이 의심되면 건강보험이 적용될 수 있어요).'
+    : n.tier === 'watch' ? '코골이 중 숨이 10초 이상 끊기는 일이 가끔 있었어요. 며칠 더 측정해 보고, 계속 이 정도로 나오거나 낮에 졸리면 수면클리닉 상담을 권해요.'
+    : n.tier === 'ok' ? '소리로 잡힌 숨 멈춤은 적었어요. 다만 숨이 줄어드는 저호흡은 소리로 잘 잡히지 않아, 이 결과만으로 수면무호흡이 없다고 할 수는 없어요.'
+    : '이번 측정으로는 판단하기 어려워요.';
+  const txt2 = short ? `측정 시간이 ${n.validH < 1 ? Math.round(n.validH * 60) + '분' : fmt(n.validH, 1) + '시간'}이라 판단하지 않았어요. 4시간 이상 측정하면 결과를 알려 드려요.` : txt;
+  box.innerHTML = `<p class="secttl">${esc(st.toLocaleDateString('ko-KR', { month: 'long', day: 'numeric' }))} 밤 · ${hm(st)}~${hm(en)}</p>
+    <p class="sub2" style="margin:0">소리로 본 숨 멈춤 의심</p>
+    <div class="slbig"><b style="color:${T[1]}">${n.idx != null && !short ? fmt(n.idx, 1) : '—'}</b><small>회/시간</small><span class="chip" style="background:${T[1]}1f;color:${T[1]};margin-left:6px">${T[0]}</span></div>
+    ${n.why && SL_WHY[n.why] ? `<p class="note2" style="margin:2px 0 0;color:var(--care)">${SL_WHY[n.why]}</p>` : ''}
+    <div class="slrows"><div><span>측정 시간</span><b>${n.validH < 1 ? Math.round(n.validH * 60) + '분' : fmt(n.validH, 1) + '시간'}</b></div><div><span>코골이 시간</span><b>${fmt((n.snorePct || 0) * 100)}%</b></div><div><span>숨 멈춤 의심</span><b>${n.events}회</b></div><div><span>가장 길었던 멈춤</span><b>${n.longest != null ? fmt(n.longest) + '초' : '—'}</b></div></div>
+    <p class="note2" style="margin:0">10분 단위 · 막대 = 코골이 비율, 빨간 점 = 숨 멈춤 의심</p>
+    <svg class="sltl" viewBox="0 0 ${W} ${H}" role="img" aria-label="밤새 코골이와 숨 멈춤">${svg}<text x="0" y="${H - 1}" font-size="9" fill="#66737A">${hm(st)}</text><text x="${W}" y="${H - 1}" font-size="9" fill="#66737A" text-anchor="end">${hm(en)}</text></svg>
+    <p style="margin:12px 0 0;line-height:1.6">${txt2}</p>
+    ${sb != null ? `<p class="note2" style="margin:8px 0 0">마지막 페이스체크 문진의 수면무호흡 위험 점수(STOP-Bang): ${sb}/8점${sb >= 5 ? ' · 높음' : sb >= 3 ? ' · 중간' : ' · 낮음'}</p>` : ''}
+    <details class="fgguide" style="margin-top:10px"><summary>어떻게 계산했나요?</summary><p class="note2" style="margin:6px 0 0;line-height:1.6">수면다원검사 판독 기준(AASM)은 숨(기류)이 90% 넘게 줄어든 상태가 10초 이상이면 무호흡, 시간당 횟수(AHI)가 5·15·30 이상이면 경도·중등도·중증으로 봐요. 휴대폰 마이크는 기류·가슴 움직임·산소포화도를 잴 수 없어서, AHI 대신 '리듬 있게 코를 골다가 10~90초 소리가 끊기고, 더 큰 소리(헐떡임·뒤척임)와 함께 다시 코골이가 시작된 횟수'를 셌어요. 같은 5·15 기준으로 '적음·주의·많음'을 나눴지만 진단이 아니에요. 저호흡은 잘 잡히지 않아 실제보다 적게 나오는 쪽으로 틀려요.</p></details>
+    <div class="row" style="margin-top:12px"><button class="btn primary" id="slAgain" style="flex:1">홈으로</button></div>`;
+  $('slAgain').onclick = () => { renderHome(); show('home'); };
+}
+// 홈 위젯: '심박수' 앱처럼 최근 값 + 바로 측정
+function wgLast(k) { const L = vitalsTimeline(); for (const h of L) { const v = VMET[k].get(h); if (v != null && isFinite(v)) return { v, at: h.at }; } return null; }
+const agoTx = at => { if (!at) return ''; const m = (Date.now() - new Date(at).getTime()) / 60000; return m < 60 ? `${Math.max(1, Math.round(m))}분 전` : m < 1440 ? `${Math.round(m / 60)}시간 전` : `${Math.round(m / 1440)}일 전`; };
+function renderWidget() {
+  const box = $('wgBox'); if (!box) return;
+  const hr = wgLast('hr'), st = wgLast('stress'), rr = wgLast('rr'), sl = SLOG[0], wip = slRecover();
+  const on = (() => { try { return localStorage.getItem('fc.wgnote') === '1'; } catch { return false; } })(), canN = 'Notification' in window && !!navigator.serviceWorker;
+  box.innerHTML = `<div class="wgh"><p class="h2" style="margin:0">내 건강 위젯</p><span class="note2">최근 측정값</span></div>
+    ${wip ? `<button class="fgbtn" id="wgWip" style="margin:0 0 10px"><span>지난밤 수면 측정이 중간에 멈췄어요<small>저장된 ${fmt(wip.validH, 1)}시간으로 결과 보기</small></span><span>›</span></button>` : ''}
+    <div class="wgt">
+      <div class="wgi hr"><span>심박수</span><b>${hr ? fmt(hr.v) : '--'}<small>bpm</small></b><em>${hr ? agoTx(hr.at) : '기록 없음'}</em><button id="wgHr">측정</button></div>
+      <div class="wgi st"><span>스트레스</span><b>${st ? fmt(st.v) : '--'}<small>/100</small></b><em>${st ? agoTx(st.at) : '기록 없음'}</em><button id="wgSt">측정</button></div>
+      <div class="wgi rr"><span>호흡수</span><b>${rr ? fmt(rr.v) : '--'}<small>회/분</small></b><em>${rr ? agoTx(rr.at) : '기록 없음'}</em><button id="wgRr">측정</button></div>
+      <div class="wgi sl"><span>수면 숨 멈춤</span><b>${sl && sl.idx != null && sl.validH >= 4 ? fmt(sl.idx, 1) : '--'}<small>회/시</small></b><em>${sl ? agoTx(sl.end) + (sl.validH < 4 ? ' · 4시간 미만' : '') : '밤새 측정'}</em><button id="wgSl">${sl ? '결과' : '측정'}</button></div>
+    </div>
+    ${canN ? `<div class="wgnote"><span>${on ? '알림창에 위젯이 떠 있어요' : '알림창에도 띄워 두면 바로 잴 수 있어요'}</span><button id="wgN">${on ? '끄기' : '알림창에 띄우기'}</button></div>` : ''}`;
+  $('wgHr').onclick = $('wgSt').onclick = $('wgRr').onclick = () => openFinger();
+  $('wgSl').onclick = () => { if (sl) { show('sleep', '수면 소리 측정'); $('slIntro').hidden = true; slResult(sl); } else openSleep(); };
+  if ($('wgWip')) $('wgWip').onclick = () => { const w = slRecover(); if (!w) return; const rec = { ...w, wip: undefined, partial: true }; SLOG.unshift(rec); saveSlog(); try { localStorage.removeItem(SKEY + '.wip'); } catch {} show('sleep', '수면 소리 측정'); $('slIntro').hidden = true; slResult(rec); };
+  if ($('wgN')) $('wgN').onclick = async () => {
+    if (on) { try { localStorage.removeItem('fc.wgnote'); (await SWREG?.getNotifications({ tag: 'fc-widget' }))?.forEach(n => n.close()); } catch {} renderWidget(); return; }
+    let p = 'denied'; try { p = await Notification.requestPermission(); } catch {}
+    if (p !== 'granted') { toast('알림이 막혀 있어요. 브라우저 설정에서 이 사이트 알림을 허용해 주세요. 아이폰은 홈 화면에 추가한 뒤에만 알림을 받을 수 있어요.'); return; }
+    try { localStorage.setItem('fc.wgnote', '1'); } catch {} wgNotify(true); renderWidget();
+  };
+}
+let _wgLast = 0;
+function wgNotify(force) {
+  try { if (localStorage.getItem('fc.wgnote') !== '1' || !SWREG || Notification.permission !== 'granted') return; } catch { return; }
+  if (!force && Date.now() - _wgLast < 60000) return; _wgLast = Date.now();
+  const hr = wgLast('hr'), st = wgLast('stress'), rr = wgLast('rr'), sl = SLOG[0];
+  const body = `심박 ${hr ? fmt(hr.v) : '--'} · 스트레스 ${st ? fmt(st.v) : '--'} · 호흡 ${rr ? fmt(rr.v) : '--'} · 수면 숨멈춤 ${sl && sl.idx != null && sl.validH >= 4 ? fmt(sl.idx, 1) + '회/시' : '--'}`;
+  try { SWREG.showNotification('페이스체크 · 내 건강', { tag: 'fc-widget', body, silent: true, renotify: false, requireInteraction: true, icon: 'icon-192.png', badge: 'icon-192.png',
+    actions: [{ action: 'finger', title: '심박 재기' }, { action: 'sleep', title: '수면 측정' }], data: { base: location.origin + location.pathname, go: 'home' } }); } catch {}
+}
 renderHome(); renderDiag(); gateStart(); loadAI();
+// 알림을 눌러 들어온 경우(?go=finger / sleep / sleepstop)
+try { const g = new URLSearchParams(location.search).get('go'); if (g) { history.replaceState(null, '', location.pathname + location.hash); setTimeout(() => goTo(g), 400); } } catch {}
 if (MEM.need && !MEM.on) openJoin();
 
 </script>
